@@ -1,7 +1,8 @@
-﻿using System.Reflection;
+﻿using System.Text;
 using AttendanceManagementSystem.Shared.Dtos;
 using AttendanceManagementSystem.Shared.Dtos.User;
 using AttendanceManagementSystem.Web.Models;
+using ClosedXML.Excel;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AttendanceManagementSystem.Web.Controllers;
@@ -54,21 +55,99 @@ public class UserController : Controller
     /// <summary>
     ///
     /// </summary>
+    /// <param name="searchTerm"></param>
     /// <returns></returns>
     [HttpGet]
-    public async Task<IActionResult> Index(int pageNumber)
+    public async Task<IActionResult> ExportToExcel()
     {
         var client = _clientFactory.CreateClient("AttendanceApi");
-
-        int pageSize = 4;
-        if (pageNumber < 1)
+        var response = await client.GetAsync("user");
+        if (!response.IsSuccessStatusCode)
         {
-            pageNumber = 1;
+            TempData["Error"] = "Unable to get all users";
+            RedirectToAction(nameof(Index));
         }
 
+        var result = await response.Content.ReadFromJsonAsync<
+            ServiceResponseDto<IEnumerable<GetUserDto>>
+        >();
+        if (result == null || !result.IsSuccess || result.Data == null)
+        {
+            TempData["Error"] = result?.Message;
+            RedirectToAction(nameof(Index));
+        }
+
+        var users = result?.Data;
+
+        using var workbook = new XLWorkbook();
+        var worksheet = workbook.Worksheets.Add("Users");
+        worksheet.Cell(1, 1).Value = "Id";
+
+        worksheet.Cell(1, 2).Value = "Name";
+        worksheet.Cell(1, 3).Value = "Phone Number";
+        worksheet.Cell(1, 4).Value = "Created At";
+
+        int row = 2;
+        foreach (var user in users)
+        {
+            worksheet.Cell(row, 1).Value = user.Id.ToString();
+
+            worksheet.Cell(row, 2).Value = user.Name;
+            worksheet.Cell(row, 3).Value = user.PhoneNumber;
+            worksheet.Cell(row, 4).Value = user.CreationAt;
+
+            row++;
+        }
+
+        using var stream = new MemoryStream();
+        workbook.SaveAs(stream);
+        var content = stream.ToArray();
+
+        return File(
+            content,
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            "Users.xlsx"
+        );
+    }
+
+    /// <summary>
+    ///
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    public async Task<IActionResult> Index(
+        string searchString,
+        int pageNumber,
+        int pageSize,
+        string sortOrder
+    )
+    {
+        ViewData["CurrentFilter"] = searchString;
+
+        if (string.IsNullOrEmpty(sortOrder))
+        {
+            sortOrder = "date_desc";
+            TempData["CreatedAtSortParam"] = "date_desc";
+        }
+        else
+        {
+            TempData["CreatedAtSortParam"] = sortOrder == "date_desc" ? "date_asc" : "date_desc";
+
+            TempData["NameSortParam"] = sortOrder == "name_desc" ? "name_asc" : "name_desc";
+        }
+        TempData["CurrentSort"] = sortOrder;
+
+        if (pageSize < 5)
+            pageSize = 5;
+
+        if (pageNumber < 1)
+            pageNumber = 1;
         int skipCount = (pageNumber - 1) * pageSize;
+
+        var client = _clientFactory.CreateClient("AttendanceApi");
+
         var response = await client.GetAsync(
-            $"user/list?SkipCount={skipCount}&MaxResultCount={pageSize}"
+            $"user/list?SearchTerm={searchString}&SkipCount={skipCount}&MaxResultCount={pageSize}&SortOrder={sortOrder}"
         );
         if (!response.IsSuccessStatusCode)
         {
@@ -97,6 +176,15 @@ public class UserController : Controller
         return View(PagedResult);
     }
 
+    /// <summary>
+    ///
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    ///
+
+
+
     private async Task<ServiceResponseDto<GetUserDto>> Details(string id)
     {
         var client = _clientFactory.CreateClient("AttendanceApi");
@@ -122,6 +210,12 @@ public class UserController : Controller
 
         return result;
     }
+
+    /// <summary>
+    ///
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
 
     public async Task<IActionResult> Delete(string id)
     {

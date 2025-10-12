@@ -10,5 +10,7 @@ public class GetUserDto
 {
     public Guid Id { get; set; }
     public string Name { get; set; } = string.Empty;
+
+    public DateTime? CreationAt { get; set; }
     public string PhoneNumber { get; set; } = string.Empty;
 }

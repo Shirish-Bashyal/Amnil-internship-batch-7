@@ -17,11 +17,11 @@ public class UpdateUserDto
     [RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "Name must contain only letters.")]
     public string Name { get; set; } = string.Empty;
 
-    [Required]
+    [Required(ErrorMessage = "Phone Number is required")]
     [StringLength(
         UserConsts.PhoneNumber.MaxLength,
         MinimumLength = UserConsts.PhoneNumber.MaxLength,
-        ErrorMessage = "PhoneNumber must be of length 10."
+        ErrorMessage = "Phone Number must be of length 10."
     )]
     public string PhoneNumber { get; set; } = string.Empty;
 }

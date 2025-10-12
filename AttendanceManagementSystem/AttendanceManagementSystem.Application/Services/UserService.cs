@@ -1,4 +1,5 @@
-﻿using AttendanceManagementSystem.Contracts.Interfaces.User;
+﻿using System.Globalization;
+using AttendanceManagementSystem.Contracts.Interfaces.User;
 using AttendanceManagementSystem.Contracts.Repository;
 using AttendanceManagementSystem.Domain.Entities.Application;
 using AttendanceManagementSystem.Shared.Dtos;
@@ -41,7 +42,9 @@ public class UserService : IUserService
 
         try
         {
-            var exists = _userRepo.GetQueryable().Any(u => u.PhoneNumber == model.PhoneNumber);
+            var exists = await _userRepo
+                .GetQueryable()
+                .AnyAsync(u => u.PhoneNumber == model.PhoneNumber);
 
             if (exists)
             {
@@ -144,6 +147,7 @@ public class UserService : IUserService
             {
                 Id = x.Id,
                 Name = x.Name,
+                CreationAt = x.AddedDate,
                 PhoneNumber = x.PhoneNumber,
             });
             _logger.LogInformation(" Users retrieved successfully");
@@ -184,6 +188,7 @@ public class UserService : IUserService
         {
             Id = user.Id,
             Name = user.Name,
+            CreationAt = user.AddedDate,
             PhoneNumber = user.PhoneNumber,
         };
 
@@ -198,18 +203,41 @@ public class UserService : IUserService
     /// <returns> a list of users with total count</returns>
 
     public async Task<ServiceResponseDto<PagedResponseDto<GetUserDto>>> GetListAsync(
-        PagedRequestDto input
+        PagedRequestDto input,
+        string? searchTerm,
+        string? sortOrder
     )
     {
         _logger.LogInformation("Fetching {UserCount} users with pagination", input.MaxResultCount);
         var query = _userRepo.GetQueryable();
 
-        var totalCount = query.Count();
+        if (!string.IsNullOrWhiteSpace(searchTerm))
+        {
+            searchTerm = searchTerm.Trim();
+            query = query.Where(x =>
+                x.Name.Contains(searchTerm) || x.PhoneNumber.Contains(searchTerm)
+            );
+        }
+        if (!string.IsNullOrWhiteSpace(sortOrder))
+        {
+            query = sortOrder switch
+            {
+                "name_desc" => query.OrderByDescending(u => u.Name),
+                "name_asc" => query.OrderBy(x => x.Name),
+
+                "date_asc" => query.OrderBy(u => u.AddedDate),
+                "date_desc" => query.OrderByDescending(u => u.AddedDate),
+                _ => query.OrderByDescending(u => u.AddedDate)
+            };
+        }
+
+        var totalCount = await query.CountAsync();
         var users = await query
-            .OrderBy(x => x.AddedDate)
             .Select(x => new GetUserDto
             {
                 Id = x.Id,
+                CreationAt = x.AddedDate,
+
                 Name = x.Name,
                 PhoneNumber = x.PhoneNumber,
             })

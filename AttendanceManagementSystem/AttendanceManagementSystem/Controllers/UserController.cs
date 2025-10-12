@@ -70,13 +70,33 @@ public class UserController : ControllerBase
     /// Retrives users with pagination
     /// </summary>
     /// <returns> a list of users</returns>
-    [Authorize(Policy = "ApiKeyPolicy")]
+    //[Authorize(Policy = "ApiKeyPolicy")]
     [HttpGet("List")]
     public async Task<ActionResult<ServiceResponseDto<PagedResponseDto<List<GetUserDto>>>>> GetList(
-        [FromQuery] PagedRequestDto input
+        [FromQuery] string? SearchTerm,
+        [FromQuery] PagedRequestDto input,
+        [FromQuery] string? sortOrder
     )
     {
-        var result = await _userService.GetListAsync(input);
+        if (!ModelState.IsValid)
+        {
+            return BadRequest();
+        }
+        var result = await _userService.GetListAsync(input, SearchTerm, sortOrder);
+        if (result.IsSuccess)
+            return Ok(result);
+
+        return NotFound(result);
+    }
+
+    /// Retrives all users
+    /// </summary>
+    /// <returns> All users</returns>
+    [Authorize(Policy = "ApiKeyPolicy")]
+    [HttpGet]
+    public async Task<ActionResult<ServiceResponseDto<IEnumerable<GetUserDto>>>> GetAll()
+    {
+        var result = await _userService.GetAllAsync();
         if (result.IsSuccess)
             return Ok(result);
 
