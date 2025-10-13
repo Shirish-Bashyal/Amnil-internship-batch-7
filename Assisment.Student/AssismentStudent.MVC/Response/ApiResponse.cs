@@ -1,4 +1,4 @@
-﻿namespace AssismentStudent.MVC;
+﻿namespace AssismentStudent.MVC.Response;
 
 public class ApiResponse<T>
 {

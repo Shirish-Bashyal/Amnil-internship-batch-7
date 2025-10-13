@@ -6,8 +6,10 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace Assisment.Infrastructure.Repo;
 
@@ -60,9 +62,13 @@ public class StudentRepo: IStudentRepo
        
     }
 
-    public async Task<ResponseData<List<Student>>> GetAsync()
+    public async Task<ResponseData<List<Student>>> GetAsync(string? name,string? address)
     {
-        List<Student> data = await _context.Students.ToListAsync();
+
+
+        List<Student> data = await _context.Students.Where(s => (string.IsNullOrEmpty(name) || s.Name.Contains(name)) && (string.IsNullOrEmpty(address) || s.Address.Contains(address))).ToListAsync(); 
+
+        //List<Student> data = await _context.Students.ToListAsync();
 
         ResponseData<List<Student>> response = new ResponseData<List<Student>>();
 

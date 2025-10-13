@@ -9,6 +9,12 @@ namespace AssismentStudent.MVC
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
+            builder.Services.AddHttpClient("StudentAPI", client =>
+            {
+                client.BaseAddress = new Uri("https://localhost:7056/api/");
+                client.DefaultRequestHeaders.Add("X-Api-Key", "MySecretApiKey");
+            });
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -27,7 +33,7 @@ namespace AssismentStudent.MVC
             app.MapStaticAssets();
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}")
+                pattern: "{controller=student}/{action=Index}/{id?}")
                 .WithStaticAssets();
 
             app.Run();

@@ -19,7 +19,7 @@ public interface IStudentService
     Task<ResponseData<StudentDTO>> GetStudentByIdAsync(int id);
 
    
-    Task<ResponseData<List<StudentDTO>>> GetAsync();
+    Task<ResponseData<List<StudentDTO>>> GetAsync(string? name,string? address);
 
     
     Task<ResponseData<StudentDTO>> UpdateAsync(int id, StudentDTO dto);

@@ -15,7 +15,7 @@ public interface IStudentRepo
 
     Task<Student> GetStudentByIdAsync(int id);
 
-    Task<ResponseData<List<Student>>> GetAsync();
+    Task<ResponseData<List<Student>>> GetAsync(string? name,string? address);
 
     Task<ResponseData> UpdateAsync( Student author);
 

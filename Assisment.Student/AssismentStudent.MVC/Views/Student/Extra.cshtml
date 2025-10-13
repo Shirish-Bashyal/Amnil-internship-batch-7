@@ -1,0 +1,219 @@
+﻿<!--  FORM -->
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <h5 class="card-title mb-3">Add New Student</h5>
+
+        <form id="studentForm">
+            <div class="row g-3 align-items-center">
+                <div class="col-md-3">
+                    <input type="text" name="Name" class="form-control nametxt" placeholder="Full Name" required />
+                </div>
+                <div class="col-md-3">
+                    <input type="text" name="Email" class="form-control emailtxt" placeholder="Email" required />
+                </div>
+                <div class="col-md-3">
+                    <input type="text" name="Address" class="form-control addresstxt" placeholder="Address" required />
+                </div>
+                <div class="col-md-2">
+                    <input type="text" name="Gender" class="form-control gendertxt" placeholder="Gender" required />
+                </div>
+                <input type="hidden" id="hdn" class="form-control" />
+                <div class="col-md-1">
+                    <button type="button" class="btn btn-primary w-100 AddBtn">Add</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+
+<!--  display -->
+<h2 class="mb-3">Student List</h2>
+
+<table class="table table-bordered table-striped align-middle text-center">
+    <thead class="table-light">
+        <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Address</th>
+            <th>Gender</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody class="tbody">
+    </tbody>
+</table>
+
+@section Scripts {
+
+    <script>
+
+          $(document).ready(function(){
+              loaddata();
+
+          });
+
+         $(document).on('click','.btndelete',function(){
+             var Id=$(this).data('id');
+
+               Swal.fire({
+                    title: "Are you sure?",
+                    text: "You won't be able to revert this!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes, delete it!"
+                     }).then((result) => {
+                               if (result.isConfirmed) {
+
+                                   $.ajax({
+                                           method: 'get',
+                                           contentType: 'application/json; charset=utf-8',
+                                           url: '@Url.Action("Delete", "Student")?id=' + Id,
+                                           success: function (respo)
+                                            {
+                                                loaddata();
+                                                Swal.fire({
+                                                title: "Deleted!",
+                                                text: "Your data has been deleted.",
+                                                icon: "success"
+                                                });
+                                            }, error: function ()
+                                            {
+
+                                             }
+                                       });
+                               }
+                     });
+              });
+
+         $(document).on('click','.AddBtn',function(e){
+                 e.preventDefault();
+
+                 var studentData = {
+                     Id: $('#hdn').val() || 0,
+                     Name: $('.nametxt').val(),
+                     Email: $('.emailtxt').val(),
+                     Address: $('.addresstxt').val(),
+                     Gender: $('.gendertxt').val()
+                 };
+
+                 if (parseInt(studentData.Id)==0){
+
+                      $.ajax({
+                     url: '@Url.Action("Create", "Student")',
+                     method: 'POST',
+                     contentType: 'application/json; charset=utf-8',
+                     data: JSON.stringify(studentData),
+                     success: function(res){
+
+                             Swal.fire("Success!", "Sucessfully Created", "success");
+                             clear();
+                             loaddata();
+
+                     },
+                     error: function(err){
+                         Swal.fire("Error!", "Creation failed.", "error");
+                         console.log(err);
+                     }
+                   });
+
+
+                 }else{
+
+                     $.ajax({
+                         url: '@Url.Action("Update", "Student")',
+                         method: 'POST',
+                         contentType: 'application/json; charset=utf-8',
+                         data: JSON.stringify(studentData),
+                         success: function (res) {
+                             if (res.success) {
+                                 Swal.fire("Success!",  "Student Updated", "success");
+
+                                  clear();
+                                  loaddata();
+
+                             } else {
+                                 Swal.fire("Error!", res.message||"Update failed", "error");
+                             }
+                         },
+                         error: function (err) {
+                             Swal.fire("Error!", "Update request failed.", "error");
+                             console.log(err);
+                         }
+                     });
+                 }
+
+
+         });
+
+
+         $(document).on('click','.editbtn',function(){
+
+                 var id = $(this).data('id');
+                 $('#hdn').val(id);
+
+
+                var Id= $('#hdn').val();
+                  $.ajax({
+                           method: 'get',
+                           contentType: 'application/json; charset=utf-8',
+                           url: '@Url.Action("GetById", "Student")?id=' + Id,
+                           success: function (respo)
+                           {
+                               console.log(respo);
+                                 $('.nametxt').val(respo.data.name);
+                                 $('.emailtxt').val(respo.data.email);
+                                 $('.addresstxt').val(respo.data.address);
+                                 $('.gendertxt').val(respo.data.gender);
+
+                           }, error: function ()
+                           {
+                                Swal.fire("Error!", "Could not fetch student data.", "error");
+                           }
+                      });
+
+                 });
+
+                         function clear() {
+                             $('#hdn').val('');
+                             $('.nametxt').val('');
+                             $('.emailtxt').val('');
+                             $('.addresstxt').val('');
+                             $('.gendertxt').val('');
+                         }
+
+
+
+
+        function loaddata(){
+             $.ajax({
+                            method: 'get',
+                            contentType: 'application/json; charset=utf-8',
+                            url: '@Url.Action("Get", "Student")',
+                            success: function (respo) {
+                                  if (respo.success) {
+
+                                       $('.tbody').html(respo.message);
+
+                                  } else {
+                                      Swal.fire("Error!", respo.message, "error");
+                                  }
+                            }, error: function ()
+                            {
+                                 Swal.fire("Error!", "Could not fetch student data.", "error");
+                            }
+                       });
+
+
+        }
+
+    </script>
+
+
+
+}

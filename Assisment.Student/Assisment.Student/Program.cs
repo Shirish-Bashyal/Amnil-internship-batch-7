@@ -57,6 +57,7 @@ namespace Assisment.Student
            
             builder.Services.AddEndpointsApiExplorer();
             //builder.Services.AddSwaggerGen();
+            builder.Services.AddScoped<IReportService, ReportRenderingService>();
             builder.Services.AddScoped<ApiKeyFilter>();
             builder.Services.AddScoped<IStudentService, StudentService>();
 

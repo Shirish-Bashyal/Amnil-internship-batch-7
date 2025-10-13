@@ -1,9 +1,12 @@
-﻿using Assisment.Contract;
+﻿using Assisment.Application.Service;
+using Assisment.Contract;
 using Assisment.Contract.Dto;
 using Assisment.Contract.DTOs;
 using Assisment.Contract.Interface.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
+using System.Xml.Linq;
 
 namespace Assisment.Student.Controllers;
 
@@ -13,9 +16,11 @@ namespace Assisment.Student.Controllers;
 public class StudentController : ControllerBase
 {
     private readonly IStudentService _service;//private
-    public StudentController(IStudentService service)
+    private readonly IReportService _rservice;//private
+    public StudentController(IStudentService service,IReportService rservice )
     {
         _service = service;
+        _rservice = rservice;
     }
 
     /// <summary>
@@ -64,11 +69,11 @@ public class StudentController : ControllerBase
     
     [HttpGet]
     //[Authorize]
-    public async Task<ActionResult<ResponseData<List<StudentDTO>>>> GetAsync()
+    public async Task<ActionResult<ResponseData<List<StudentDTO>>>> GetAsync(string? name, string? address)
     {
-        ResponseData<List<StudentDTO>> result =await _service.GetAsync();
+        ResponseData<List<StudentDTO>> result =await _service.GetAsync(name,address);
         if (result.Success)
-            return Ok(result);      // 200
+            return Ok(result);    
 
         return BadRequest(result);
     }
@@ -109,7 +114,7 @@ public class StudentController : ControllerBase
         return BadRequest(result);
     }
 
-    [HttpGet("paginated")]
+    [HttpGet]
     
     public async Task<ActionResult<PaginatedResponse<StudentDTO>>> GetPaginatedAsync(
     [FromQuery] int pageNumber = 1,
@@ -122,4 +127,18 @@ public class StudentController : ControllerBase
 
         return BadRequest(result);
     }
+
+
+    [HttpGet]
+    
+    public async Task<IActionResult> GeneratePdf()
+    {
+        var name = "";
+        var address = "";
+        ResponseData<List<StudentDTO>> result = await _service.GetAsync(name, address);
+
+        var document = await _rservice.ReportRenderingAsync(result);
+        return File(document, "application/pdf", "StudentReport.pdf");
+    }
+
 }

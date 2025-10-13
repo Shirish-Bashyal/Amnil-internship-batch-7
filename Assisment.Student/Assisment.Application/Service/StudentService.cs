@@ -147,13 +147,13 @@ public class StudentService : IStudentService
     /// Accepts a page number and fetches the corresponding page of students.
     /// Returns a ResponseData containing a list of StudentDTOs, success status, and message.
     /// </summary>
-    public async Task<ResponseData<List<StudentDTO>>> GetAsync()
+    public async Task<ResponseData<List<StudentDTO>>> GetAsync(string? name, string? address)
     {
 
 
         ResponseData<List<StudentDTO>> response = new ResponseData<List<StudentDTO>>();
 
-        ResponseData<List<Student>> data = await _repo.GetAsync();
+        ResponseData<List<Student>> data = await _repo.GetAsync(name,address);
 
         if (data.Data == null)
         {
@@ -296,6 +296,7 @@ public class StudentService : IStudentService
             .Take(pageSize)
             .Select(s => new StudentDTO
             {
+                Id=s.Id,
                 Name = s.Name,
                 Gender = s.Gender,
                 Email = s.Email,
