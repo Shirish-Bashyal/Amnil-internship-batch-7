@@ -119,8 +119,16 @@ public class StudentController : Controller
     [HttpPost]
     public IActionResult Create(CreateStudentViewModel model)
     {
+        if (!ModelState.IsValid)
+        {
+            // Return the view with the model to show validation errors
+            return View(model);
+        }
+
         try
         {
+            
+
             string data = JsonConvert.SerializeObject(model);
             StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
 
@@ -128,14 +136,17 @@ public class StudentController : Controller
 
             if (respone.IsSuccessStatusCode)
             {
-               
+
+                TempData["Message"] = "Student created successfully!";
+                TempData["MessageType"] = "success";
                 return RedirectToAction("Index");
 
             }
         }
         catch (Exception ex)
         {
-           
+            TempData["Message"] = "Error: " + ex.Message;
+            TempData["MessageType"] = "error";
             throw;
         }
 
@@ -186,7 +197,8 @@ public class StudentController : Controller
 
             if (respone.IsSuccessStatusCode)
             {
-                
+                TempData["Message"] = "Student deleted successfully!";
+                TempData["MessageType"] = "success";
                 return RedirectToAction("Index");
 
             }
@@ -194,7 +206,8 @@ public class StudentController : Controller
         }
         catch (Exception ex)
         {
-            
+            TempData["Message"] = "Error: " + ex.Message;
+            TempData["MessageType"] = "error";
             throw;
         }
     }
@@ -256,6 +269,8 @@ public class StudentController : Controller
 
             if (respone.IsSuccessStatusCode)
             {
+                TempData["Message"] = "Student edited successfully!";
+                TempData["MessageType"] = "success";
                 return RedirectToAction("Index");
 
             }
@@ -263,7 +278,8 @@ public class StudentController : Controller
         }
         catch (Exception ex)
         {
-
+            TempData["Message"] = "Error: " + ex.Message;
+            TempData["MessageType"] = "error";
             throw;
         }
 
