@@ -1,0 +1,186 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\Subes\\OneDrive\\Desktop\\Subesh\\internship-batch-7\\Attandance\\AttandanceManagementSystem\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{11BB9FAC-E89B-4D2E-9698-D334C6F99D09}|..\\FrontEnd\\FrontEnd.csproj|c:\\users\\subes\\onedrive\\desktop\\subesh\\internship-batch-7\\attandance\\frontend\\controllers\\attendacecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{11BB9FAC-E89B-4D2E-9698-D334C6F99D09}|..\\FrontEnd\\FrontEnd.csproj|c:\\users\\subes\\onedrive\\desktop\\subesh\\internship-batch-7\\attandance\\frontend\\controllers\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{11BB9FAC-E89B-4D2E-9698-D334C6F99D09}|..\\FrontEnd\\FrontEnd.csproj|c:\\users\\subes\\onedrive\\desktop\\subesh\\internship-batch-7\\attandance\\frontend\\views\\user\\pagedview.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{11BB9FAC-E89B-4D2E-9698-D334C6F99D09}|..\\FrontEnd\\FrontEnd.csproj|c:\\users\\subes\\onedrive\\desktop\\subesh\\internship-batch-7\\attandance\\frontend\\views\\attendace\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5CAE7778-BBF3-489B-A677-F8EF6593CF39}|AttandanceManagementSystem.csproj|c:\\users\\subes\\onedrive\\desktop\\subesh\\internship-batch-7\\attandance\\attandancemanagementsystem\\controllers\\attendancescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5CAE7778-BBF3-489B-A677-F8EF6593CF39}|AttandanceManagementSystem.csproj|solutionrelative:controllers\\attendancescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{11BB9FAC-E89B-4D2E-9698-D334C6F99D09}|..\\FrontEnd\\FrontEnd.csproj|c:\\users\\subes\\onedrive\\desktop\\subesh\\internship-batch-7\\attandance\\frontend\\views\\user\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5CAE7778-BBF3-489B-A677-F8EF6593CF39}|AttandanceManagementSystem.csproj|c:\\users\\subes\\onedrive\\desktop\\subesh\\internship-batch-7\\attandance\\attandancemanagementsystem\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5CAE7778-BBF3-489B-A677-F8EF6593CF39}|AttandanceManagementSystem.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6C935113-1F3E-4E88-B717-53FD59C5B7DF}|..\\Domain\\Domain.csproj|c:\\users\\subes\\onedrive\\desktop\\subesh\\internship-batch-7\\attandance\\domain\\dtos\\attandancedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6C935113-1F3E-4E88-B717-53FD59C5B7DF}|..\\Domain\\Domain.csproj|c:\\users\\subes\\onedrive\\desktop\\subesh\\internship-batch-7\\attandance\\domain\\dtos\\userdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6C935113-1F3E-4E88-B717-53FD59C5B7DF}|..\\Domain\\Domain.csproj|c:\\users\\subes\\onedrive\\desktop\\subesh\\internship-batch-7\\attandance\\domain\\entities\\application\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 3,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "UserController.cs",
+              "DocumentMoniker": "C:\\Users\\Subes\\OneDrive\\Desktop\\Subesh\\internship-batch-7\\Attandance\\FrontEnd\\Controllers\\UserController.cs",
+              "RelativeDocumentMoniker": "..\\FrontEnd\\Controllers\\UserController.cs",
+              "ToolTip": "C:\\Users\\Subes\\OneDrive\\Desktop\\Subesh\\internship-batch-7\\Attandance\\FrontEnd\\Controllers\\UserController.cs",
+              "RelativeToolTip": "..\\FrontEnd\\Controllers\\UserController.cs",
+              "ViewState": "AgIAADwAAAAAAAAAAAAgwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-10T08:36:25.994Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Create.cshtml",
+              "DocumentMoniker": "C:\\Users\\Subes\\OneDrive\\Desktop\\Subesh\\internship-batch-7\\Attandance\\FrontEnd\\Views\\Attendace\\Create.cshtml",
+              "RelativeDocumentMoniker": "..\\FrontEnd\\Views\\Attendace\\Create.cshtml",
+              "ToolTip": "C:\\Users\\Subes\\OneDrive\\Desktop\\Subesh\\internship-batch-7\\Attandance\\FrontEnd\\Views\\Attendace\\Create.cshtml",
+              "RelativeToolTip": "..\\FrontEnd\\Views\\Attendace\\Create.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-10-10T08:35:36.515Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "AttendaceController.cs",
+              "DocumentMoniker": "C:\\Users\\Subes\\OneDrive\\Desktop\\Subesh\\internship-batch-7\\Attandance\\FrontEnd\\Controllers\\AttendaceController.cs",
+              "RelativeDocumentMoniker": "..\\FrontEnd\\Controllers\\AttendaceController.cs",
+              "ToolTip": "C:\\Users\\Subes\\OneDrive\\Desktop\\Subesh\\internship-batch-7\\Attandance\\FrontEnd\\Controllers\\AttendaceController.cs*",
+              "RelativeToolTip": "..\\FrontEnd\\Controllers\\AttendaceController.cs*",
+              "ViewState": "AgIAAC4AAAAAAAAAAAA3wH8AAAAMAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-10T08:22:47.391Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "PagedView.cshtml",
+              "DocumentMoniker": "C:\\Users\\Subes\\OneDrive\\Desktop\\Subesh\\internship-batch-7\\Attandance\\FrontEnd\\Views\\User\\PagedView.cshtml",
+              "RelativeDocumentMoniker": "..\\FrontEnd\\Views\\User\\PagedView.cshtml",
+              "ToolTip": "C:\\Users\\Subes\\OneDrive\\Desktop\\Subesh\\internship-batch-7\\Attandance\\FrontEnd\\Views\\User\\PagedView.cshtml",
+              "RelativeToolTip": "..\\FrontEnd\\Views\\User\\PagedView.cshtml",
+              "ViewState": "AgIAACMAAAAAAAAAAAAwwGQAAAALAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-10-10T08:27:06.568Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\Subes\\OneDrive\\Desktop\\Subesh\\internship-batch-7\\Attandance\\FrontEnd\\Views\\User\\Index.cshtml",
+              "RelativeDocumentMoniker": "..\\FrontEnd\\Views\\User\\Index.cshtml",
+              "ToolTip": "C:\\Users\\Subes\\OneDrive\\Desktop\\Subesh\\internship-batch-7\\Attandance\\FrontEnd\\Views\\User\\Index.cshtml",
+              "RelativeToolTip": "..\\FrontEnd\\Views\\User\\Index.cshtml",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAAAFQAAAAbAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-10-10T08:23:09.722Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\Subes\\OneDrive\\Desktop\\Subesh\\internship-batch-7\\Attandance\\AttandanceManagementSystem\\Program.cs",
+              "RelativeDocumentMoniker": "Program.cs",
+              "ToolTip": "C:\\Users\\Subes\\OneDrive\\Desktop\\Subesh\\internship-batch-7\\Attandance\\AttandanceManagementSystem\\Program.cs",
+              "RelativeToolTip": "Program.cs",
+              "ViewState": "AgIAADUAAAAAAAAAAAAAwD0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-10T08:20:30.11Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "AttandanceDto.cs",
+              "DocumentMoniker": "C:\\Users\\Subes\\OneDrive\\Desktop\\Subesh\\internship-batch-7\\Attandance\\Domain\\Dtos\\AttandanceDto.cs",
+              "RelativeDocumentMoniker": "..\\Domain\\Dtos\\AttandanceDto.cs",
+              "ToolTip": "C:\\Users\\Subes\\OneDrive\\Desktop\\Subesh\\internship-batch-7\\Attandance\\Domain\\Dtos\\AttandanceDto.cs",
+              "RelativeToolTip": "..\\Domain\\Dtos\\AttandanceDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-10T08:19:17.935Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "User.cs",
+              "DocumentMoniker": "C:\\Users\\Subes\\OneDrive\\Desktop\\Subesh\\internship-batch-7\\Attandance\\Domain\\Entities\\Application\\User.cs",
+              "RelativeDocumentMoniker": "..\\Domain\\Entities\\Application\\User.cs",
+              "ToolTip": "C:\\Users\\Subes\\OneDrive\\Desktop\\Subesh\\internship-batch-7\\Attandance\\Domain\\Entities\\Application\\User.cs",
+              "RelativeToolTip": "..\\Domain\\Entities\\Application\\User.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-10T08:06:56.363Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "UserDto.cs",
+              "DocumentMoniker": "C:\\Users\\Subes\\OneDrive\\Desktop\\Subesh\\internship-batch-7\\Attandance\\Domain\\Dtos\\UserDto.cs",
+              "RelativeDocumentMoniker": "..\\Domain\\Dtos\\UserDto.cs",
+              "ToolTip": "C:\\Users\\Subes\\OneDrive\\Desktop\\Subesh\\internship-batch-7\\Attandance\\Domain\\Dtos\\UserDto.cs",
+              "RelativeToolTip": "..\\Domain\\Dtos\\UserDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-10T08:06:12.022Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "AttendancesController.cs",
+              "DocumentMoniker": "C:\\Users\\Subes\\OneDrive\\Desktop\\Subesh\\internship-batch-7\\Attandance\\AttandanceManagementSystem\\Controllers\\AttendancesController.cs",
+              "RelativeDocumentMoniker": "Controllers\\AttendancesController.cs",
+              "ToolTip": "C:\\Users\\Subes\\OneDrive\\Desktop\\Subesh\\internship-batch-7\\Attandance\\AttandanceManagementSystem\\Controllers\\AttendancesController.cs",
+              "RelativeToolTip": "Controllers\\AttendancesController.cs",
+              "ViewState": "AgIAAEQAAAAAAAAAAAAswFYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-10T08:01:07.778Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

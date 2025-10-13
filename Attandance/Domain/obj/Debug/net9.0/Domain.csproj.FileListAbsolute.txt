@@ -1,0 +1,15 @@
+C:\Users\Subes\OneDrive\Desktop\Subesh\internship-batch-7\Attandance\Domain\bin\Debug\net9.0\Domain.deps.json
+C:\Users\Subes\OneDrive\Desktop\Subesh\internship-batch-7\Attandance\Domain\bin\Debug\net9.0\Domain.runtimeconfig.json
+C:\Users\Subes\OneDrive\Desktop\Subesh\internship-batch-7\Attandance\Domain\bin\Debug\net9.0\Domain.dll
+C:\Users\Subes\OneDrive\Desktop\Subesh\internship-batch-7\Attandance\Domain\bin\Debug\net9.0\Domain.pdb
+C:\Users\Subes\OneDrive\Desktop\Subesh\internship-batch-7\Attandance\Domain\obj\Debug\net9.0\Domain.csproj.AssemblyReference.cache
+C:\Users\Subes\OneDrive\Desktop\Subesh\internship-batch-7\Attandance\Domain\obj\Debug\net9.0\Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Subes\OneDrive\Desktop\Subesh\internship-batch-7\Attandance\Domain\obj\Debug\net9.0\Domain.AssemblyInfoInputs.cache
+C:\Users\Subes\OneDrive\Desktop\Subesh\internship-batch-7\Attandance\Domain\obj\Debug\net9.0\Domain.AssemblyInfo.cs
+C:\Users\Subes\OneDrive\Desktop\Subesh\internship-batch-7\Attandance\Domain\obj\Debug\net9.0\Domain.csproj.CoreCompileInputs.cache
+C:\Users\Subes\OneDrive\Desktop\Subesh\internship-batch-7\Attandance\Domain\obj\Debug\net9.0\Domain.sourcelink.json
+C:\Users\Subes\OneDrive\Desktop\Subesh\internship-batch-7\Attandance\Domain\obj\Debug\net9.0\Domain.dll
+C:\Users\Subes\OneDrive\Desktop\Subesh\internship-batch-7\Attandance\Domain\obj\Debug\net9.0\refint\Domain.dll
+C:\Users\Subes\OneDrive\Desktop\Subesh\internship-batch-7\Attandance\Domain\obj\Debug\net9.0\Domain.pdb
+C:\Users\Subes\OneDrive\Desktop\Subesh\internship-batch-7\Attandance\Domain\obj\Debug\net9.0\Domain.genruntimeconfig.cache
+C:\Users\Subes\OneDrive\Desktop\Subesh\internship-batch-7\Attandance\Domain\obj\Debug\net9.0\ref\Domain.dll

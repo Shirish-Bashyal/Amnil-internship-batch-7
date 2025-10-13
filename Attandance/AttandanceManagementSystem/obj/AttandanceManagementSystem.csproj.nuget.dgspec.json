@@ -1,0 +1,478 @@
+{
+  "format": 1,
+  "restore": {
+    "C:\\Users\\Subes\\OneDrive\\Desktop\\Subesh\\internship-batch-7\\Attandance\\AttandanceManagementSystem\\AttandanceManagementSystem.csproj": {}
+  },
+  "projects": {
+    "C:\\Users\\Subes\\OneDrive\\Desktop\\Subesh\\internship-batch-7\\Attandance\\Application\\Application.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\Subes\\OneDrive\\Desktop\\Subesh\\internship-batch-7\\Attandance\\Application\\Application.csproj",
+        "projectName": "Application",
+        "projectPath": "C:\\Users\\Subes\\OneDrive\\Desktop\\Subesh\\internship-batch-7\\Attandance\\Application\\Application.csproj",
+        "packagesPath": "C:\\Users\\Subes\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Subes\\OneDrive\\Desktop\\Subesh\\internship-batch-7\\Attandance\\Application\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\Subes\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {
+              "C:\\Users\\Subes\\OneDrive\\Desktop\\Subesh\\internship-batch-7\\Attandance\\Contract\\Contract.csproj": {
+                "projectPath": "C:\\Users\\Subes\\OneDrive\\Desktop\\Subesh\\internship-batch-7\\Attandance\\Contract\\Contract.csproj"
+              },
+              "C:\\Users\\Subes\\OneDrive\\Desktop\\Subesh\\internship-batch-7\\Attandance\\Domain\\Domain.csproj": {
+                "projectPath": "C:\\Users\\Subes\\OneDrive\\Desktop\\Subesh\\internship-batch-7\\Attandance\\Domain\\Domain.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.300"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "dependencies": {
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[9.0.9, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[9.0.9, )"
+            },
+            "Microsoft.EntityFrameworkCore.Sqlite": {
+              "target": "Package",
+              "version": "[9.0.9, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[9.0.9, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.304/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\Subes\\OneDrive\\Desktop\\Subesh\\internship-batch-7\\Attandance\\AttandanceManagementSystem\\AttandanceManagementSystem.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\Subes\\OneDrive\\Desktop\\Subesh\\internship-batch-7\\Attandance\\AttandanceManagementSystem\\AttandanceManagementSystem.csproj",
+        "projectName": "AttandanceManagementSystem",
+        "projectPath": "C:\\Users\\Subes\\OneDrive\\Desktop\\Subesh\\internship-batch-7\\Attandance\\AttandanceManagementSystem\\AttandanceManagementSystem.csproj",
+        "packagesPath": "C:\\Users\\Subes\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Subes\\OneDrive\\Desktop\\Subesh\\internship-batch-7\\Attandance\\AttandanceManagementSystem\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\Subes\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {
+              "C:\\Users\\Subes\\OneDrive\\Desktop\\Subesh\\internship-batch-7\\Attandance\\Application\\Application.csproj": {
+                "projectPath": "C:\\Users\\Subes\\OneDrive\\Desktop\\Subesh\\internship-batch-7\\Attandance\\Application\\Application.csproj"
+              },
+              "C:\\Users\\Subes\\OneDrive\\Desktop\\Subesh\\internship-batch-7\\Attandance\\Contract\\Contract.csproj": {
+                "projectPath": "C:\\Users\\Subes\\OneDrive\\Desktop\\Subesh\\internship-batch-7\\Attandance\\Contract\\Contract.csproj"
+              },
+              "C:\\Users\\Subes\\OneDrive\\Desktop\\Subesh\\internship-batch-7\\Attandance\\Domain\\Domain.csproj": {
+                "projectPath": "C:\\Users\\Subes\\OneDrive\\Desktop\\Subesh\\internship-batch-7\\Attandance\\Domain\\Domain.csproj"
+              },
+              "C:\\Users\\Subes\\OneDrive\\Desktop\\Subesh\\internship-batch-7\\Attandance\\Infra\\Infra.csproj": {
+                "projectPath": "C:\\Users\\Subes\\OneDrive\\Desktop\\Subesh\\internship-batch-7\\Attandance\\Infra\\Infra.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.300"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "dependencies": {
+            "Microsoft.AspNetCore.Mvc.Core": {
+              "target": "Package",
+              "version": "[2.3.0, )"
+            },
+            "Microsoft.AspNetCore.OpenApi": {
+              "target": "Package",
+              "version": "[9.0.8, )"
+            },
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[9.0.9, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[9.0.9, )"
+            },
+            "Microsoft.EntityFrameworkCore.Sqlite": {
+              "target": "Package",
+              "version": "[9.0.9, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[9.0.9, )"
+            },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.4, )"
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[9.0.6, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.304/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\Subes\\OneDrive\\Desktop\\Subesh\\internship-batch-7\\Attandance\\Contract\\Contract.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\Subes\\OneDrive\\Desktop\\Subesh\\internship-batch-7\\Attandance\\Contract\\Contract.csproj",
+        "projectName": "Contract",
+        "projectPath": "C:\\Users\\Subes\\OneDrive\\Desktop\\Subesh\\internship-batch-7\\Attandance\\Contract\\Contract.csproj",
+        "packagesPath": "C:\\Users\\Subes\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Subes\\OneDrive\\Desktop\\Subesh\\internship-batch-7\\Attandance\\Contract\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\Subes\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {
+              "C:\\Users\\Subes\\OneDrive\\Desktop\\Subesh\\internship-batch-7\\Attandance\\Domain\\Domain.csproj": {
+                "projectPath": "C:\\Users\\Subes\\OneDrive\\Desktop\\Subesh\\internship-batch-7\\Attandance\\Domain\\Domain.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.300"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.304/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\Subes\\OneDrive\\Desktop\\Subesh\\internship-batch-7\\Attandance\\Domain\\Domain.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\Subes\\OneDrive\\Desktop\\Subesh\\internship-batch-7\\Attandance\\Domain\\Domain.csproj",
+        "projectName": "Domain",
+        "projectPath": "C:\\Users\\Subes\\OneDrive\\Desktop\\Subesh\\internship-batch-7\\Attandance\\Domain\\Domain.csproj",
+        "packagesPath": "C:\\Users\\Subes\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Subes\\OneDrive\\Desktop\\Subesh\\internship-batch-7\\Attandance\\Domain\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\Subes\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.300"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "dependencies": {
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[9.0.9, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[9.0.9, )"
+            },
+            "Microsoft.EntityFrameworkCore.Sqlite": {
+              "target": "Package",
+              "version": "[9.0.9, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[9.0.9, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.304/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\Subes\\OneDrive\\Desktop\\Subesh\\internship-batch-7\\Attandance\\Infra\\Infra.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\Subes\\OneDrive\\Desktop\\Subesh\\internship-batch-7\\Attandance\\Infra\\Infra.csproj",
+        "projectName": "Infra",
+        "projectPath": "C:\\Users\\Subes\\OneDrive\\Desktop\\Subesh\\internship-batch-7\\Attandance\\Infra\\Infra.csproj",
+        "packagesPath": "C:\\Users\\Subes\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Subes\\OneDrive\\Desktop\\Subesh\\internship-batch-7\\Attandance\\Infra\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\Subes\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {
+              "C:\\Users\\Subes\\OneDrive\\Desktop\\Subesh\\internship-batch-7\\Attandance\\Application\\Application.csproj": {
+                "projectPath": "C:\\Users\\Subes\\OneDrive\\Desktop\\Subesh\\internship-batch-7\\Attandance\\Application\\Application.csproj"
+              },
+              "C:\\Users\\Subes\\OneDrive\\Desktop\\Subesh\\internship-batch-7\\Attandance\\Contract\\Contract.csproj": {
+                "projectPath": "C:\\Users\\Subes\\OneDrive\\Desktop\\Subesh\\internship-batch-7\\Attandance\\Contract\\Contract.csproj"
+              },
+              "C:\\Users\\Subes\\OneDrive\\Desktop\\Subesh\\internship-batch-7\\Attandance\\Domain\\Domain.csproj": {
+                "projectPath": "C:\\Users\\Subes\\OneDrive\\Desktop\\Subesh\\internship-batch-7\\Attandance\\Domain\\Domain.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.300"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "dependencies": {
+            "Microsoft.AspNetCore.Mvc.Core": {
+              "target": "Package",
+              "version": "[2.3.0, )"
+            },
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[9.0.9, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[9.0.9, )"
+            },
+            "Microsoft.EntityFrameworkCore.Sqlite": {
+              "target": "Package",
+              "version": "[9.0.9, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[9.0.9, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.304/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
