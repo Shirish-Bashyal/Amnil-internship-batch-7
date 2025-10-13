@@ -12,5 +12,5 @@ public class AttendanceDto
     public TimeOnly? CheckInTime { get; set; }
     public TimeOnly? CheckOutTime { get; set; }
 
-    public string Status { get; set; }
+    public string Status { get; set; } = string.Empty;
 }

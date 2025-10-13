@@ -1,5 +1,4 @@
-﻿using System.Text;
-using AttendanceManagementSystem.Shared.Dtos;
+﻿using AttendanceManagementSystem.Shared.Dtos;
 using AttendanceManagementSystem.Shared.Dtos.User;
 using AttendanceManagementSystem.Web.Models;
 using ClosedXML.Excel;
@@ -17,19 +16,18 @@ public class UserController : Controller
     }
 
     /// <summary>
-    ///
+    /// returns create view
     /// </summary>
-    /// <returns></returns>
+
     public IActionResult Create()
     {
         return View();
     }
 
     /// <summary>
-    ///
+    /// adds a new user
     /// </summary>
-    /// <param name="user"></param>
-    /// <returns></returns>
+
     [HttpPost]
     public async Task<IActionResult> Create(UserDto user)
     {
@@ -53,10 +51,9 @@ public class UserController : Controller
     }
 
     /// <summary>
-    ///
+    /// exports excelsheet containing all user details
     /// </summary>
-    /// <param name="searchTerm"></param>
-    /// <returns></returns>
+
     [HttpGet]
     public async Task<IActionResult> ExportToExcel()
     {
@@ -111,9 +108,9 @@ public class UserController : Controller
     }
 
     /// <summary>
-    ///
+    ///fetches user based on given filters
     /// </summary>
-    /// <returns></returns>
+
     [HttpGet]
     public async Task<IActionResult> Index(
         string searchString,
@@ -177,13 +174,8 @@ public class UserController : Controller
     }
 
     /// <summary>
-    ///
+    /// Fetches user detail based on id
     /// </summary>
-    /// <param name="id"></param>
-    /// <returns></returns>
-    ///
-
-
 
     private async Task<ServiceResponseDto<GetUserDto>> Details(string id)
     {
@@ -194,7 +186,7 @@ public class UserController : Controller
             return new ServiceResponseDto<GetUserDto>
             {
                 IsSuccess = false,
-                Message = $"API request failed with status code: {response.StatusCode}"
+                Message = "Unable to fetcch User Details"
             };
         }
 
@@ -212,10 +204,9 @@ public class UserController : Controller
     }
 
     /// <summary>
-    ///
+    ///return confirmation view
     /// </summary>
-    /// <param name="id"></param>
-    /// <returns></returns>
+
 
     public async Task<IActionResult> Delete(string id)
     {
@@ -230,10 +221,9 @@ public class UserController : Controller
     }
 
     /// <summary>
-    ///
+    ///deletes a user
     /// </summary>
-    /// <param name="id"></param>
-    /// <returns></returns>
+
 
     [HttpPost, ActionName("Delete")]
     public async Task<IActionResult> DeleteConfirmed(string id)
@@ -257,6 +247,10 @@ public class UserController : Controller
         return RedirectToAction(nameof(Index));
     }
 
+    /// <summary>
+    /// return user detail view to update
+    /// </summary>
+
     public async Task<IActionResult> Update(string id)
     {
         var response = await Details(id);
@@ -274,6 +268,10 @@ public class UserController : Controller
 
         return View(userDetail);
     }
+
+    /// <summary>
+    /// updates the user detail
+    /// </summary>
 
     [HttpPost, ActionName("Update")]
     public async Task<IActionResult> UpdateConfirm(UpdateUserDto model)

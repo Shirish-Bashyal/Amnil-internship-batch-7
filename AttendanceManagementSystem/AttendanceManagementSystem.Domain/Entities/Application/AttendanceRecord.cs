@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 using AttendanceManagementSystem.Domain.Entities.Base;
 
 namespace AttendanceManagementSystem.Domain.Entities.Application;

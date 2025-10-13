@@ -12,5 +12,5 @@ namespace AttendanceManagementSystem.Domain.Entities.Base;
 /// <typeparam name="TPrimaryKey">represents the type of primary key for the entity</typeparam>
 public abstract class Entity<TPrimaryKey>
 {
-    public TPrimaryKey Id { get; set; }
+    public TPrimaryKey Id { get; set; } = default!;
 }
