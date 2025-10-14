@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36414.22 d17.14
+VisualStudioVersion = 17.14.36414.22
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssetManagement.Web", "AssetManagement.Web.csproj", "{75D6BCCC-FF11-47B7-BB97-063831A5DB95}"
 EndProject
@@ -14,6 +14,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssetManagement.Infrastructure", "..\AssetManagement.Infrastructure\AssetManagement.Infrastructure.csproj", "{80F876CC-F809-453A-8885-EB799B86C5FF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssetManagement.Shared", "..\AssetManagement.Shared\AssetManagement.Shared.csproj", "{899F5F19-48F8-44F1-A8F6-A716C6B26E2B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssetManagement.FrontEnd", "..\AssetManagement.FrontEnd\AssetManagement.FrontEnd.csproj", "{1E5CC2C4-6210-4746-9F60-219B0900B634}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{899F5F19-48F8-44F1-A8F6-A716C6B26E2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{899F5F19-48F8-44F1-A8F6-A716C6B26E2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{899F5F19-48F8-44F1-A8F6-A716C6B26E2B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1E5CC2C4-6210-4746-9F60-219B0900B634}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E5CC2C4-6210-4746-9F60-219B0900B634}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E5CC2C4-6210-4746-9F60-219B0900B634}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E5CC2C4-6210-4746-9F60-219B0900B634}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

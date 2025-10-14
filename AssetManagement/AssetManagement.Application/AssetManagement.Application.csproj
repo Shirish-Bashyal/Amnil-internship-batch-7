@@ -14,4 +14,9 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\AssetManagement.Contract\AssetManagement.Contract.csproj" />
+    <ProjectReference Include="..\AssetManagement.Domain\AssetManagement.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

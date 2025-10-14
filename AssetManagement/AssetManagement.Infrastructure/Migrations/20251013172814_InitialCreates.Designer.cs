@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AssetManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251013092648_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20251013172814_InitialCreates")]
+    partial class InitialCreates
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -32,6 +32,12 @@ namespace AssetManagement.Infrastructure.Migrations
                     b.Property<decimal>("Cost")
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("DepartmentId")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Name")
                         .HasMaxLength(100)
                         .HasColumnType("TEXT");
@@ -39,6 +45,9 @@ namespace AssetManagement.Infrastructure.Migrations
                     b.Property<string>("SerialNumber")
                         .IsRequired()
                         .HasMaxLength(150)
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("TagId")
                         .HasColumnType("TEXT");
 
                     b.Property<Guid?>("UserId")
@@ -49,6 +58,9 @@ namespace AssetManagement.Infrastructure.Migrations
                     b.HasIndex("CategoryId");
 
                     b.HasIndex("SerialNumber")
+                        .IsUnique();
+
+                    b.HasIndex("TagId")
                         .IsUnique();
 
                     b.HasIndex("UserId");
@@ -75,10 +87,54 @@ namespace AssetManagement.Infrastructure.Migrations
                     b.ToTable("Categories");
                 });
 
+            modelBuilder.Entity("AssetManagement.Domain.Entity.Application.Department", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("Departments");
+                });
+
+            modelBuilder.Entity("AssetManagement.Domain.Entity.Application.Tag", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool?>("IsActive")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("TagId")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TagId")
+                        .IsUnique();
+
+                    b.ToTable("Tags");
+                });
+
             modelBuilder.Entity("AssetManagement.Domain.Entity.Application.User", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("DepartmentId")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Email")
@@ -92,6 +148,8 @@ namespace AssetManagement.Infrastructure.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("DepartmentId");
 
                     b.HasIndex("Email")
                         .IsUnique();
@@ -107,6 +165,15 @@ namespace AssetManagement.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("AssetManagement.Domain.Entity.Application.Tag", "Tag")
+                        .WithOne("Asset")
+                        .HasForeignKey("AssetManagement.Domain.Entity.Application.Asset", "TagId");
+
+                    b.HasOne("AssetManagement.Domain.Entity.Application.Department", "Department")
+                        .WithMany("Asset")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
                     b.HasOne("AssetManagement.Domain.Entity.Application.User", "User")
                         .WithMany("Assets")
                         .HasForeignKey("UserId")
@@ -114,12 +181,39 @@ namespace AssetManagement.Infrastructure.Migrations
 
                     b.Navigation("Category");
 
+                    b.Navigation("Department");
+
+                    b.Navigation("Tag");
+
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("AssetManagement.Domain.Entity.Application.User", b =>
+                {
+                    b.HasOne("AssetManagement.Domain.Entity.Application.Department", "Department")
+                        .WithMany("User")
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Department");
                 });
 
             modelBuilder.Entity("AssetManagement.Domain.Entity.Application.Category", b =>
                 {
                     b.Navigation("Assets");
+                });
+
+            modelBuilder.Entity("AssetManagement.Domain.Entity.Application.Department", b =>
+                {
+                    b.Navigation("Asset");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("AssetManagement.Domain.Entity.Application.Tag", b =>
+                {
+                    b.Navigation("Asset");
                 });
 
             modelBuilder.Entity("AssetManagement.Domain.Entity.Application.User", b =>

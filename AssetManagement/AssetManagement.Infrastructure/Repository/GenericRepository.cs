@@ -1,4 +1,5 @@
 ﻿using AssetManagement.Contract.Repository;
+using AssetManagement.Domain.Dtos;
 using AssetManagement.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using System;

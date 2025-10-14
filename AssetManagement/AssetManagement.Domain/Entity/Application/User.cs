@@ -11,5 +11,7 @@ public class User: BaseEntity<Guid>
 {
     public required string Name { get; set; }
     public required string Email { get; set; }
+    public Guid DepartmentId { get; set; }
+    public Department Department { get; set; }
     public ICollection<Asset>? Assets { get; set; }
 }

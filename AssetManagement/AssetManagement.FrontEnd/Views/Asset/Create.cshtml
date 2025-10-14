@@ -1,0 +1,28 @@
+﻿@model AssetManagement.Domain.Dtos.AssetDto
+
+<h2>Create Asset</h2>
+<form asp-action="Create" method="post">
+    <div>
+        <label>Name</label>
+        <input asp-for="Name" />
+    </div>
+    <div>
+        <label>SerialNumber</label>
+        <input asp-for="SerialNumber" />
+    </div>
+    <div>
+        <label>CreatedDate</label>
+        <input asp-for="CreatedDate" />
+    </div>
+
+    <div>
+        <label>Cost</label>
+        <input asp-for="Cost" />
+    </div>
+
+    <div>
+        <label>CategoryId</label>
+        <input asp-for="CategoryId" />
+    </div>
+    <button type="submit">Create</button>
+</form>

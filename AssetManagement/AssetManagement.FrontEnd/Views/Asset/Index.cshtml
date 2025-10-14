@@ -1,0 +1,21 @@
+﻿@model List<AssetManagement.Domain.Dtos.AssetDto>
+
+<h2 class="mb-4">Assets</h2>
+<a href="/Asset/Create" class="btn btn-primary mb-3">Create New Asset</a>
+
+<div class="row">
+    @foreach (var asset in Model)
+    {
+        <div class="col-md-4 col-sm-5 col-lg-3 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">@asset.Name</h5>
+                    <p class="card-text">SN Number: @asset.SerialNumber</p>
+                    <p class="card-text">Category ID: @asset.CategoryId</p>
+                    <p class="card-text">Cost: NPR @asset.Cost</p>
+                    <p class="card-footer">Created Date: @asset.CreatedDate.ToString()</p>
+                </div>
+            </div>
+        </div>
+    }
+</div>
