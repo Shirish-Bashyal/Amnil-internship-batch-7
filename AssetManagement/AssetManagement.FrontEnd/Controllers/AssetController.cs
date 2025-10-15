@@ -1,4 +1,5 @@
 ﻿using AssetManagement.Domain.Dtos;
+using AssetManagement.Domain.Dtos.AssetDto;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Http;
 using System.Text;
@@ -14,8 +15,6 @@ public class AssetController : Controller
     {
         _httpClientFactory = httpClientFactory;
     }
-
-    // GET: /Asset
     public async Task<IActionResult> Index()
     {
         var client = _httpClientFactory.CreateClient("AssetApi");
@@ -33,10 +32,8 @@ public class AssetController : Controller
         return View(assets); 
     }
 
-    // GET: /Asset/Create
     public IActionResult Create() => View();
 
-    // POST: /Asset/Create
     [HttpPost]
     public async Task<IActionResult> Create(AssetDto assetDto)
     {

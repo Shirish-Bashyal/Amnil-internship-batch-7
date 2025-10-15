@@ -15,7 +15,6 @@ public class CategoryController : Controller
         _httpClientFactory = httpClientFactory;
     }
 
-    // GET: /Category
     public async Task<IActionResult> Index()
     {
         var client = _httpClientFactory.CreateClient("AssetApi");
@@ -30,10 +29,8 @@ public class CategoryController : Controller
         return View(categories);
     }
 
-    // GET: /Category/Create
     public IActionResult Create() => View();
 
-    // POST: /Category/Create
     [HttpPost]
     public async Task<IActionResult> Create(CategoryDto categoryDto)
     {

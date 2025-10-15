@@ -1,5 +1,5 @@
 ﻿using AssetManagement.Contract.Service;
-using AssetManagement.Domain.Dtos;
+using AssetManagement.Domain.Dtos.AssetDto;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AssetManagement.Web.Controllers
@@ -15,7 +15,6 @@ namespace AssetManagement.Web.Controllers
             _assetService = assetService;
         }
 
-        // POST: api/Asset
         [HttpPost]
         public async Task<IActionResult> CreateAsset([FromBody] AssetDto assetDto)
         {
@@ -26,7 +25,6 @@ namespace AssetManagement.Web.Controllers
             return Ok(result);
         }
 
-        // GET: api/Asset
         [HttpGet]
         public async Task<IActionResult> GetAllAssets()
         {

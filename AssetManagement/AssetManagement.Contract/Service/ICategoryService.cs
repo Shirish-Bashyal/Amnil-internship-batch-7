@@ -1,4 +1,5 @@
 ﻿using AssetManagement.Domain.Dtos;
+using AssetManagement.Domain.Dtos.AssetDto;
 using System;
 using System.Collections.Generic;
 using System.Linq;

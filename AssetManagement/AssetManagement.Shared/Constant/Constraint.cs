@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace AssetManagement.Shared.Constant;
 
-namespace AssetManagement.Shared.Constant;
-
-public class NameConstant
+public class Constraint
 {
     public static class Name
     {
@@ -19,5 +13,9 @@ public class NameConstant
     public static class SerialNumber
     {
         public const int MaxLength = 150;
+    }
+    public static class Description
+    {
+        public const int MaxLength = 1000;
     }
 }

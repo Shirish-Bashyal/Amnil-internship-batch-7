@@ -7,8 +7,9 @@ using System.Threading.Tasks;
 
 namespace AssetManagement.Domain.Entity.Application;
 
-public class Category:BaseEntity<Guid>
+public class Category:Audit<Guid>
 {
-    public string? CategoryName { get; set; }
+    public string CategoryName { get; set; }=string.Empty;
+    public string ?Description { get; set; }
     public ICollection<Asset>? Assets { get; set; }
 }

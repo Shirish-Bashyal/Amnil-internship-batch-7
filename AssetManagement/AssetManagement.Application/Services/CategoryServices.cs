@@ -1,6 +1,7 @@
 ﻿using AssetManagement.Contract.Repository;
 using AssetManagement.Contract.Service;
 using AssetManagement.Domain.Dtos;
+using AssetManagement.Domain.Dtos.AssetDto;
 using AssetManagement.Domain.Entity.Application;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -27,7 +28,7 @@ public class CategoryServices : ICategoryService
         if (categoryDto == null)
         {
             _logger.LogWarning("The Dto is Empty");
-            return new ServiceResponseDto<Guid> { Message="No Data in Dto",Success=false};
+            return new ServiceResponseDto<Guid> { Message = "No Data in Dto", Success = false };
         }
         try
         {
@@ -41,10 +42,10 @@ public class CategoryServices : ICategoryService
                     Message = "Existing Category"
                 };
             }
-            var category=new Category { Id=Guid.NewGuid() ,CategoryName=categoryDto.CategoryName};
+            var category = new Category { Id = Guid.NewGuid(), CategoryName = categoryDto.CategoryName };
             await _categoryRepo.InsertAsync(category);
             _logger.LogInformation("Category Created Successfully");
-            return new ServiceResponseDto<Guid> { Message="Category Created Successfully",Success =true ,Data=category.Id};
+            return new ServiceResponseDto<Guid> { Message = "Category Created Successfully", Success = true, Data = category.Id };
         }
         catch (Exception ex)
         {

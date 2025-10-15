@@ -15,7 +15,6 @@ public class CategoryController : ControllerBase
         _categoryService = categoryService;
     }
 
-    // POST: api/Category
     [HttpPost]
     public async Task<IActionResult> CreateCategory([FromBody] CategoryDto categoryDto)
     {
@@ -26,7 +25,6 @@ public class CategoryController : ControllerBase
         return Ok(result);
     }
 
-    // GET: api/Category
     [HttpGet]
     public async Task<IActionResult> GetAllCategories()
     {

@@ -2,15 +2,10 @@
 using AssetManagement.Domain.Dtos;
 using AssetManagement.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AssetManagement.Infrastructure.Repository;
 
-public class GenericRepository<T> : IGenericRepository<T> where T:class
+public class GenericRepository<T> : IGenericRepository<T> where T : class
 {
     private readonly ApplicationDbContext _context;
     private readonly DbSet<T> _db;
@@ -19,20 +14,33 @@ public class GenericRepository<T> : IGenericRepository<T> where T:class
         _context = context;
         _db = _context.Set<T>();
     }
-    public async Task<bool> DeleteAsync(T entity)
+
+    public async Task BulkInsertAsync(IEnumerable<T> entities)
     {
-       _db.Remove(entity);
-        return await _context.SaveChangesAsync()>0;
+        await _db.AddRangeAsync(entities);
+        await _context.SaveChangesAsync();
     }
 
-    public async Task<IEnumerable<T>> GetAllAsync()
+    public async Task<bool> DeleteAsync(T entity)
     {
-        return await _db.ToListAsync();
+        _db.Remove(entity);
+        return await _context.SaveChangesAsync() > 0;
     }
 
     public async Task<T?> GetAsync(Guid id)
     {
         return await _db.FindAsync(id);
+    }
+
+    public async Task<PageResponse<T>> GetFilterContent<T>(PageRequest paged, IQueryable<T> query)
+    {
+        var totalCount = await query.CountAsync();
+        var item = await query.Skip((paged.SkipPageCount - 1) * paged.ListCount).Take(paged.ListCount).ToListAsync();
+        return new PageResponse<T>
+        {
+            Items = item,
+            TotalCount = totalCount
+        };
     }
 
     public IQueryable<T> GetQueryable()
@@ -42,7 +50,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T:class
 
     public async Task<T> InsertAsync(T entity)
     {
-        await _db.AddAsync(entity); 
+        await _db.AddAsync(entity);
         await _context.SaveChangesAsync();
         return entity;
     }
@@ -51,6 +59,6 @@ public class GenericRepository<T> : IGenericRepository<T> where T:class
     {
         _db.Update(entity);
         await _context.SaveChangesAsync();
-        return entity;  
+        return entity;
     }
 }

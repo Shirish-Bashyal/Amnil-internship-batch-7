@@ -1,6 +1,7 @@
 ﻿using AssetManagement.Contract.Repository;
 using AssetManagement.Contract.Service;
 using AssetManagement.Domain.Dtos;
+using AssetManagement.Domain.Dtos.AssetDto;
 using AssetManagement.Domain.Entity.Application;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -66,7 +67,6 @@ public class AssetServices : IAssetService
             {
                 SerialNumber = assetDto.SerialNumber.Trim(),
                 Id = Guid.NewGuid(),
-                CreatedDate = assetDto.CreatedDate,
                 Name = assetDto.Name.Trim(),
                 Cost = assetDto.Cost,
                 CategoryId = assetDto.CategoryId
@@ -98,7 +98,6 @@ public class AssetServices : IAssetService
             {
                 SerialNumber = x.SerialNumber,
                 Id = x.Id,
-                CreatedDate = x.CreatedDate,
                 Name = x.Name,
                 Cost = x.Cost,
                 CategoryId = x.CategoryId
