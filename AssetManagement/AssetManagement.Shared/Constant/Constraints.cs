@@ -1,6 +1,6 @@
 ﻿namespace AssetManagement.Shared.Constant;
 
-public class Constraint
+public class Constraints
 {
     public static class Name
     {

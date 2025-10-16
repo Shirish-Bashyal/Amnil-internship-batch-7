@@ -1,5 +1,5 @@
 ﻿@using AssetManagement.Domain.Dtos.AssetDto
-@model AssetDto
+@model CreateAssetDto
 
 <h2>Create Asset</h2>
 <form asp-action="Create" method="post">
@@ -11,10 +11,6 @@
         <label>SerialNumber</label>
         <input asp-for="SerialNumber" />
     </div>
-    <div>
-        <label>CreatedDate</label>
-        <input asp-for="CreatedDate" />
-    </div>
 
     <div>
         <label>Cost</label>
@@ -22,8 +18,12 @@
     </div>
 
     <div>
-        <label>CategoryId</label>
-        <input asp-for="CategoryId" />
+        <label>CategoryName</label>
+        <input asp-for="CategoryName" />
+    </div>
+    <div>
+        <lable>MacAddress</lable>
+        <input asp-for="MacAddress" />
     </div>
     <button type="submit">Create</button>
 </form>

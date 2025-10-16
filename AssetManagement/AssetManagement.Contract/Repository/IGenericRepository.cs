@@ -1,20 +1,16 @@
 ﻿using AssetManagement.Domain.Dtos;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AssetManagement.Contract.Repository;
 
-public interface IGenericRepository<T>where T : class
+public interface IGenericRepository<T> where T : class
 {
     Task<T?> GetAsync(Guid id);
     Task<PageResponse<T>> GetFilterContent<T>(PageRequest paged, IQueryable<T> query);
     Task<T> InsertAsync(T entity);
-    Task<T> UpdateAsync(T entity);
-    Task<bool> DeleteAsync(T entity);
+    Task<bool> UpdateAsync(T entity);
+    Task<bool> DeleteAsync(Guid id);
     IQueryable<T> GetQueryable();
     Task BulkInsertAsync(IEnumerable<T> entities);
+    Task<ICollection<T>> GetAllAsync();
 
 }

@@ -14,15 +14,24 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
         _context = context;
         _db = _context.Set<T>();
     }
+    public async Task<ICollection<T>> GetAllAsync()
+    {
+        return await _db.ToListAsync();
+    }
 
     public async Task BulkInsertAsync(IEnumerable<T> entities)
     {
         await _db.AddRangeAsync(entities);
         await _context.SaveChangesAsync();
     }
-
-    public async Task<bool> DeleteAsync(T entity)
+    
+    public async Task<bool> DeleteAsync(Guid id)
     {
+        var entity= await _db.FindAsync(id);
+        if (entity == null)
+        {
+            return false;
+        }
         _db.Remove(entity);
         return await _context.SaveChangesAsync() > 0;
     }
@@ -55,10 +64,10 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
         return entity;
     }
 
-    public async Task<T> UpdateAsync(T entity)
+    public async Task<bool> UpdateAsync(T entity)
     {
         _db.Update(entity);
-        await _context.SaveChangesAsync();
-        return entity;
+
+        return await _context.SaveChangesAsync() > 0;
     }
 }

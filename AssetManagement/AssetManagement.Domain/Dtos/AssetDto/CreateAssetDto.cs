@@ -1,18 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using AssetManagement.Shared.Constant;
+using System.ComponentModel.DataAnnotations;
 
 namespace AssetManagement.Domain.Dtos.AssetDto;
 
 public class CreateAssetDto
 {
-    public string? Name { get; set; }
-    public string? SerialNumber { get; set; }
+    [Required(ErrorMessage = "Asset name is required.")]
+    [StringLength(Constraints.Name.MaxLength, ErrorMessage = "Name can't exceed 100 characters.")]
+    public string Name { get; set; }= string.Empty;
+
+    [Required(ErrorMessage = "Asset SerialNumber is required.")]
+    [StringLength(Constraints.SerialNumber.MaxLength, ErrorMessage = "SerialNumber can't exceed 100 characters.")]
+    public string SerialNumber { get; set; }=string.Empty;
     public decimal Cost { get; set; }
-    public Guid? UserId { get; set; }
-    public Guid? TagId { get; set; }
-    public Guid? DepartmentId { get; set; }
-    public Guid CategoryId { get; set; }
+
+    [Required(ErrorMessage = "Asset SerialNumber is required.")]
+    public string MacAddress { get; set; }=string.Empty ;
+    public string? CategoryName { get; set; }
 }

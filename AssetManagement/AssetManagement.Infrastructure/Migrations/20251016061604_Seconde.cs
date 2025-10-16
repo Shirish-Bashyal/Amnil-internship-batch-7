@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace AssetManagement.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class Seconde : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -51,17 +51,13 @@ namespace AssetManagement.Infrastructure.Migrations
                 name: "Tags",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    TagId = table.Column<string>(type: "TEXT", maxLength: 150, nullable: false),
-                    IsActive = table.Column<bool>(type: "INTEGER", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    CreatedBy = table.Column<string>(type: "TEXT", nullable: true),
-                    ModifiedAt = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    ModifiedBy = table.Column<string>(type: "TEXT", nullable: true)
+                    TagId = table.Column<Guid>(type: "TEXT", maxLength: 150, nullable: false),
+                    MacAddress = table.Column<string>(type: "TEXT", nullable: false),
+                    IsActive = table.Column<bool>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Tags", x => x.Id);
+                    table.PrimaryKey("PK_Tags", x => x.TagId);
                 });
 
             migrationBuilder.CreateTable(
@@ -96,6 +92,7 @@ namespace AssetManagement.Infrastructure.Migrations
                     Name = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
                     SerialNumber = table.Column<string>(type: "TEXT", maxLength: 150, nullable: false),
                     Description = table.Column<string>(type: "TEXT", maxLength: 1000, nullable: true),
+                    IsActive = table.Column<bool>(type: "INTEGER", nullable: true),
                     Cost = table.Column<decimal>(type: "TEXT", nullable: false),
                     UserId = table.Column<Guid>(type: "TEXT", nullable: true),
                     TagId = table.Column<Guid>(type: "TEXT", nullable: false),
@@ -116,8 +113,8 @@ namespace AssetManagement.Infrastructure.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Assets_Departments_UserId",
-                        column: x => x.UserId,
+                        name: "FK_Assets_Departments_DepartmentId",
+                        column: x => x.DepartmentId,
                         principalTable: "Departments",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.SetNull);
@@ -125,7 +122,7 @@ namespace AssetManagement.Infrastructure.Migrations
                         name: "FK_Assets_Tags_TagId",
                         column: x => x.TagId,
                         principalTable: "Tags",
-                        principalColumn: "Id",
+                        principalColumn: "TagId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Assets_Users_UserId",
@@ -136,20 +133,36 @@ namespace AssetManagement.Infrastructure.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "Categories",
+                columns: new[] { "Id", "CategoryName", "CreatedAt", "CreatedBy", "Description", "ModifiedAt", "ModifiedBy" },
+                values: new object[,]
+                {
+                    { new Guid("11111111-1111-1111-1111-111111111111"), "IT Equipment", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Devices and gadgets", null, null },
+                    { new Guid("11111111-1111-1111-1111-111111111122"), "Machinery", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Heavy lifting equipment", null, null },
+                    { new Guid("11111111-1111-1111-1111-111111111133"), "Vehicles", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Transport and Carrier", null, null },
+                    { new Guid("11111111-1111-1111-1111-111111111144"), "Real-State", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Property and Office Furniture", null, null }
+                });
+
+            migrationBuilder.InsertData(
                 table: "Departments",
                 columns: new[] { "Id", "CreatedAt", "CreatedBy", "Description", "ModifiedAt", "ModifiedBy", "Name" },
                 values: new object[,]
                 {
-                    { new Guid("3f5c2a6e-8c3b-4b9e-9f4e-2d9a6e7a1f3c"), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, null, "IT" },
-                    { new Guid("6d2f9b3a-1c4e-4e7a-8f9d-3b2c1a7e6d5f"), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, null, "Operations" },
-                    { new Guid("9a1e4c7d-2b6f-4d8a-bc3e-7f1a9d2e4c5b"), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, null, "Finance" },
-                    { new Guid("e7c1a9f2-3d4b-4f6a-9c2e-1a5b7d3f9e8c"), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, null, "HR" }
+                    { new Guid("3f5c2a6e-8c3b-4b9e-9f4e-2d9a6e7a1f3c"), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Handel Proper Instalation and Set up or need software", null, null, "IT" },
+                    { new Guid("6d2f9b3a-1c4e-4e7a-8f9d-3b2c1a7e6d5f"), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Handels Day to day operation and management", null, null, "Operations" },
+                    { new Guid("9a1e4c7d-2b6f-4d8a-bc3e-7f1a9d2e4c5b"), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Holds Accountability for every transaction", null, null, "Finance" },
+                    { new Guid("e7c1a9f2-3d4b-4f6a-9c2e-1a5b7d3f9e8c"), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Deals with human resoruces", null, null, "HR" }
                 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Assets_CategoryId",
                 table: "Assets",
                 column: "CategoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Assets_DepartmentId",
+                table: "Assets",
+                column: "DepartmentId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Assets_SerialNumber",

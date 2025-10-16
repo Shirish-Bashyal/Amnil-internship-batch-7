@@ -42,6 +42,9 @@ namespace AssetManagement.Infrastructure.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("TEXT");
 
+                    b.Property<bool?>("IsActive")
+                        .HasColumnType("INTEGER");
+
                     b.Property<DateTime?>("ModifiedAt")
                         .HasColumnType("TEXT");
 
@@ -67,6 +70,8 @@ namespace AssetManagement.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
+
+                    b.HasIndex("DepartmentId");
 
                     b.HasIndex("SerialNumber")
                         .IsUnique();
@@ -112,6 +117,36 @@ namespace AssetManagement.Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("Categories");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("11111111-1111-1111-1111-111111111111"),
+                            CategoryName = "IT Equipment",
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Devices and gadgets"
+                        },
+                        new
+                        {
+                            Id = new Guid("11111111-1111-1111-1111-111111111122"),
+                            CategoryName = "Machinery",
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Heavy lifting equipment"
+                        },
+                        new
+                        {
+                            Id = new Guid("11111111-1111-1111-1111-111111111133"),
+                            CategoryName = "Vehicles",
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Transport and Carrier"
+                        },
+                        new
+                        {
+                            Id = new Guid("11111111-1111-1111-1111-111111111144"),
+                            CategoryName = "Real-State",
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Property and Office Furniture"
+                        });
                 });
 
             modelBuilder.Entity("AssetManagement.Domain.Entity.Application.Department", b =>
@@ -152,55 +187,47 @@ namespace AssetManagement.Infrastructure.Migrations
                         {
                             Id = new Guid("3f5c2a6e-8c3b-4b9e-9f4e-2d9a6e7a1f3c"),
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Handel Proper Instalation and Set up or need software",
                             Name = "IT"
                         },
                         new
                         {
                             Id = new Guid("9a1e4c7d-2b6f-4d8a-bc3e-7f1a9d2e4c5b"),
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Holds Accountability for every transaction",
                             Name = "Finance"
                         },
                         new
                         {
                             Id = new Guid("6d2f9b3a-1c4e-4e7a-8f9d-3b2c1a7e6d5f"),
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Handels Day to day operation and management",
                             Name = "Operations"
                         },
                         new
                         {
                             Id = new Guid("e7c1a9f2-3d4b-4f6a-9c2e-1a5b7d3f9e8c"),
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Deals with human resoruces",
                             Name = "HR"
                         });
                 });
 
             modelBuilder.Entity("AssetManagement.Domain.Entity.Application.Tag", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<Guid>("TagId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("CreatedBy")
+                        .HasMaxLength(150)
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime?>("ModifiedAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("ModifiedBy")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("TagId")
+                    b.Property<string>("MacAddress")
                         .IsRequired()
-                        .HasMaxLength(150)
                         .HasColumnType("TEXT");
 
-                    b.HasKey("Id");
+                    b.HasKey("TagId");
 
                     b.HasIndex("TagId")
                         .IsUnique();
@@ -257,16 +284,16 @@ namespace AssetManagement.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("AssetManagement.Domain.Entity.Application.Department", "Department")
+                        .WithMany("Asset")
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.HasOne("AssetManagement.Domain.Entity.Application.Tag", "Tag")
                         .WithOne("Asset")
                         .HasForeignKey("AssetManagement.Domain.Entity.Application.Asset", "TagId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("AssetManagement.Domain.Entity.Application.Department", "Department")
-                        .WithMany("Asset")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("AssetManagement.Domain.Entity.Application.User", "User")
                         .WithMany("Assets")

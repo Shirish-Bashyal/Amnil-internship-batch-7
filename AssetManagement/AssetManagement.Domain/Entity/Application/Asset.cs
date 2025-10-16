@@ -7,6 +7,7 @@ public class Asset : Audit<Guid>
     public string Name { get; set; } = string.Empty;//description  data seed
     public string SerialNumber { get; set; } = string.Empty;
     public string? Description { get; set; }
+    public bool? IsActive { get; set; }
     public decimal Cost { get; set; }
     public Guid? UserId { get; set; }
     public Guid TagId { get; set; }
