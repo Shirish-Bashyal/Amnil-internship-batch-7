@@ -33,21 +33,13 @@ public class TagService : ITagService
 
     public async Task<ResponseDto> CreateAsync(CreateTagDto input)
     {
-        _logger.LogInformation(
-            "Tag with Mac address {MacAddress} creation begin",
-            input.MacAddress
-        );
+        _logger.LogInformation("Tag creation started for MAC: {MacAddress}", input.MacAddress);
 
         input.MacAddress = input.MacAddress.Trim().ToUpper();
         if (string.IsNullOrEmpty(input.MacAddress))
         {
-            _logger.LogWarning("Tag Creation failed due to invalid Mac address");
-            return new ResponseDto()
-            {
-                IsSuccess = false,
-                Message = "Mac Address is required",
-                StatusCode = (int)StatusCode.BadRequest,
-            };
+            _logger.LogWarning("Tag creation failed due to missing MAC address.");
+            return ResponseDto.BadRequest("Mac Address is required");
         }
 
         try
@@ -57,46 +49,29 @@ public class TagService : ITagService
                 .AnyAsync(x => x.MacAddress == input.MacAddress);
             if (duplicateMac)
             {
-                _logger.LogWarning("Mac Address {MacAddress} already exists", input.MacAddress);
-                return new ResponseDto()
-                {
-                    IsSuccess = false,
-                    Message = "Mac Address is already exists",
-                    StatusCode = (int)StatusCode.BadRequest,
-                };
+                _logger.LogWarning("Duplicate MAC address found: {MacAddress}", input.MacAddress);
+                return ResponseDto.BadRequest("Mac Address already exists.");
             }
 
             var tag = new Tag { MacAddress = input.MacAddress, IsActive = true };
 
-            var createdMac = await _tagRepo.InsertAsync(tag);
+            var result = await _tagRepo.InsertAsync(tag);
 
-            _logger.LogInformation(
-                "Tag with Mac Address {MacAddress} created successfully",
-                input.MacAddress
-            );
-            return new ResponseDto<TagDto>
+            var createdTag = new TagDto
             {
-                IsSuccess = true,
-                Message = "Tag created successfully.",
-                StatusCode = (int)StatusCode.Created,
-                Data = new TagDto
-                {
-                    Id = createdMac.Id,
-                    IsActive = createdMac.IsActive,
-                    MacAddress = createdMac.MacAddress,
-                }
+                Id = result.Id,
+                IsActive = result.IsActive,
+                MacAddress = result.MacAddress,
             };
+
+            _logger.LogInformation("Tag {MacAddress} created successfully.", input.MacAddress);
+
+            return ResponseDto<TagDto>.Created(createdTag, "Tag created successfully.");
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Unexpected error while creating Tag.");
-
-            return new ResponseDto
-            {
-                IsSuccess = false,
-                Message = "An unexpected error occurred.",
-                StatusCode = (int)StatusCode.InternalServerError
-            };
+            return ResponseDto.InternalServerError("An unexpected error occurred.");
         }
     }
 
@@ -114,48 +89,29 @@ public class TagService : ITagService
             if (tag == null)
             {
                 _logger.LogWarning(" Tag with Id {TagId} not found for deletion", id);
-                return new ResponseDto
-                {
-                    IsSuccess = false,
-                    Message = "Tag not found",
-                    StatusCode = (int)StatusCode.BadRequest
-                };
+
+                return ResponseDto.NotFound("Tag not found.");
             }
 
             var isDeleted = await _tagRepo.DeleteAsync(tag);
             if (isDeleted)
             {
-                _logger.LogInformation("Tag with Id {TagId} deleted successfully", id);
-                return new ResponseDto
-                {
-                    IsSuccess = true,
-                    Message = "Tag Successfully Deleted.",
-                    StatusCode = (int)StatusCode.Success
-                };
+                _logger.LogInformation("Tag with ID {Id} deleted successfully.", id);
+
+                return ResponseDto.Success("Tag deleted successfully.");
             }
 
-            _logger.LogWarning(
-                " Tag with Id {TagId} not deletd, Unexpected error while ddeleting Tag.",
-                id
-            );
+            _logger.LogWarning("Failed to delete Tag with ID {Id}.", id);
 
-            return new ResponseDto
-            {
-                IsSuccess = false,
-                Message = "An unexpected error occurred while deleting the Tag.",
-                StatusCode = (int)StatusCode.InternalServerError
-            };
+            return ResponseDto.InternalServerError("Failed to delete Tag.");
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Unexpected error while deleting Tag.");
+            _logger.LogError(ex, "Error deleting Tag with ID {Id}.", id);
 
-            return new ResponseDto
-            {
-                IsSuccess = false,
-                Message = "An unexpected error occurred while deleting the Tag.",
-                StatusCode = (int)StatusCode.InternalServerError
-            };
+            return ResponseDto.InternalServerError(
+                "An unexpected error occurred while deleting the Tag."
+            );
         }
     }
 
@@ -172,13 +128,8 @@ public class TagService : ITagService
             var tag = await _tagRepo.GetAsync(id);
             if (tag == null)
             {
-                _logger.LogWarning(" Tag with Id {TagId} not found for deletion", id);
-                return new ResponseDto
-                {
-                    IsSuccess = false,
-                    Message = "Tag not found",
-                    StatusCode = (int)StatusCode.BadRequest
-                };
+                _logger.LogWarning("Tag with ID {Id} not found.", id);
+                return ResponseDto.NotFound("Tag not found.");
             }
 
             var tagDto = new TagDto
@@ -188,26 +139,17 @@ public class TagService : ITagService
                 MacAddress = tag.MacAddress,
             };
 
-            _logger.LogInformation("Tag {TagId} fetched successfully", id);
+            _logger.LogInformation("Tag with ID {Id} fetched successfully.", id);
 
-            return new ResponseDto<TagDto>
-            {
-                IsSuccess = true,
-                Message = "Tags Retrived Successfully.",
-                StatusCode = (int)StatusCode.Success,
-                Data = tagDto
-            };
+            return ResponseDto<TagDto>.Success(tagDto, "Tag fetched successfully.");
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Unexpected error while fetching Tag.");
+            _logger.LogError(ex, "Error fetching Tag with ID {Id}.", id);
 
-            return new ResponseDto
-            {
-                IsSuccess = false,
-                Message = "An unexpected error occurred while fetching the Tag.",
-                StatusCode = (int)StatusCode.InternalServerError
-            };
+            return ResponseDto.InternalServerError(
+                "An unexpected error occurred while fetching the Tag."
+            );
         }
     }
 
@@ -259,29 +201,19 @@ public class TagService : ITagService
                 TotalCount = totalCount,
             };
 
-            _logger.LogInformation(
-                "{AssetCount} Assets retrieved successfully",
-                filter.MaxResultCount
+            _logger.LogInformation("Fetched {Count} tags successfully.", pagedResponse.TotalCount);
+            return ResponseDto<PagedResponseDto<TagDto>>.Success(
+                pagedResponse,
+                "Tags fetched successfully."
             );
-
-            return new ResponseDto<PagedResponseDto<TagDto>>
-            {
-                Data = pagedResponse,
-                IsSuccess = true,
-                Message = "Assets retrieved successfully",
-                StatusCode = (int)StatusCode.Success,
-            };
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Unexpected error while fetching Tags.");
+            _logger.LogError(ex, "Error fetching tags.");
 
-            return new ResponseDto
-            {
-                IsSuccess = false,
-                Message = "An unexpected error occurred while fetching the Tags.",
-                StatusCode = (int)StatusCode.InternalServerError
-            };
+            return ResponseDto.InternalServerError(
+                "An unexpected error occurred while fetching tags."
+            );
         }
     }
 
@@ -296,12 +228,8 @@ public class TagService : ITagService
         if (string.IsNullOrEmpty(input.MacAddress))
         {
             _logger.LogWarning("Tag update failed due to invalid Mac address");
-            return new ResponseDto()
-            {
-                IsSuccess = false,
-                Message = "Mac Address is required",
-                StatusCode = (int)StatusCode.BadRequest,
-            };
+
+            return ResponseDto.BadRequest("Mac Address is required.");
         }
 
         try
@@ -309,13 +237,9 @@ public class TagService : ITagService
             var tag = await _tagRepo.GetAsync(id);
             if (tag == null)
             {
-                _logger.LogWarning(" Tag with Id {TagId} not found for update", id);
-                return new ResponseDto
-                {
-                    IsSuccess = false,
-                    Message = "Tag not found",
-                    StatusCode = (int)StatusCode.NotFound,
-                };
+                _logger.LogWarning("Tag with ID {Id} not found.", id);
+
+                return ResponseDto.NotFound("Tag not found.");
             }
 
             var duplicateMac = await _tagRepo
@@ -324,12 +248,8 @@ public class TagService : ITagService
             if (duplicateMac)
             {
                 _logger.LogWarning("Mac Address {MacAddress} already exists", input.MacAddress);
-                return new ResponseDto()
-                {
-                    IsSuccess = false,
-                    Message = "Mac Address is already exists",
-                    StatusCode = (int)StatusCode.BadRequest,
-                };
+
+                return ResponseDto.BadRequest("Mac Address already exists.");
             }
 
             tag.MacAddress = input.MacAddress;
@@ -339,32 +259,16 @@ public class TagService : ITagService
             if (isUpdated)
             {
                 _logger.LogInformation("Tag with Id {TagId} updated successfully", id);
-                return new ResponseDto
-                {
-                    IsSuccess = true,
-                    Message = "Tag updated successfully",
-                    StatusCode = (int)StatusCode.Success
-                };
+                return ResponseDto.Success("Tag updated successfully");
             }
 
             _logger.LogError("Unexpected error while updating Tag");
-            return new ResponseDto
-            {
-                IsSuccess = false,
-                Message = "An unexpected error occurred.",
-                StatusCode = (int)StatusCode.InternalServerError
-            };
+            return ResponseDto.InternalServerError("An unexpected error occurred.");
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Unexpected error while updating Tag.");
-
-            return new ResponseDto
-            {
-                IsSuccess = false,
-                Message = "An unexpected error occurred while updating the Tag.",
-                StatusCode = (int)StatusCode.InternalServerError
-            };
+            _logger.LogError(ex, "Unexpected error while updating Tag");
+            return ResponseDto.InternalServerError("An unexpected error occurred.");
         }
     }
 

@@ -1,10 +1,8 @@
-﻿using System.IO;
-using AssetManagementSystem.Contracts.Assets;
+﻿using AssetManagementSystem.Contracts.Assets;
 using AssetManagementSystem.Contracts.Repositories;
 using AssetManagementSystem.Domain.Entities.Assets;
 using AssetManagementSystem.Domain.Entities.Categories;
 using AssetManagementSystem.Domain.Entities.Departments;
-using AssetManagementSystem.Shared.Constants.Enums;
 using AssetManagementSystem.Shared.Dtos;
 using ClosedXML.Excel;
 using Microsoft.EntityFrameworkCore;
@@ -50,23 +48,15 @@ public class AssetService : IAssetService
         if (string.IsNullOrEmpty(input.Name))
         {
             _logger.LogWarning("Asset Update failed due to invalid Name.");
-            return new ResponseDto
-            {
-                IsSuccess = false,
-                Message = "Asset Name is required.",
-                StatusCode = (int)StatusCode.BadRequest,
-            };
+
+            return ResponseDto.BadRequest("Asset Name is required.");
         }
 
         if (string.IsNullOrEmpty(input.SerialNumber))
         {
             _logger.LogWarning("Asset update failed due to invalid Serial Number.");
-            return new ResponseDto
-            {
-                IsSuccess = false,
-                Message = "Asset Serial Number is required",
-                StatusCode = (int)StatusCode.BadRequest,
-            };
+
+            return ResponseDto.BadRequest("Asset Serial Number is required");
         }
 
         try
@@ -75,12 +65,8 @@ public class AssetService : IAssetService
             if (asset == null)
             {
                 _logger.LogWarning(" Asset with Id {AssetId} not found.", id);
-                return new ResponseDto
-                {
-                    IsSuccess = false,
-                    Message = "Asset not found",
-                    StatusCode = (int)StatusCode.NotFound,
-                };
+
+                return ResponseDto.NotFound("Asset not found");
             }
 
             var duplicateName = await _assetRepo
@@ -93,13 +79,7 @@ public class AssetService : IAssetService
                     "Asset with Serial Number {SerialNumber} update failed. Asset Name  already exists.",
                     asset.SerialNumber
                 );
-
-                return new ResponseDto
-                {
-                    IsSuccess = false,
-                    Message = "Asset Name already exists",
-                    StatusCode = (int)StatusCode.BadRequest,
-                };
+                return ResponseDto.BadRequest("Asset Name Already Exists");
             }
 
             var duplicateSerialNumber = await _assetRepo
@@ -115,12 +95,7 @@ public class AssetService : IAssetService
                     asset.SerialNumber
                 );
 
-                return new ResponseDto
-                {
-                    IsSuccess = false,
-                    Message = "Asset Serial Number already exists",
-                    StatusCode = (int)StatusCode.BadRequest,
-                };
+                return ResponseDto.BadRequest("Asset Serial Number already exists");
             }
 
             var categoryExists = await _categoryRepo
@@ -134,12 +109,8 @@ public class AssetService : IAssetService
                     asset.SerialNumber,
                     input.CategoryId
                 );
-                return new ResponseDto
-                {
-                    IsSuccess = false,
-                    Message = "Category not found.",
-                    StatusCode = (int)StatusCode.NotFound
-                };
+
+                return ResponseDto.NotFound("Category not found.");
             }
 
             if (input.DepartmentId.HasValue && input.DepartmentId != Guid.Empty)
@@ -155,12 +126,8 @@ public class AssetService : IAssetService
                         asset.SerialNumber,
                         input.DepartmentId
                     );
-                    return new ResponseDto
-                    {
-                        IsSuccess = false,
-                        Message = "Department not found.",
-                        StatusCode = (int)StatusCode.NotFound
-                    };
+
+                    return ResponseDto.NotFound("Department not found.");
                 }
 
                 asset.DepartmentId = input.DepartmentId;
@@ -178,32 +145,19 @@ public class AssetService : IAssetService
             if (isUpdated)
             {
                 _logger.LogInformation("Asset with Id {AssetId} updated successfully", id);
-                return new ResponseDto
-                {
-                    IsSuccess = true,
-                    Message = "Asset updated successfully",
-                    StatusCode = (int)StatusCode.Success
-                };
+
+                return ResponseDto.Success("Asset updated successfully");
             }
 
             _logger.LogError("Unexpected error while updating asset");
-            return new ResponseDto
-            {
-                IsSuccess = false,
-                Message = "An unexpected error occurred.",
-                StatusCode = (int)StatusCode.InternalServerError
-            };
+
+            return ResponseDto.InternalServerError("An unexpected error occurred.");
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Unexpected error while updating asset.");
 
-            return new ResponseDto
-            {
-                IsSuccess = false,
-                Message = "An unexpected error occurred .",
-                StatusCode = (int)StatusCode.InternalServerError
-            };
+            return ResponseDto.InternalServerError("An unexpected error occurred.");
         }
     }
 
@@ -219,22 +173,14 @@ public class AssetService : IAssetService
         if (string.IsNullOrEmpty(input.Name))
         {
             _logger.LogWarning("Asset creation failed due to invalid Name.");
-            return new ResponseDto
-            {
-                IsSuccess = false,
-                Message = "Asset Name is required.",
-                StatusCode = (int)StatusCode.BadRequest,
-            };
+
+            return ResponseDto.BadRequest("Asset Name is required.");
         }
         if (string.IsNullOrEmpty(input.SerialNumber))
         {
             _logger.LogWarning("Asset creation failed due to invalid Serial Number.");
-            return new ResponseDto
-            {
-                IsSuccess = false,
-                Message = "Asset Serial Number is required",
-                StatusCode = (int)StatusCode.BadRequest,
-            };
+
+            return ResponseDto.BadRequest("Asset Serial Number is required");
         }
 
         try
@@ -249,12 +195,7 @@ public class AssetService : IAssetService
                     input.SerialNumber
                 );
 
-                return new ResponseDto
-                {
-                    IsSuccess = false,
-                    Message = "Asset Name already exists",
-                    StatusCode = (int)StatusCode.BadRequest,
-                };
+                return ResponseDto.BadRequest("Asset Name already exists");
             }
 
             var duplicateSerialNumber = await _assetRepo
@@ -267,12 +208,7 @@ public class AssetService : IAssetService
                     input.SerialNumber
                 );
 
-                return new ResponseDto
-                {
-                    IsSuccess = false,
-                    Message = "Asset Serial Number already exists",
-                    StatusCode = (int)StatusCode.BadRequest,
-                };
+                return ResponseDto.BadRequest("Asset Serial Number already exists");
             }
 
             var categoryExists = await _categoryRepo
@@ -286,12 +222,8 @@ public class AssetService : IAssetService
                     input.SerialNumber,
                     input.CategoryId
                 );
-                return new ResponseDto
-                {
-                    IsSuccess = false,
-                    Message = "Category not found.",
-                    StatusCode = (int)StatusCode.NotFound
-                };
+
+                return ResponseDto.NotFound("Category not found.");
             }
 
             var asset = new Asset();
@@ -309,12 +241,8 @@ public class AssetService : IAssetService
                         input.SerialNumber,
                         input.DepartmentId
                     );
-                    return new ResponseDto
-                    {
-                        IsSuccess = false,
-                        Message = "Department not found.",
-                        StatusCode = (int)StatusCode.NotFound
-                    };
+
+                    return ResponseDto.NotFound("Department not found.");
                 }
 
                 asset.DepartmentId = input.DepartmentId;
@@ -333,35 +261,29 @@ public class AssetService : IAssetService
                 asset.ReceivedDate = input.ReceivedDate.Value;
             }
 
-            var createdAsset = await _assetRepo.InsertAsync(asset);
+            var result = await _assetRepo.InsertAsync(asset);
+
+            var createdAsset = new AssetDto
+            {
+                Id = result.Id,
+                Name = result.Name,
+                SerialNumber = result.SerialNumber,
+                IsActive = result.IsActive,
+            };
 
             _logger.LogInformation(
                 "Asset with Serial Number {SerialNumber} created successfully",
                 input.SerialNumber
             );
-            return new ResponseDto<AssetDto>
-            {
-                IsSuccess = true,
-                Message = "Asset created successfully.",
-                StatusCode = (int)StatusCode.Created,
-                Data = new AssetDto
-                {
-                    Id = createdAsset.Id,
-                    Name = createdAsset.Name,
-                    SerialNumber = createdAsset.SerialNumber,
-                    IsActive = createdAsset.IsActive,
-                }
-            };
+            return ResponseDto<AssetDto>.Created(createdAsset, "Asset created successfully.");
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Unexpected error while creating asset.");
-            return new ResponseDto
-            {
-                IsSuccess = false,
-                Message = "An unexpected error occurred while creating the asset.",
-                StatusCode = (int)StatusCode.InternalServerError
-            };
+
+            return ResponseDto.InternalServerError(
+                "An unexpected error occurred while creating the asset."
+            );
         }
     }
 
@@ -380,24 +302,16 @@ public class AssetService : IAssetService
             if (asset == null)
             {
                 _logger.LogWarning(" Asset with Id {AssetId} not found for deletion", id);
-                return new ResponseDto
-                {
-                    IsSuccess = false,
-                    Message = "Asset not found",
-                    StatusCode = (int)StatusCode.BadRequest
-                };
+
+                return ResponseDto.NotFound("Asset not found");
             }
 
             var isDeleted = await _assetRepo.DeleteAsync(asset);
             if (isDeleted)
             {
                 _logger.LogInformation("Asset with Id {AssetId} deleted successfully", id);
-                return new ResponseDto
-                {
-                    IsSuccess = true,
-                    Message = "Asset Successfully Deleted.",
-                    StatusCode = (int)StatusCode.Success
-                };
+
+                return ResponseDto.Success("Asset Successfully Deleted.");
             }
 
             _logger.LogWarning(
@@ -405,23 +319,17 @@ public class AssetService : IAssetService
                 id
             );
 
-            return new ResponseDto
-            {
-                IsSuccess = false,
-                Message = "An unexpected error occurred while deleting the asset.",
-                StatusCode = (int)StatusCode.InternalServerError
-            };
+            return ResponseDto.InternalServerError(
+                "An unexpected error occurred while creating the asset."
+            );
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Unexpected error while deleting asset.");
 
-            return new ResponseDto
-            {
-                IsSuccess = false,
-                Message = "An unexpected error occurred while deleting the asset.",
-                StatusCode = (int)StatusCode.InternalServerError
-            };
+            return ResponseDto.InternalServerError(
+                "An unexpected error occurred while creating the asset."
+            );
         }
     }
 
@@ -454,24 +362,18 @@ public class AssetService : IAssetService
 
             _logger.LogInformation(" Assets retrieved successfully");
 
-            return new ResponseDto<IEnumerable<AssetDto>>
-            {
-                IsSuccess = true,
-                Message = "Assets retrieved successfully",
-                Data = assets,
-                StatusCode = (int)StatusCode.Success
-            };
+            return ResponseDto<IEnumerable<AssetDto>>.Success(
+                assets,
+                "Assets retrieved successfully"
+            );
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Unexpected error while fetching asset.");
 
-            return new ResponseDto
-            {
-                IsSuccess = false,
-                Message = "An unexpected error occurred .",
-                StatusCode = (int)StatusCode.InternalServerError
-            };
+            return ResponseDto.InternalServerError(
+                "An unexpected error occurred while creating the asset."
+            );
         }
     }
 
@@ -506,34 +408,21 @@ public class AssetService : IAssetService
             if (asset == null)
             {
                 _logger.LogWarning("Asset  with id {AssetId} not found", id);
-                return new ResponseDto
-                {
-                    IsSuccess = false,
-                    Message = "Asset Id not found",
-                    StatusCode = (int)StatusCode.BadRequest
-                };
+
+                return ResponseDto.BadRequest("Asset Id not found");
             }
 
             _logger.LogInformation("Asset with id {AssetId} retrieved successfully", id);
 
-            return new ResponseDto<AssetDto>
-            {
-                IsSuccess = true,
-                Message = "Asset Retrived Successfully",
-                Data = asset,
-                StatusCode = (int)StatusCode.Success
-            };
+            return ResponseDto<AssetDto>.Success(asset, "Asset Retrived Successfully");
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Unexpected error while fetching asset.");
 
-            return new ResponseDto
-            {
-                IsSuccess = false,
-                Message = "An unexpected error occurred .",
-                StatusCode = (int)StatusCode.InternalServerError
-            };
+            return ResponseDto.InternalServerError(
+                "An unexpected error occurred while creating the asset."
+            );
         }
     }
 
@@ -604,24 +493,18 @@ public class AssetService : IAssetService
                 filter.MaxResultCount
             );
 
-            return new ResponseDto<PagedResponseDto<AssetDto>>
-            {
-                Data = pagedResponse,
-                IsSuccess = true,
-                Message = "Assets retrieved successfully",
-                StatusCode = (int)StatusCode.Success,
-            };
+            return ResponseDto<PagedResponseDto<AssetDto>>.Success(
+                pagedResponse,
+                "Assets retrieved successfully"
+            );
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Unexpected error while fetching asset.");
 
-            return new ResponseDto
-            {
-                IsSuccess = false,
-                Message = "An unexpected error occurred .",
-                StatusCode = (int)StatusCode.InternalServerError
-            };
+            return ResponseDto.InternalServerError(
+                "An unexpected error occurred while creating the asset."
+            );
         }
     }
 
