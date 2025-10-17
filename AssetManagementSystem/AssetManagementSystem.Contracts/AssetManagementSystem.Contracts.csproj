@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AssetManagementSystem.Domain\AssetManagementSystem.Domain.csproj" />
+    <ProjectReference Include="..\AssetManagementSystem.Shared\AssetManagementSystem.Shared.csproj" />
   </ItemGroup>
 
 </Project>

@@ -7,6 +7,6 @@ namespace AssetManagementSystem.Domain.Base;
 /// </summary>
 public abstract class DateAuditedEntity<TPrimaryKey> : Entity<TPrimaryKey>, IDateAuditedEntity
 {
-    public DateTime? AddedDate { get; set; }
+    public DateTime CreatedDate { get; set; }
     public DateTime? ModifiedDate { get; set; }
 }

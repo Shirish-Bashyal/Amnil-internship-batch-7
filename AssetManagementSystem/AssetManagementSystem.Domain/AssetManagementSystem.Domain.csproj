@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Entities\" />
+    <None Include="Entities\Categories\Category.cs" />
   </ItemGroup>
 
 </Project>

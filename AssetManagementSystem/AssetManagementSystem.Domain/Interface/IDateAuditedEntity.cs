@@ -5,6 +5,6 @@
 /// </summary>
 public interface IDateAuditedEntity
 {
-    public DateTime? AddedDate { get; set; }
+    public DateTime CreatedDate { get; set; }
     public DateTime? ModifiedDate { get; set; }
 }
