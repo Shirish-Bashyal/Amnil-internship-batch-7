@@ -1,0 +1,64 @@
+﻿@model IEnumerable<AssetManagementSystem.Shared.Dtos.Department.DepartmentReadDto>
+
+@{
+    ViewData["Title"] = "Departments";
+}
+
+@if (TempData["Message"] != null)
+{
+    var type = TempData["MessageType"]?.ToString() ?? "info";
+    var alertClass = type switch
+    {
+        "success" => "alert-success",
+        "error" => "alert-danger",
+        "warning" => "alert-warning",
+        _ => "alert-info"
+    };
+    <div id="tempAlert" class="alert @alertClass alert-dismissible fade show" role="alert">
+        @TempData["Message"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+
+
+<div class="mb-3 d-flex justify-content-between">
+    <a asp-action="Create" class="btn btn-primary">
+        <i class="bi bi-plus-lg"></i> Add New Department
+    </a>
+</div>
+
+
+
+<table class="table table-striped mt-3">
+    <thead>
+        <tr>
+            <th>S.N</th>
+            <th>@Html.DisplayNameFor(model => model.First().Name)</th>
+            <th>@Html.DisplayNameFor(model => model.First().Description)</th>
+            @* <th>@Html.DisplayNameFor(model => model.First().IsActive)</th> *@
+            <th>@Html.DisplayNameFor(model => model.First().CreatedAt)</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            var count = 1; // Initialize serial number
+        }
+        @foreach (var dept in Model)
+        {
+            <tr>
+                <td>@count</td>
+                <td>@dept.Name</td>
+                <td>@dept.Description</td>
+                @* <td>@dept.IsActive</td> *@
+                <td>@dept.CreatedAt.ToString("yyyy-MM-dd")</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@dept.Id" class="btn btn-sm btn-warning me-2">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@dept.Id" class="btn btn-sm btn-danger">Delete</a>
+                </td>
+            </tr>
+            count++;
+        }
+    </tbody>
+</table>

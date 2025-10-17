@@ -1,0 +1,103 @@
+﻿@model AssetManagementSystem.Shared.Dtos.Asset.AssetReadDto
+@using AssetManagementSystem.Shared.Enum
+@{
+    ViewData["Title"] = "Edit Asset";
+}
+
+<h1>@ViewData["Title"] </h1>
+
+
+<hr />
+
+<div>
+    <a asp-action="Index" class=" btn btn-secondary">Back to List</a>
+</div>
+  
+<div class="container mt-3 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="p-4 border rounded shadow-sm bg-white">
+
+                <form asp-action="Edit">
+
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="AssetName" class="control-label"></label>
+                        <input asp-for="AssetName" class="form-control" />
+                        <span asp-validation-for="AssetName" class="text-danger"></span>
+                    </div>
+
+
+                    <div class="form-group mb-3">
+                        <label asp-for="SerialNumber" class="control-label"></label>
+                        <input asp-for="SerialNumber" class="form-control" />
+                        <span asp-validation-for="SerialNumber" class="text-danger"></span>
+                    </div>
+          
+
+                    <div class="form-group mb-3">
+                        <label asp-for="AssetCategory" class="control-label"></label>
+                        <select asp-for="AssetCategory" class="form-select">
+                            @foreach (var category in Enum.GetValues(typeof(CategoryEnum)))
+                            {
+                                <option value="@category">@category</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="ReceivedDate" class="control-label"></label>
+                        <input asp-for="ReceivedDate" class="form-control" />
+                        <span asp-validation-for="ReceivedDate" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="DepartmentId" class="control-label"></label>
+                        <select asp-for="DepartmentId" class="form-select" asp-items="ViewBag.Departments">
+                            <option value="">-- Select Department --</option>
+                        </select>
+                        <span asp-validation-for="DepartmentId" class="text-danger"></span>
+                    </div>
+
+                    @* <div class="form-group">
+                        <label asp-for="DepartmentName" class="control-label"></label>
+                        <input asp-for="DepartmentName" class="form-control" />
+                        <span asp-validation-for="DepartmentName" class="text-danger"></span>
+                    </div> *@
+
+                    <div class="form-group mb-3">
+                        <label asp-for="TagId" class="control-label"></label>
+                        <input asp-for="TagId" class="form-control" />
+                        <span asp-validation-for="TagId" class="text-danger"></span>
+                    </div>
+
+                    @* <div class="form-group">
+                        <label asp-for="TagName" class="control-label"></label>
+                        <input asp-for="TagName" class="form-control" />
+                        <span asp-validation-for="TagName" class="text-danger"></span>
+                    </div> *@
+
+          
+
+                    <div class="form-group mb-3">
+                        <label asp-for="Description" class="control-label"></label>
+                        <input asp-for="Description" class="form-control" />
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+
+           
+                        <div class="form-group">
+                            <input type="submit" value="Save" class="btn btn-success" />
+                        </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

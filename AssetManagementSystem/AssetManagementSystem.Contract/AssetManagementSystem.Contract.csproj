@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="ExcelDataReader" Version="3.8.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AssetManagementSystem.Entity\AssetManagementSystem.Entity.csproj" />
     <ProjectReference Include="..\AssetManagementSystem.Shared\AssetManagementSystem.Shared.csproj" />
   </ItemGroup>
 

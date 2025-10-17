@@ -1,0 +1,164 @@
+﻿@model IEnumerable<AssetManagementSystem.Shared.Dtos.Asset.AssetReadDto>
+
+@{
+    ViewData["Title"] = "Assets";
+}
+
+
+
+@if (TempData["Message"] != null)
+{
+    var type = TempData["MessageType"]?.ToString() ?? "info";
+    var alertClass = type switch
+    {
+        "success" => "alert-success",
+        "error" => "alert-danger",
+        "warning" => "alert-warning",
+        _ => "alert-info"
+    };
+    <div id="tempAlert" class="alert @alertClass alert-dismissible fade show" role="alert">
+        @TempData["Message"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<form method="get" class="mt-3 mb-2 d-flex">
+    <input type="text" name="searchTerm" class="form-control me-2" placeholder="Search..." value="@ViewBag.Search" />
+
+    <select name="sortOrder" class="form-select me-2" onchange="this.form.submit()">
+        <option value="">Sort By</option>
+        <option value="name_asc">Name ↑</option>
+        <option value="name_desc">Name ↓</option>
+        <option value="date_asc">Received Date ↑</option>
+        <option value="date_desc">Received Date ↓</option>
+        <option value="department_asc">Department ↑</option>
+        <option value="department_desc">Department ↓</option>
+        <option value="serialNumber_asc">Serial Number ↑</option>
+        <option value="serialNumber_desc">Serial Number ↓</option>
+        <option value="category_asc">Category ↑</option>
+        <option value="category_desc">Category ↓</option>
+    </select>
+
+    <button type="submit" class="btn btn-success">Search</button>
+</form>
+
+
+    <div class="mt-3 d-flex justify-content-between">
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="bi bi-plus-lg"></i> Add New Asset
+        </a>
+    </div>
+
+
+
+
+
+
+
+<table class="table table-striped mt-4">
+    <thead>
+        <tr>
+            <th>S.N</th>
+            <th>@Html.DisplayNameFor(model => model.First().AssetName)</th>
+            <th>@Html.DisplayNameFor(model => model.First().SerialNumber)</th>
+            <th>@Html.DisplayNameFor(model => model.First().AssetCategory)</th>
+            <th>@Html.DisplayNameFor(model => model.First().ReceivedDate)</th>
+            <th>@Html.DisplayNameFor(model => model.First().Description)</th>
+            <th>@Html.DisplayNameFor(model => model.First().TagName)</th>
+            <th>@Html.DisplayNameFor(model => model.First().DepartmentName)</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            var count = 1;
+        }
+        @foreach (var asset in Model)
+        {
+            <tr>
+                <td>@count</td>
+                <td>@asset.AssetName</td>
+                <td>@asset.SerialNumber</td>
+                <td>@asset.AssetCategory</td>
+                <td>@asset.ReceivedDate.ToString("yyyy-MM-dd")</td>
+                <td>@asset.Description</td>
+                <td>@asset.TagName</td>
+                <td>@asset.DepartmentName</td>
+
+               
+                <td>
+                    <form asp-action="ToggleActivation" method="post" style="display:inline;">
+                        <input type="hidden" name="id" value="@asset.Id" />
+                        <input type="hidden" name="isActivated" value="@(asset.IsActivated ? "false" : "true")" />
+                        <button type="submit" class="btn btn-sm @(asset.IsActivated ? "btn-secondary" : "btn-success")">
+                            @(asset.IsActivated ? "Deactivate" : "Activate")
+                        </button>
+                    </form>
+                </td>
+
+               
+                <td>
+                    <a asp-action="Edit" asp-route-id="@asset.Id"
+                       class="btn btn-sm btn-warning me-2 @(asset.IsActivated ? "disabled" : "")">
+                        Edit
+                    </a>
+
+                    <a asp-action="Delete" asp-route-id="@asset.Id"
+                       class="btn btn-sm btn-danger @(asset.IsActivated ? "disabled" : "")">
+                        Delete
+                    </a>
+                </td>
+            </tr>
+            count++;
+        }
+    </tbody>
+</table> 
+
+
+<!-- Pagination Links -->
+<nav aria-label="Page navigation">
+    <ul class="pagination justify-content-center">
+        @for (int i = 1; i <= ViewBag.TotalPages; i++)
+        {
+            var isActive = ViewBag.PageNumber == i;
+            <li class="page-item">
+                <a class="page-link @(isActive ? "bg-secondary text-white" : "")"
+                   asp-action="Index"
+                   asp-route-pageNumber="@i"
+                   asp-route-pageSize="@ViewBag.PageSize"
+                   asp-route-searchTerm="@ViewBag.Search"
+                   asp-route-sortOrder="@ViewBag.SortOrder">
+                    @i
+                </a>
+            </li>
+        }
+    </ul>
+</nav>
+
+<!-- Page Size Dropdown -->
+<div class="dropdown d-flex justify-content-center mt-3">
+    <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+        Page Size: @ViewBag.PageSize
+    </button>
+    <ul class="dropdown-menu">
+        @foreach (var size in new int[] { 5, 10, 20 })
+        {
+            <li>
+                <a class="dropdown-item @(ViewBag.PageSize == size ? "active" : "")"
+                   asp-action="Index"
+                   asp-route-pageNumber="@ViewBag.PageNumber"
+                   asp-route-pageSize="@size"
+                   asp-route-searchTerm="@ViewBag.Search"
+                   asp-route-sortOrder="@ViewBag.SortOrder">
+                    @size
+                </a>
+            </li>
+        }
+    </ul>
+</div>
+
+
+
+
+

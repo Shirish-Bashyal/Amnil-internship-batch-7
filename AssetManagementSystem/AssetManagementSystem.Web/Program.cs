@@ -9,6 +9,11 @@ namespace AssetManagementSystem.Web
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
+            builder.Services.AddHttpClient("AssetAPI", client =>
+            {
+                client.BaseAddress = new Uri("https://localhost:7227/api/"); // Your API base URL
+            });
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -27,7 +32,7 @@ namespace AssetManagementSystem.Web
             app.MapStaticAssets();
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}")
+                pattern: "{controller=Department}/{action=Index}/{id?}")
                 .WithStaticAssets();
 
             app.Run();

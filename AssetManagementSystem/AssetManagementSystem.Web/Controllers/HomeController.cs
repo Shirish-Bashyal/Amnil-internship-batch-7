@@ -1,8 +1,9 @@
-using AssetManagementSystem.Web.Models;
+﻿using AssetManagementSystem.Web.Models;
+
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
-namespace AssetManagementSystem.Web.Controllers
+namespace AssismentStudent.MVC.Controllers
 {
     public class HomeController : Controller
     {
