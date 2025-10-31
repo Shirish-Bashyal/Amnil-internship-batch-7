@@ -1,5 +1,7 @@
 
+using AssetManagementSystem.API;
 using AssetManagementSystem.Application.Services;
+using AssetManagementSystem.Application;
 using AssetManagementSystem.Contract.Interfaces;
 using AssetManagementSystem.Contract.Interfaces.Service;
 using AssetManagementSystem.Infrastructure.Data;
@@ -18,12 +20,19 @@ public class Program
 
         builder.Services.AddSwaggerGen();
 
+
         builder.Services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
         // Add services to the container.
 
+        //builder.Services.AddDbContext<ApplicationDbContext>(options =>
+        //{
+        //    options.UseSqlServer(builder.Configuration.GetConnectionString("PrimaryConnnection"));
+        //});
+
         builder.Services.AddControllers();
 
+        MapsterConfig.Configure();
 
         //service register
         builder.Services.AddScoped<IAssetService,AssetService>();
@@ -49,6 +58,8 @@ public class Program
                 c.RoutePrefix = "swagger"; // Swagger UI at root: https://localhost:7227/
             });
         }
+
+
         // Configure the HTTP request pipeline.
         //if (app.Environment.IsDevelopment())
         //{

@@ -265,7 +265,7 @@ public class AssetController : Controller
                 }
             }
 
-            ViewBag.Departments = departments; // pass to view
+            ViewBag.Departments = departments; 
 
 
             return View(asset);

@@ -1,5 +1,7 @@
 ﻿
 
+using System.Text.Json.Nodes;
+
 namespace AssetManagementSystem.Shared.Dtos;
 
 public class ResponseData<T>
@@ -45,5 +47,8 @@ public class ResponseData<T>
             Message = message
         };
     }
+
+
 }
+
 

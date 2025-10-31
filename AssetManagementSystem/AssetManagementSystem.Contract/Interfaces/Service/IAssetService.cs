@@ -15,4 +15,9 @@ public interface IAssetService
 
     Task<ResponseData<PagedResponseDto<AssetReadDto>>> GetListAsync(PaginationAndFilterRequest filter);
     Task<ResponseData<bool>> ChangeActivationStatusAsync(Guid id, bool isActivated);
+
+    Task<(Stream? Stream, string FileName)> ExportToExcelAsync();
+
+
+    Task<ResponseData<List<AssetCountDto>>> GetDepartmentData();
 }

@@ -19,6 +19,7 @@ public class AssetReadDto:BaseDto
     public bool IsActivated { get; set; }
     public string? DepartmentName { get; set; } // optional: from navigation property
 
+    
     public Guid? TagId { get; set; }
     public string? TagName { get; set; } // optional: from navigation property
 }

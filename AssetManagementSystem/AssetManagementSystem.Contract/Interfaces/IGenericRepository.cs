@@ -19,4 +19,5 @@ public interface IGenericRepository<T> where T : class
     Task<bool> UpdateAsync(T entity);
 
     Task<bool> DeleteAsync(T entity);
+    Task InsertRangeAsync(IEnumerable<T> entities);
 }

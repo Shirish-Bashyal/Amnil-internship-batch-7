@@ -4,21 +4,24 @@ using AssetManagementSystem.Entity.Entities;
 using AssetManagementSystem.Shared;
 using AssetManagementSystem.Shared.Dtos;
 using AssetManagementSystem.Shared.Dtos.Asset;
+using ClosedXML.Excel;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using static AssetManagementSystem.Shared.Constrains.EntityConstrains;
+
 
 
 namespace AssetManagementSystem.Application.Services;
 
 public class AssetService : IAssetService
 {
-    private readonly IGenericRepository<AssetModel> _assetService;
+    private readonly IGenericRepository<AssetModel> _assetRepo;
+    private readonly IGenericRepository<DepartmentModel> _departmentRepo;
     private readonly ILogger<AssetService> _logger;
 
-    public AssetService(IGenericRepository<AssetModel> assetService, ILogger<AssetService> logger)
+    public AssetService(IGenericRepository<AssetModel> assetRepo, ILogger<AssetService> logger)
     {
-        _assetService = assetService;
+        _assetRepo = assetRepo;
         _logger = logger;
     }
     public async Task<ResponseData<Guid>> CreateAsync(AssetDto dto)
@@ -44,7 +47,7 @@ public class AssetService : IAssetService
         try
         {
 
-            var checkExistance = await _assetService
+            var checkExistance = await _assetRepo
                 .GetQueryable()
                 .AnyAsync(u => u.SerialNumber == dto.SerialNumber);
 
@@ -71,7 +74,7 @@ public class AssetService : IAssetService
                 IsActive = true,
             };
 
-            var result = await _assetService.CreateAsync(asset);
+            var result = await _assetRepo.CreateAsync(asset);
             _logger.LogInformation("Asset created successfully with Id: {Id}", result.Id);
 
             return ResponseData<Guid>.Success("Asset Added Successfully");
@@ -90,7 +93,7 @@ public class AssetService : IAssetService
 
         try
         {
-            var asset = await _assetService.GetAsync(id);
+            var asset = await _assetRepo.GetAsync(id);
             
             if (asset == null || asset.IsActive == false)
             {
@@ -102,7 +105,7 @@ public class AssetService : IAssetService
 
             asset.IsActive = false;
 
-            var result = await _assetService.DeleteAsync(asset);
+            var result = await _assetRepo.DeleteAsync(asset);
 
             if (result)
             {
@@ -130,7 +133,7 @@ public class AssetService : IAssetService
         {
             //var assets = await _assetService.GetAllAsync();
 
-            var assets = await _assetService.GetQueryable()
+            var assets = await _assetRepo.GetQueryable()
                                      .Include(a => a.Department) 
                                      .Include(a => a.Tag)        
                                      .ToListAsync();
@@ -144,22 +147,24 @@ public class AssetService : IAssetService
             }
 
 
-            var assetDtos = assets.Select(a => new AssetReadDto
-            {
-                Id=a.Id,
-                AssetName = a.AssetName,
-                SerialNumber = a.SerialNumber,
-                AssetCategory = a.AssetCategory,
-                ReceivedDate = a.ReceivedDate,
-                IsActive = a.IsActive,
-                DepartmentId = a.DepartmentId,
-                DepartmentName = a.Department?.Name, 
-                TagId = a.Tag?.Id,
-                IsActivated= a.IsActivated,
-                TagName = a.Tag?.MacAddress,        
-                Description = a.Description
-            });
-           
+            var assetDtos = assets.Select(x => x.Adapt<AssetReadDto>()).ToList();
+
+            //    a => new AssetReadDto
+            //{
+            //    Id=a.Id,
+            //    AssetName = a.AssetName,
+            //    SerialNumber = a.SerialNumber,
+            //    AssetCategory = a.AssetCategory,
+            //    ReceivedDate = a.ReceivedDate,
+            //    IsActive = a.IsActive,
+            //    DepartmentId = a.DepartmentId,
+            //    DepartmentName = a.Department?.Name, 
+            //    TagId = a.Tag?.Id,
+            //    IsActivated= a.IsActivated,
+            //    TagName = a.Tag?.MacAddress,        
+            //    Description = a.Description
+            //});
+
             return new ResponseData<IEnumerable<AssetReadDto>>
             {
                 IsSuccess = true,
@@ -176,11 +181,6 @@ public class AssetService : IAssetService
 
     }
 
-    
-
-    
-
-
 
     public async Task<ResponseData<AssetReadDto>> GetAsync(Guid id)
     {
@@ -189,7 +189,7 @@ public class AssetService : IAssetService
         {
             //var asset = await _assetService.GetAsync(id);
 
-            var asset = await _assetService.GetQueryable()
+            var asset = await _assetRepo.GetQueryable()
                                      .Include(a => a.Department)
                                      .Include(a => a.Tag)
                                      .FirstOrDefaultAsync(a => a.Id == id);
@@ -202,21 +202,24 @@ public class AssetService : IAssetService
             }
 
 
-            var assetDto = new AssetReadDto()
-            {
-                Id = asset.Id,
-                AssetName = asset.AssetName,
-                AssetCategory = asset.AssetCategory,
-                CreatedAt = asset.CreatedAt,
-                ReceivedDate = asset.ReceivedDate,
-                DepartmentId = asset.DepartmentId,
-                DepartmentName = asset.Department?.Name, 
-                SerialNumber = asset.SerialNumber,
-                Description = asset.Description,
-                IsActivated = asset.IsActivated,
-                TagId = asset.Tag?.Id,                   
-                TagName = asset.Tag?.MacAddress          
-            };
+            var assetDto = asset.Adapt<AssetReadDto>();
+
+
+            //new AssetReadDto()
+            //{
+            //    Id = asset.Id,
+            //    AssetName = asset.AssetName,
+            //    AssetCategory = asset.AssetCategory,
+            //    CreatedAt = asset.CreatedAt,
+            //    ReceivedDate = asset.ReceivedDate,
+            //    DepartmentId = asset.DepartmentId,
+            //    DepartmentName = asset.Department?.Name, 
+            //    SerialNumber = asset.SerialNumber,
+            //    Description = asset.Description,
+            //    IsActivated = asset.IsActivated,
+            //    TagId = asset.Tag?.Id,                   
+            //    TagName = asset.Tag?.MacAddress          
+            //};
 
 
             return new ResponseData<AssetReadDto>
@@ -240,7 +243,7 @@ public class AssetService : IAssetService
         _logger.LogInformation("UpdateAsync called for AssetId: {Id}", id);
         try
         {
-            var asset = await _assetService.GetAsync(id);
+            var asset = await _assetRepo.GetAsync(id);
 
             if (asset == null)
             {
@@ -258,7 +261,7 @@ public class AssetService : IAssetService
             asset.ReceivedDate = dto.ReceivedDate;
 
 
-            var result = await _assetService.UpdateAsync(asset);
+            var result = await _assetRepo.UpdateAsync(asset);
 
             if (result)
             {
@@ -287,7 +290,7 @@ public class AssetService : IAssetService
         {
             //var asset = await _assetService.GetAsync(id);
 
-            var asset = await _assetService.GetQueryable()
+            var asset = await _assetRepo.GetQueryable()
                         .Include(a => a.Tag)
                         .FirstOrDefaultAsync(a => a.Id == id);
 
@@ -308,7 +311,7 @@ public class AssetService : IAssetService
 
             asset.IsActivated = isActivated;
 
-            var result = await _assetService.UpdateAsync(asset);
+            var result = await _assetRepo.UpdateAsync(asset);
 
             if (result)
             {
@@ -329,6 +332,89 @@ public class AssetService : IAssetService
     }
 
 
+
+    public async Task<(Stream? Stream, string FileName)> ExportToExcelAsync()
+    {
+        _logger.LogInformation("Exporting all Assets to Excel");
+
+        try
+        {
+            var assets = await _assetRepo
+           .GetQueryable()
+           .Include(a => a.Department) // join Department table
+           .Include(a => a.Tag)        // join Tag table (optional)
+           .Select(x => new
+           {
+               x.Id,
+               x.AssetName,
+               x.SerialNumber,
+               x.AssetCategory,
+               x.ReceivedDate,
+               x.IsActive,
+               x.IsActivated,
+               DepartmentId = x.Department != null ? x.Department.Id : Guid.Empty,
+               DepartmentName = x.Department != null ? x.Department.Name : string.Empty,
+               MacAddress = x.Tag!=null ? x.Tag.MacAddress:string.Empty,
+              
+           }).ToListAsync();
+
+            if (!assets.Any())
+            {
+                _logger.LogWarning("No assets found to export.");
+                return (null, string.Empty);
+            }
+
+            using var workbook = new XLWorkbook();
+            var worksheet = workbook.Worksheets.Add("Assets");
+
+            // Header row
+            worksheet.Cell(1, 1).Value = "Asset ID";
+            worksheet.Cell(1, 2).Value = "Asset Name";
+            worksheet.Cell(1, 3).Value = "Serial Number";
+            worksheet.Cell(1, 4).Value = "Asset Category";
+            worksheet.Cell(1, 5).Value = "Received Date";
+            worksheet.Cell(1, 6).Value = "Is Active";
+            worksheet.Cell(1, 7).Value = "Is Activated";
+            worksheet.Cell(1, 8).Value = "Department ID";
+            worksheet.Cell(1, 9).Value = "Department Name";
+            worksheet.Cell(1, 10).Value = "MAC Address";
+            
+
+            // Data rows
+            var dataToInsert = assets.Select(a => new object[]
+            {
+            a.Id,
+            a.AssetName,
+            a.SerialNumber,
+            a.AssetCategory,
+            a.ReceivedDate,
+            a.IsActive,
+            a.IsActivated,
+            a.DepartmentId,
+            a.DepartmentName ?? string.Empty,
+            a.MacAddress ?? string.Empty
+            });
+
+            worksheet.Cell(2, 1).InsertData(dataToInsert);
+            worksheet.Columns().AdjustToContents();
+            worksheet.Column(5).Style.DateFormat.SetFormat("yyyy-MM-dd");
+
+            var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+            stream.Position = 0;
+
+            var fileName = $"Assets_Export_{DateTime.UtcNow:yyyyMMdd_HHmmss}.xlsx";
+            _logger.LogInformation("Successfully created asset export file: {FileName}", fileName);
+
+            return (stream, fileName);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An unexpected error occurred during asset export.");
+            return (null, string.Empty);
+        }
+    }
+
     public async Task<ResponseData<PagedResponseDto<AssetReadDto>>> GetListAsync(PaginationAndFilterRequest filter)
     {
         _logger.LogInformation(
@@ -338,9 +424,9 @@ public class AssetService : IAssetService
 
         try
         {
-            var query = _assetService.GetQueryable();
+            var query = _assetRepo.GetQueryable();
 
-            
+
             query = query.Include(a => a.Department);
 
             query = query.Include(a => a.Tag);
@@ -358,7 +444,7 @@ public class AssetService : IAssetService
                 );
             }
 
-           
+
 
             if (!string.IsNullOrWhiteSpace(filter.SortOrder))
             {
@@ -379,31 +465,35 @@ public class AssetService : IAssetService
             }
 
             var totalCount = await query.CountAsync();
-            
+
             // Pagination
             var assets = await query
-                .Select(x => new AssetReadDto
-                {
-                    Id = x.Id,
-                    AssetName = x.AssetName,
-                    AssetCategory = x.AssetCategory,
-                    CreatedAt = x.CreatedAt,
-                    ReceivedDate = x.ReceivedDate,
-                    DepartmentId = x.DepartmentId,
-                    DepartmentName = x.Department != null ? x.Department.Name : null,
-                    SerialNumber = x.SerialNumber,
-                    Description = x.Description,
-                    IsActivated = x.IsActivated,
-                    TagId = x.Tag != null ? x.Tag.Id : (Guid?)null,
-                    TagName = x.Tag != null ? x.Tag.MacAddress : null
+
+                .Select(x => x.Adapt<AssetReadDto>())
+                
+                //x => new AssetReadDto
+                //{
+                //    Id = x.Id,
+                //    AssetName = x.AssetName,
+                //    AssetCategory = x.AssetCategory,
+                //    CreatedAt = x.CreatedAt,
+                //    ReceivedDate = x.ReceivedDate,
+                //    DepartmentId = x.DepartmentId,
+                //    DepartmentName = x.Department != null ? x.Department.Name : null,
+                //    SerialNumber = x.SerialNumber,
+                //    Description = x.Description,
+                //    IsActivated = x.IsActivated,
+                //    TagId = x.Tag != null ? x.Tag.Id : (Guid?)null,
+                //    TagName = x.Tag != null ? x.Tag.MacAddress : null
 
 
-                })
+                //})
+
                 .Skip(filter.SkipCount)
                 .Take(filter.MaxResultCount)
                 .ToListAsync();
 
-            
+
 
             _logger.LogInformation(
                 "{AssetCount} Assets retrieved successfully",
@@ -426,9 +516,69 @@ public class AssetService : IAssetService
             _logger.LogError(ex, "Unexpected error while fetching asset.");
 
             return ResponseData<PagedResponseDto<AssetReadDto>>.Exception("An unexpected error occurred");
-            
+
         }
     }
 
+    public async Task<ResponseData<List<AssetCountDto>>> GetDepartmentData()
+    {
+
+        try
+        {
+
+
+            var groupedData = _assetRepo.GetQueryable()
+                              .Include(a => a.Department)
+                              .GroupBy(d => new
+                                {
+                                    d.DepartmentId,
+                                    DepartmentName =  d.Department.Name ,
+
+                                });
+
+
+            var finaldata= await groupedData
+
+                                .Select(g => new AssetCountDto
+                                {
+                                    DepartmentId = g.Key.DepartmentId,  
+                                    DepartmentName = g.Key.DepartmentName,
+
+
+                                    Assets = g.Select(x => x.Adapt<BasicAssetDto>()).ToList(),
+
+                                    //Assets = g.Select(x => new BasicAssetDto
+                                    //{
+                                        
+                                    //    SerialNumber = x.SerialNumber,
+                                    //    AssetName = x.AssetName,
+                                       
+                                    //}).ToList(),
+
+                                    AssetCount = g.Count()
+
+                                })
+
+                                .ToListAsync();
+
+                        return new ResponseData<List<AssetCountDto>>
+                        {
+                            IsSuccess = true,
+                            Data = finaldata
+
+                        };
+        }
+        catch
+        {
+            return new ResponseData<List<AssetCountDto>>
+            {
+                IsSuccess = true,
+                Message="An error occured"
+
+            };
+        }
+
+        
+    }
 
 }

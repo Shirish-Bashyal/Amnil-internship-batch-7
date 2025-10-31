@@ -127,4 +127,34 @@ public class AssetController : Controller
 
         return NotFound(result);
     }
+
+
+
+
+    [HttpGet("ExportExcel")]
+    public async Task<IActionResult> ExportExcel()
+    {
+        var (stream, fileName) = await _assetService.ExportToExcelAsync();
+
+        if (stream == null)
+            return NotFound("No assets available to export.");
+
+        return File(stream,
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    fileName);
+    }
+
+    [HttpGet("ListNew")]
+    public async Task<IActionResult> GetDepartmentData()
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
+        var result = await _assetService.GetDepartmentData();
+
+        if (result.IsSuccess)
+            return Ok(result);
+
+        return NotFound(result);
+    }
 }

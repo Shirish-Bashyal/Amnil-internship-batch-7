@@ -2,7 +2,6 @@
 using AssetManagementSystem.Contract.Interfaces.Service;
 using AssetManagementSystem.Shared.Dtos;
 using AssetManagementSystem.Shared.Dtos.Department;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AssetManagementSystem.API.Controllers;
@@ -10,8 +9,10 @@ namespace AssetManagementSystem.API.Controllers;
 [Route("api/[controller]")]
 public class DepartmentController : ControllerBase
 {
+
     private readonly IDepartmentService _departmentService;
     public DepartmentController(IDepartmentService departmentService)
+
     {
         _departmentService = departmentService;
     }
@@ -34,6 +35,7 @@ public class DepartmentController : ControllerBase
 
         return NotFound(result);
     }
+
 
     [HttpGet]
 
@@ -86,6 +88,7 @@ public class DepartmentController : ControllerBase
 
     }
 
+
     [HttpDelete("{id}")]
     public async Task<ActionResult<ResponseData<bool>>> DeleteAsync(Guid id)
     {
@@ -99,5 +102,6 @@ public class DepartmentController : ControllerBase
 
         return NotFound(result);
     }
+
 
 }

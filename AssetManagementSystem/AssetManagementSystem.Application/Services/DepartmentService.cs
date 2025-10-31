@@ -5,13 +5,7 @@ using AssetManagementSystem.Shared.Dtos;
 using AssetManagementSystem.Shared.Dtos.Department;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using Mapster;
 
 namespace AssetManagementSystem.Application.Services;
 
@@ -127,14 +121,22 @@ public class DepartmentService : IDepartmentService
                 
 
             }
-            var DepartmentDto = departments.Select(u => new DepartmentReadDto
-            {
-                Id = u.Id,
-                Name = u.Name,
-                Description=u.Description,
-                CreatedAt=u.CreatedAt,
-                IsActive=u.IsActive,
-            });
+
+
+
+            var DepartmentDto = departments.Select(x => x.Adapt<DepartmentReadDto>()).ToList();
+
+
+
+            //    departments.Select(u => new DepartmentReadDto
+            //{
+            //    Id = u.Id,
+            //    Name = u.Name,
+            //    Description=u.Description,
+            //    CreatedAt=u.CreatedAt,
+            //    IsActive=u.IsActive,
+            //});
+
 
             return new ResponseData<IEnumerable<DepartmentReadDto>>
             {
@@ -165,14 +167,16 @@ public class DepartmentService : IDepartmentService
                 
             }
 
-            var DepartmentDto =  new DepartmentReadDto
-            {
-                Id = department.Id,
-                Name = department.Name,
-                Description= department.Description,
-                CreatedAt= department.CreatedAt,
+            var DepartmentDto = department.Adapt<DepartmentReadDto>();
 
-            };
+            //var DepartmentDto =  new DepartmentReadDto
+            //{
+            //    Id = department.Id,
+            //    Name = department.Name,
+            //    Description= department.Description,
+            //    CreatedAt= department.CreatedAt,
+
+            //};
 
             return new ResponseData<DepartmentReadDto>
             {
