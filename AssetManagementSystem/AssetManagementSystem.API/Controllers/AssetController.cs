@@ -1,4 +1,5 @@
 ﻿using AssetManagementSystem.Contracts.Assets;
+using AssetManagementSystem.Shared.Constants;
 using AssetManagementSystem.Shared.Dtos;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,12 +24,13 @@ public class AssetController : ControllerBase
     /// </summary>
 
     [HttpPost]
-    public async Task<ActionResult<ResponseDto>> Create([FromBody] CreateAssetDto asset)
+    public async Task<ActionResult<ResponseDto>> Create([FromForm] CreateAssetDto asset)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
+
         var createdAsset = await _assetService.CreateAsync(asset);
 
         return StatusCode(createdAsset.StatusCode, createdAsset);

@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="5.0.17" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\AssetManagementSystem.Domain\AssetManagementSystem.Domain.csproj" />
     <ProjectReference Include="..\AssetManagementSystem.Shared\AssetManagementSystem.Shared.csproj" />
   </ItemGroup>

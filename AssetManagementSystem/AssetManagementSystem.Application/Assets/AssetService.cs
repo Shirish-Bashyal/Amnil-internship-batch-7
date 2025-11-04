@@ -4,6 +4,7 @@ using AssetManagementSystem.Domain.Entities.Assets;
 using AssetManagementSystem.Domain.Entities.Categories;
 using AssetManagementSystem.Domain.Entities.Departments;
 using AssetManagementSystem.Domain.Entities.Tags;
+using AssetManagementSystem.Shared.Constants;
 using AssetManagementSystem.Shared.Dtos;
 using ClosedXML.Excel;
 using Microsoft.EntityFrameworkCore;
@@ -182,11 +183,28 @@ public class AssetService : IAssetService
 
             return ResponseDto.BadRequest("Asset Name is required.");
         }
+
         if (string.IsNullOrEmpty(input.SerialNumber))
         {
             _logger.LogWarning("Asset creation failed due to invalid Serial Number.");
 
             return ResponseDto.BadRequest("Asset Serial Number is required.");
+        }
+
+        if (input.Image?.Length > AssetConsts.Image.FileSize)
+        {
+            _logger.LogWarning("File Size exceeds");
+
+            return ResponseDto.BadRequest(
+                $"File size exceeds limit of {AssetConsts.Image.FileSize / (1024 * 1024)} mb"
+            );
+        }
+
+        if (input.Image != null && input.Image?.ContentType != AssetConsts.Image.JpegFormat)
+        {
+            _logger.LogWarning("Invalid file format");
+
+            return ResponseDto.BadRequest("Invalid Fileformat, only jpeg  format is accepted");
         }
 
         try
@@ -268,6 +286,13 @@ public class AssetService : IAssetService
             if (input.ReceivedDate.HasValue)
             {
                 asset.ReceivedDate = input.ReceivedDate.Value;
+            }
+
+            if (input.Image != null && input.Image.Length > 0)
+            {
+                using var memoryStream = new MemoryStream();
+                await input.Image.CopyToAsync(memoryStream);
+                asset.Image = memoryStream.ToArray();
             }
 
             var result = await _assetRepo.InsertAsync(asset);

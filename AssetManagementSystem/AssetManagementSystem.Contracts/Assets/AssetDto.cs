@@ -21,4 +21,6 @@ public record AssetDto
     public string? Department { get; set; }
 
     public string? TagMacAddress { get; set; }
+
+    public string? Image { get; set; } //image as base64
 }

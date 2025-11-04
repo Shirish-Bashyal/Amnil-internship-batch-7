@@ -106,6 +106,11 @@ public class ApplicationDbContext : DbContext
                 .OnDelete(DeleteBehavior.Restrict);
 
             entity
+                .Property(x => x.Image)
+                .IsRequired(false)
+                .HasMaxLength(AssetConsts.Image.FileSize);
+
+            entity
                 .HasOne(a => a.Tag)
                 .WithOne(t => t.Asset)
                 .HasForeignKey<Tag>(t => t.AssetId)

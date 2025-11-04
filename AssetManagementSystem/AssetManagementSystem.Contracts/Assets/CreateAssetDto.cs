@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Data;
 using AssetManagementSystem.Shared.Constants;
+using Microsoft.AspNetCore.Http;
 
 namespace AssetManagementSystem.Contracts.Assets;
 
@@ -31,6 +31,8 @@ public record CreateAssetDto
     public string? Description { get; set; }
 
     public DateTime? ReceivedDate { get; set; }
+
+    public IFormFile? Image { get; set; }
 
     [Required(ErrorMessage = "Category is required.")]
     public Guid CategoryId { get; set; }

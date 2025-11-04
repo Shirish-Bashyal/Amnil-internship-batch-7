@@ -19,6 +19,8 @@ public class Asset : DateAuditedEntity<Guid>
 
     public string? Description { get; set; }
 
+    public byte[]? Image { get; set; }
+
     public DateTime? ReceivedDate { get; set; } // date in which the asset was received
     public bool IsActive { get; set; }
 
