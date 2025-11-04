@@ -1,12 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using AssetManagementSystem.Shared.Constants;
 
-namespace AssetManagementSystem.Contracts.Assets;
+namespace AssetManagementSystem.Client.Models.Assets;
 
 /// <summary>
-///DTo to update assets
+/// represents asset details to update
 /// </summary>
-public record UpdateAssetDto
+public class UpdateAssetModel
 {
     [Required(ErrorMessage = "Asset name is required.")]
     [MaxLength(AssetConsts.Name.MaxLength, ErrorMessage = "Name cannot exceed {1} characters.")]
@@ -23,14 +23,14 @@ public record UpdateAssetDto
     )]
     public string SerialNumber { get; set; } = string.Empty;
 
-    [Required]
-    public bool IsActive { get; set; }
-
     [MaxLength(
         AssetConsts.Description.MaxLength,
         ErrorMessage = "Description cannot exceed {1} characters."
     )]
     public string? Description { get; set; }
+
+    public bool IsActive { get; set; }
+
     public DateTime? ReceivedDate { get; set; }
 
     [Required(ErrorMessage = "Category is required.")]

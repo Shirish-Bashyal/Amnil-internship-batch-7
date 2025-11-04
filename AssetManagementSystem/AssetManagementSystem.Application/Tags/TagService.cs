@@ -1,13 +1,8 @@
-﻿using AssetManagementSystem.Contracts.Assets;
-using AssetManagementSystem.Contracts.Repositories;
+﻿using AssetManagementSystem.Contracts.Repositories;
 using AssetManagementSystem.Contracts.Tags;
-using AssetManagementSystem.Domain.Entities.Assets;
 using AssetManagementSystem.Domain.Entities.Tags;
-using AssetManagementSystem.Shared.Constants.Enums;
 using AssetManagementSystem.Shared.Dtos;
 using ClosedXML.Excel;
-using DocumentFormat.OpenXml.Office2010.Excel;
-using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -35,8 +30,8 @@ public class TagService : ITagService
     {
         _logger.LogInformation("Tag creation started for MAC: {MacAddress}", input.MacAddress);
 
-        input.MacAddress = input.MacAddress.Trim().ToUpper();
-        if (string.IsNullOrEmpty(input.MacAddress))
+        var macAddress = input.MacAddress.Trim().ToUpper();
+        if (string.IsNullOrEmpty(macAddress))
         {
             _logger.LogWarning("Tag creation failed due to missing MAC address.");
             return ResponseDto.BadRequest("Mac Address is required");
@@ -46,14 +41,14 @@ public class TagService : ITagService
         {
             var duplicateMac = await _tagRepo
                 .GetQueryable()
-                .AnyAsync(x => x.MacAddress == input.MacAddress);
+                .AnyAsync(x => x.MacAddress == macAddress);
             if (duplicateMac)
             {
-                _logger.LogWarning("Duplicate MAC address found: {MacAddress}", input.MacAddress);
+                _logger.LogWarning("Duplicate MAC address found: {MacAddress}", macAddress);
                 return ResponseDto.BadRequest("Mac Address already exists.");
             }
 
-            var tag = new Tag { MacAddress = input.MacAddress, IsActive = true };
+            var tag = new Tag { MacAddress = macAddress, IsActive = true };
 
             var result = await _tagRepo.InsertAsync(tag);
 
@@ -61,10 +56,10 @@ public class TagService : ITagService
             {
                 Id = result.Id,
                 IsActive = result.IsActive,
-                MacAddress = result.MacAddress,
+                MacAddress = macAddress,
             };
 
-            _logger.LogInformation("Tag {MacAddress} created successfully.", input.MacAddress);
+            _logger.LogInformation("Tag {MacAddress} created successfully.", macAddress);
 
             return ResponseDto<TagDto>.Created(createdTag, "Tag created successfully.");
         }
@@ -171,12 +166,17 @@ public class TagService : ITagService
                 query = query.Where(x => x.MacAddress.Contains(filter.SearchTerm));
             }
 
+            if (filter.IsActive != null)
+            {
+                query = query.Where(x => x.IsActive == filter.IsActive);
+            }
+
             if (!string.IsNullOrWhiteSpace(filter.SortOrder))
             {
                 query = filter.SortOrder switch
                 {
-                    "macAddress_desc" => query.OrderByDescending(u => u.MacAddress),
-                    "macAddress_asc" => query.OrderBy(x => x.MacAddress),
+                    "name_desc" => query.OrderByDescending(u => u.MacAddress),
+                    "name_asc" => query.OrderBy(x => x.MacAddress),
 
                     _ => query.OrderByDescending(u => u.MacAddress)
                 };
@@ -224,8 +224,8 @@ public class TagService : ITagService
     {
         _logger.LogDebug("Updating Tag with Id {TagId} ", id);
 
-        input.MacAddress = input.MacAddress.Trim().ToUpper();
-        if (string.IsNullOrEmpty(input.MacAddress))
+        var macAddress = input.MacAddress.Trim().ToUpper();
+        if (string.IsNullOrEmpty(macAddress))
         {
             _logger.LogWarning("Tag update failed due to invalid Mac address");
 
@@ -244,15 +244,15 @@ public class TagService : ITagService
 
             var duplicateMac = await _tagRepo
                 .GetQueryable()
-                .AnyAsync(x => x.Id != id && x.MacAddress == input.MacAddress);
+                .AnyAsync(x => x.Id != id && x.MacAddress == macAddress);
             if (duplicateMac)
             {
-                _logger.LogWarning("Mac Address {MacAddress} already exists", input.MacAddress);
+                _logger.LogWarning("Mac Address {MacAddress} already exists", macAddress);
 
                 return ResponseDto.BadRequest("Mac Address already exists.");
             }
 
-            tag.MacAddress = input.MacAddress;
+            tag.MacAddress = macAddress;
             tag.IsActive = input.IsActive;
 
             var isUpdated = await _tagRepo.UpdateAsync(tag);
@@ -322,6 +322,66 @@ public class TagService : ITagService
         {
             _logger.LogError(ex, "An unexpected error occurred during Tags export.");
             return (null, string.Empty);
+        }
+    }
+
+    public async Task<ResponseDto> GetAvailableListAsync()
+    {
+        _logger.LogInformation("Fetching all active and unassigned tags");
+        try
+        {
+            var tags = await _tagRepo
+                .GetQueryable()
+                .Where(x => x.IsActive && x.Asset == null)
+                .Select(x => new TagDto
+                {
+                    Id = x.Id,
+                    IsActive = x.IsActive,
+                    MacAddress = x.MacAddress,
+                })
+                .ToListAsync();
+
+            _logger.LogInformation("Tags fetched successfully");
+            return ResponseDto<List<TagDto>>.Success(tags, "Tags fetched successfully");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An unexpected error occured during fetching Tags");
+            return ResponseDto.InternalServerError(
+                "An unexpected error occured during fetching Tags"
+            );
+        }
+    }
+
+    public async Task<ResponseDto> ChangeStatusAsync(Guid id, bool status)
+    {
+        _logger.LogInformation("Changing status of Tag {TagId} to ", id);
+        try
+        {
+            var tag = await _tagRepo.GetAsync(id);
+
+            if (tag == null)
+            {
+                _logger.LogInformation("Tag {TagId} not found", id);
+                return ResponseDto.NotFound("Tag not found.");
+            }
+
+            tag.IsActive = status;
+            var result = await _tagRepo.UpdateAsync(tag);
+            if (result)
+            {
+                _logger.LogInformation(" Status of Tag {TagId}changed successfully", id);
+                return ResponseDto.Success("Status chnaged Successfully");
+            }
+
+            _logger.LogError("An unexpected error occured");
+            return ResponseDto.InternalServerError("An Unexpected Error Occured");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An unexpected error occured");
+
+            return ResponseDto.InternalServerError("An unexpected error occured");
         }
     }
 }

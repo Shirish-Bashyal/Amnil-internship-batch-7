@@ -1,0 +1,88 @@
+﻿@using AssetManagementSystem.Client.Models.Assets
+﻿
+@model AssetViewModel
+<h1>Asset Details</h1>
+
+
+
+
+<div>
+    <h4>Asset</h4>
+    <hr />
+
+    <table class="table table-bordered">
+
+        <tr>
+            <th>Id</th>
+            <td>@Model.Id</td>
+        </tr>
+        <tr>
+            <th>Name</th>
+            <td>@Model.Name</td>
+
+
+        </tr>
+        <tr>
+            <th>Serial Number</th>
+            <td>@Model.SerialNumber</td>
+
+        </tr>
+        <tr>
+            <th>Description</th>
+            <td style="white-space: normal; word-break: break-word; max-width: 400px;">
+                @(!string.IsNullOrWhiteSpace(Model.Description) ? Model.Description : "-----")
+            </td>
+        </tr>
+
+
+        <tr>
+            <th>Received Date</th>
+            <td>
+                @(Model.ReceivedDate.HasValue
+                                ? Model.ReceivedDate.Value.ToLocalTime().ToString("dd MMM yyyy")
+                                : "-----")
+            </td>
+          
+
+        </tr>
+
+        <tr>
+            <th>Category</th>
+            <td>@Model.Category</td>
+
+        </tr>
+
+        <tr>
+            <th>Department</th>
+            <td>@(!string.IsNullOrWhiteSpace(Model.Department) ? Model.Department : "-----") </td>
+
+        </tr>
+
+        <tr>
+            <th>Is Active</th>
+            <td>@Model.IsActive</td>
+
+        </tr>
+
+        <tr>
+            <th>Tags MacAddress</th>
+            <td>@(!string.IsNullOrWhiteSpace(Model.TagMacAddress) ? Model.TagMacAddress : "-----") </td>
+
+
+        </tr>
+
+    </table>
+    <div class="col-12 mt-3 d-flex justify-content-between">
+        <a asp-action="Index" class="btn btn-secondary px-4">
+            <i class="bi bi-arrow-left me-1"></i> Back to List
+        </a>
+       
+    </div>
+
+   
+
+
+
+
+
+</div>

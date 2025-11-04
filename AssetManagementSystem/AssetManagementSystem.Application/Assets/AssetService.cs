@@ -3,6 +3,7 @@ using AssetManagementSystem.Contracts.Repositories;
 using AssetManagementSystem.Domain.Entities.Assets;
 using AssetManagementSystem.Domain.Entities.Categories;
 using AssetManagementSystem.Domain.Entities.Departments;
+using AssetManagementSystem.Domain.Entities.Tags;
 using AssetManagementSystem.Shared.Dtos;
 using ClosedXML.Excel;
 using Microsoft.EntityFrameworkCore;
@@ -18,6 +19,7 @@ public class AssetService : IAssetService
     private readonly IGenericRepository<Asset> _assetRepo;
     private readonly IGenericRepository<Category> _categoryRepo;
     private readonly IGenericRepository<Department> _departmentRepo;
+    private readonly IGenericRepository<Tag> _tagRepo;
 
     private readonly ILogger<AssetService> _logger;
 
@@ -25,13 +27,15 @@ public class AssetService : IAssetService
         IGenericRepository<Asset> assetRepo,
         ILogger<AssetService> logger,
         IGenericRepository<Category> categoryRepo,
-        IGenericRepository<Department> departmentRepo
+        IGenericRepository<Department> departmentRepo,
+        IGenericRepository<Tag> tagRepo
     )
     {
         _assetRepo = assetRepo;
         _logger = logger;
         _categoryRepo = categoryRepo;
         _departmentRepo = departmentRepo;
+        _tagRepo = tagRepo;
     }
 
     /// <summary>
@@ -41,18 +45,18 @@ public class AssetService : IAssetService
     {
         _logger.LogDebug("Updating Asset with Id {AssetId} ", id);
 
-        input.Name = input.Name.Trim();
-        input.SerialNumber = input.SerialNumber.Trim();
-        input.Description = input.Description?.Trim();
+        var name = input.Name.Trim();
+        var serialNumber = input.SerialNumber.Trim();
+        var description = input.Description?.Trim();
 
-        if (string.IsNullOrEmpty(input.Name))
+        if (string.IsNullOrWhiteSpace(name))
         {
             _logger.LogWarning("Asset Update failed due to invalid Name.");
 
             return ResponseDto.BadRequest("Asset Name is required.");
         }
 
-        if (string.IsNullOrEmpty(input.SerialNumber))
+        if (string.IsNullOrWhiteSpace(serialNumber))
         {
             _logger.LogWarning("Asset update failed due to invalid Serial Number.");
 
@@ -71,28 +75,26 @@ public class AssetService : IAssetService
 
             var duplicateName = await _assetRepo
                 .GetQueryable()
-                .AnyAsync(x => x.Id != id && x.NormalizedName == input.Name.ToUpper());
+                .AnyAsync(x => x.Id != id && x.NormalizedName == name.ToUpper());
 
             if (duplicateName)
             {
                 _logger.LogWarning(
                     "Asset with Serial Number {SerialNumber} update failed. Asset Name  already exists.",
-                    asset.SerialNumber
+                    serialNumber
                 );
                 return ResponseDto.BadRequest("Asset Name Already Exists");
             }
 
             var duplicateSerialNumber = await _assetRepo
                 .GetQueryable()
-                .AnyAsync(x =>
-                    x.Id != id && x.NormalizedSerialNumber == input.SerialNumber.ToUpper()
-                );
+                .AnyAsync(x => x.Id != id && x.NormalizedSerialNumber == serialNumber.ToUpper());
 
             if (duplicateSerialNumber)
             {
                 _logger.LogWarning(
                     "Asset with Serial Number {SerialNumber} update failed. Asset Serial Number already exists.",
-                    asset.SerialNumber
+                    serialNumber
                 );
 
                 return ResponseDto.BadRequest("Asset Serial Number already exists");
@@ -123,7 +125,7 @@ public class AssetService : IAssetService
                 {
                     _logger.LogWarning(
                         "Asset with Serial Number {SerialNumber} update failed. {DepartmentId} Department not found.",
-                        asset.SerialNumber,
+                        serialNumber,
                         input.DepartmentId
                     );
 
@@ -133,13 +135,14 @@ public class AssetService : IAssetService
                 asset.DepartmentId = input.DepartmentId;
             }
 
-            asset.Name = input.Name;
-            asset.NormalizedName = input.Name.ToUpper();
-            asset.SerialNumber = input.SerialNumber;
-            asset.NormalizedSerialNumber = input.SerialNumber.ToUpper();
+            asset.Name = name;
+            asset.NormalizedName = name.ToUpper();
+            asset.SerialNumber = serialNumber;
+            asset.NormalizedSerialNumber = serialNumber.ToUpper();
             asset.CategoryId = input.CategoryId;
-            asset.IsActive = true;
-            asset.Description = input.Description;
+            asset.IsActive = input.IsActive;
+            asset.Description = description;
+            asset.ReceivedDate = input.ReceivedDate;
 
             var isUpdated = await _assetRepo.UpdateAsync(asset);
             if (isUpdated)
@@ -166,9 +169,12 @@ public class AssetService : IAssetService
     /// </summary>
     public async Task<ResponseDto> CreateAsync(CreateAssetDto input)
     {
-        input.Name = input.Name.Trim();
-        input.SerialNumber = input.SerialNumber.Trim();
-        input.Description = input.Description?.Trim();
+        input = input with
+        {
+            Name = input.Name.Trim(),
+            SerialNumber = input.SerialNumber.Trim(),
+            Description = input.Description?.Trim(),
+        };
 
         if (string.IsNullOrEmpty(input.Name))
         {
@@ -180,14 +186,17 @@ public class AssetService : IAssetService
         {
             _logger.LogWarning("Asset creation failed due to invalid Serial Number.");
 
-            return ResponseDto.BadRequest("Asset Serial Number is required");
+            return ResponseDto.BadRequest("Asset Serial Number is required.");
         }
 
         try
         {
+            var normalizedName = input.Name.ToUpper();
+            var normalizedSerialNumber = input.SerialNumber.ToUpper();
+
             var duplicateName = await _assetRepo
                 .GetQueryable()
-                .AnyAsync(x => x.NormalizedName == input.Name.ToUpper());
+                .AnyAsync(x => x.NormalizedName == normalizedName);
             if (duplicateName)
             {
                 _logger.LogWarning(
@@ -200,7 +209,7 @@ public class AssetService : IAssetService
 
             var duplicateSerialNumber = await _assetRepo
                 .GetQueryable()
-                .AnyAsync(x => x.NormalizedSerialNumber == input.SerialNumber.ToUpper());
+                .AnyAsync(x => x.NormalizedSerialNumber == normalizedSerialNumber);
             if (duplicateSerialNumber)
             {
                 _logger.LogWarning(
@@ -211,11 +220,11 @@ public class AssetService : IAssetService
                 return ResponseDto.BadRequest("Asset Serial Number already exists");
             }
 
-            var categoryExists = await _categoryRepo
+            var hasCategory = await _categoryRepo
                 .GetQueryable()
                 .AnyAsync(x => x.Id == input.CategoryId);
 
-            if (!categoryExists)
+            if (!hasCategory)
             {
                 _logger.LogWarning(
                     "Asset with Serial Number {SerialNumber} creation failed.{CategoryId} category not found.",
@@ -249,9 +258,9 @@ public class AssetService : IAssetService
             }
 
             asset.Name = input.Name;
-            asset.NormalizedName = input.Name.ToUpper();
+            asset.NormalizedName = normalizedName;
             asset.SerialNumber = input.SerialNumber;
-            asset.NormalizedSerialNumber = input.SerialNumber.ToUpper();
+            asset.NormalizedSerialNumber = normalizedSerialNumber;
             asset.CategoryId = input.CategoryId;
             asset.IsActive = true;
             asset.Description = input.Description;
@@ -290,8 +299,6 @@ public class AssetService : IAssetService
     /// <summary>
     /// Deletes a Asset based on Id.
     /// </summary>
-
-
     public async Task<ResponseDto> DeleteAsync(Guid id)
     {
         _logger.LogDebug("Deleting Asset with Id: {AssetId}", id);
@@ -315,7 +322,7 @@ public class AssetService : IAssetService
             }
 
             _logger.LogWarning(
-                " Asset with Id {AssetId} not deletd, Unexpected error while ddeleting asset.",
+                " Asset with Id {AssetId} not deleted, Unexpected error while deleting asset.",
                 id
             );
 
@@ -336,29 +343,13 @@ public class AssetService : IAssetService
     /// <summary>
     /// Retrives all Assets
     /// </summary>
-
     public async Task<ResponseDto> GetAllAsync()
     {
         _logger.LogDebug("Fetching all Asset");
 
         try
         {
-            var assets = await _assetRepo
-                .GetQueryable()
-                .Select(x => new AssetDto
-                {
-                    Id = x.Id,
-                    Name = x.Name,
-                    SerialNumber = x.SerialNumber,
-                    DepartmentId = x.DepartmentId,
-                    CategoryId = x.CategoryId,
-                    Description = x.Description,
-                    IsActive = x.IsActive,
-                    ReceivedDate = x.ReceivedDate,
-                    Category = x.Category.Name,
-                    Department = x.Department.Name
-                })
-                .ToListAsync();
+            var assets = await _assetRepo.GetQueryable().ToDto().ToListAsync();
 
             _logger.LogInformation(" Assets retrieved successfully");
 
@@ -380,7 +371,6 @@ public class AssetService : IAssetService
     /// <summary>
     ///  Retrive a Asset based on Id
     /// </summary>
-
     public async Task<ResponseDto> GetAsync(Guid id)
     {
         _logger.LogDebug("Fetching Asset by id: {AssetId}", id);
@@ -390,19 +380,7 @@ public class AssetService : IAssetService
             var asset = await _assetRepo
                 .GetQueryable()
                 .Where(x => x.Id == id)
-                .Select(x => new AssetDto
-                {
-                    Id = x.Id,
-                    Name = x.Name,
-                    SerialNumber = x.SerialNumber,
-                    DepartmentId = x.DepartmentId,
-                    CategoryId = x.CategoryId,
-                    Description = x.Description,
-                    IsActive = x.IsActive,
-                    ReceivedDate = x.ReceivedDate,
-                    Category = x.Category.Name,
-                    Department = x.Department.Name
-                })
+                .ToDto()
                 .FirstOrDefaultAsync();
 
             if (asset == null)
@@ -429,7 +407,7 @@ public class AssetService : IAssetService
     /// <summary>
     /// Retrives user with pagination
     /// </summary>
-    public async Task<ResponseDto> GetListAsync(PagedFilterRequestDto filter)
+    public async Task<ResponseDto> GetListAsync(PagedFilterRequestDto filter, AssetFilter input)
     {
         _logger.LogInformation(
             "Fetching {AssetCount} Asset with pagination",
@@ -437,47 +415,16 @@ public class AssetService : IAssetService
         );
         try
         {
-            var query = _assetRepo.GetQueryable();
+            var query = _assetRepo
+                .GetQueryable()
+                .Search(filter.SearchTerm)
+                .Filter(input.CategoryId, filter.IsActive)
+                .Sort(filter.SortOrder);
 
-            filter.SearchTerm = filter.SearchTerm?.Trim().ToUpper();
-
-            if (!string.IsNullOrEmpty(filter.SearchTerm))
-            {
-                query = query.Where(x =>
-                    x.NormalizedName.Contains(filter.SearchTerm)
-                    || x.NormalizedSerialNumber.Contains(filter.SearchTerm)
-                );
-            }
-            if (!string.IsNullOrWhiteSpace(filter.SortOrder))
-            {
-                query = filter.SortOrder switch
-                {
-                    "name_desc" => query.OrderByDescending(u => u.Name),
-                    "name_asc" => query.OrderBy(x => x.Name),
-
-                    "date_asc" => query.OrderBy(u => u.ReceivedDate),
-                    "date_desc" => query.OrderByDescending(u => u.ReceivedDate),
-                    "serialNumber_desc" => query.OrderByDescending(x => x.SerialNumber),
-                    "serialNumber_asc" => query.OrderBy(x => x.SerialNumber),
-                    _ => query.OrderByDescending(u => u.ReceivedDate)
-                };
-            }
             var totalCount = await query.CountAsync();
 
             var assets = await query
-                .Select(x => new AssetDto
-                {
-                    Id = x.Id,
-                    Name = x.Name,
-                    SerialNumber = x.SerialNumber,
-                    DepartmentId = x.DepartmentId,
-                    CategoryId = x.CategoryId,
-                    Description = x.Description,
-                    IsActive = x.IsActive,
-                    ReceivedDate = x.ReceivedDate,
-                    Category = x.Category.Name,
-                    Department = x.Department.Name
-                })
+                .ToDto()
                 .Skip(filter.SkipCount)
                 .Take(filter.MaxResultCount)
                 .ToListAsync();
@@ -511,29 +458,13 @@ public class AssetService : IAssetService
     /// <summary>
     ///  retrives assets data in excel format
     /// </summary>
-
     public async Task<(Stream? Stream, string FileName)> ExportToExcelAsync()
     {
         _logger.LogInformation("Exporting all Assets to Excel");
 
         try
         {
-            var assets = await _assetRepo
-                .GetQueryable()
-                .Select(x => new AssetDto
-                {
-                    Id = x.Id,
-                    Name = x.Name,
-                    SerialNumber = x.SerialNumber,
-                    DepartmentId = x.DepartmentId,
-                    CategoryId = x.CategoryId,
-                    Description = x.Description,
-                    IsActive = x.IsActive,
-                    ReceivedDate = x.ReceivedDate,
-                    Category = x.Category.Name,
-                    Department = x.Department.Name
-                })
-                .ToListAsync();
+            var assets = await _assetRepo.GetQueryable().ToDto().ToListAsync();
 
             if (assets.Count < 1)
             {
@@ -586,6 +517,188 @@ public class AssetService : IAssetService
         {
             _logger.LogError(ex, "An unexpected error occurred during asset export.");
             return (null, string.Empty);
+        }
+    }
+
+    /// <summary>
+    /// changes status of an asset as per given input
+    /// </summary>
+    public async Task<ResponseDto> ChangeStatusAsync(Guid id, bool isActive) //dto
+    {
+        _logger.LogInformation(
+            "Changing Asset status to {IsActive} with Id {AssetId} ",
+            isActive,
+            id
+        );
+
+        try
+        {
+            var asset = await _assetRepo.GetAsync(id);
+
+            if (asset == null)
+            {
+                _logger.LogInformation("Asset with Id {AssetId} not found", id);
+
+                return ResponseDto.NotFound("Asset with Id {AssetId} not found");
+            }
+
+            asset.IsActive = isActive;
+
+            var result = await _assetRepo.UpdateAsync(asset);
+
+            if (result)
+            {
+                _logger.LogInformation(
+                    "Asset with Id {AssetId} changed status to {IsActive}",
+                    id,
+                    isActive
+                );
+                return ResponseDto.Success("Asset  status changed");
+            }
+
+            _logger.LogError("An unexpected error occured while changing status of the asset");
+
+            return ResponseDto.InternalServerError(
+                "An unexpected error occurred while creating the asset."
+            );
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An unexpected error occured while changing status of the asset");
+
+            return ResponseDto.InternalServerError(
+                "An unexpected error occurred while creating the asset."
+            );
+        }
+    }
+
+    /// <summary>
+    /// assigns a tag to an asset
+    /// </summary>
+    /// <param name="input"></param>
+    public async Task<ResponseDto> AssignTagAsync(AssignTagDto input)
+    {
+        _logger.LogInformation(
+            " Assigning Tag {TagId} to Asset {AssetId}",
+            input.TagId,
+            input.AssetId
+        );
+        try
+        {
+            var asset = await _assetRepo
+                .GetQueryable()
+                .Include(x => x.Tag)
+                .Where(x => x.Id == input.AssetId)
+                .FirstOrDefaultAsync();
+
+            if (asset == null)
+            {
+                _logger.LogInformation("Asset with Id {AssetId} not found", input.AssetId);
+
+                return ResponseDto.NotFound("Asset not found");
+            }
+
+            if (asset.Tag != null)
+            {
+                _logger.LogInformation("Asset {AssetId} is already assigned a tag", input.AssetId);
+
+                return ResponseDto.BadRequest("Asset is already assigned a tag");
+            }
+
+            var tag = await _tagRepo
+                .GetQueryable()
+                .Where(x => x.Id == input.TagId && x.IsActive)
+                .FirstOrDefaultAsync();
+
+            if (tag == null)
+            {
+                _logger.LogInformation("Tag {TagId} not found", input.TagId);
+
+                return ResponseDto.NotFound("Tag not found");
+            }
+
+            var isTagAssigned = await _assetRepo.GetQueryable().AnyAsync(x => x.Tag == tag);
+
+            if (isTagAssigned)
+            {
+                _logger.LogInformation(
+                    "Tag {TagId} is already assigned to another asset",
+                    input.TagId
+                );
+                return ResponseDto.BadRequest("Tag is already assigned to another asset");
+            }
+
+            asset.Tag = tag;
+            var result = await _assetRepo.UpdateAsync(asset);
+            if (result)
+            {
+                _logger.LogInformation(
+                    "Asset {AssetId} is assigned with Tag {TagId}",
+                    input.AssetId,
+                    input.TagId
+                );
+                return ResponseDto.Success("Tag assigned sucessfully");
+            }
+
+            _logger.LogError("An unexpected error occured");
+            return ResponseDto.InternalServerError("An Unexpected error occured");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An unexpected error occured");
+            return ResponseDto.InternalServerError("An Unexpected error occured");
+        }
+    }
+
+    /// <summary>
+    /// removes a tag from an asset
+    /// </summary>
+    /// <param name="assetId"></param>
+    /// <returns></returns>
+    public async Task<ResponseDto> UnAssignTagAsync(Guid assetId)
+    {
+        _logger.LogInformation("Unassigning Tag for Asset {AssetId}", assetId);
+        try
+        {
+            var asset = await _assetRepo
+                .GetQueryable()
+                .Include(x => x.Tag)
+                .Where(x => x.Id == assetId)
+                .FirstOrDefaultAsync();
+
+            if (asset == null)
+            {
+                _logger.LogInformation("Asset {AssetId} not found", assetId);
+
+                return ResponseDto.NotFound("Asset not found");
+            }
+
+            if (asset.Tag == null)
+            {
+                _logger.LogInformation("Asset {AssetId} has no Tag Assigned to it", assetId);
+
+                return ResponseDto.BadRequest("Asset has no Tag assigned");
+            }
+
+            asset.Tag = null;
+
+            var result = await _assetRepo.UpdateAsync(asset);
+
+            if (result)
+            {
+                _logger.LogInformation("Tag unassigned for Asset {AssetId}.", assetId);
+
+                return ResponseDto.Success("Tag unassigned");
+            }
+            _logger.LogError("Unexpected Error occured");
+
+            return ResponseDto.InternalServerError("An unexpected error occured");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Unexpected Error occured");
+
+            return ResponseDto.InternalServerError("An unexpected error occured");
         }
     }
 }

@@ -11,4 +11,6 @@ public class PagedFilterRequestDto
     public string? SearchTerm { get; set; }
 
     public string? SortOrder { get; set; }
+
+    public bool? IsActive { get; set; }
 }

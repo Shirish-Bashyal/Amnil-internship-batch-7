@@ -1,9 +1,9 @@
-﻿namespace AssetManagementSystem.Contracts.Assets;
+﻿namespace AssetManagementSystem.Client.Models.Assets;
 
 /// <summary>
-///Dto to return asset details
+/// represents details of asset shown in frontend
 /// </summary>
-public record AssetDto
+public class AssetViewModel
 {
     public Guid Id { get; set; }
     public string Name { get; set; } = string.Empty;
@@ -14,11 +14,10 @@ public record AssetDto
     public DateTime? ReceivedDate { get; set; }
     public bool IsActive { get; set; }
 
-    public Guid? CategoryId { get; set; }
+    public Guid CategoryId { get; set; }
     public string? Category { get; set; } = string.Empty;
 
     public Guid? DepartmentId { get; set; }
     public string? Department { get; set; }
-
     public string? TagMacAddress { get; set; }
 }

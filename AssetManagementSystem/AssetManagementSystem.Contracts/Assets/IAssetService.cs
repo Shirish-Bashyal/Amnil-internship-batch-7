@@ -13,9 +13,15 @@ public interface IAssetService
 
     Task<ResponseDto> GetAsync(Guid id);
 
-    Task<ResponseDto> GetListAsync(PagedFilterRequestDto filter);
+    Task<ResponseDto> GetListAsync(PagedFilterRequestDto filter, AssetFilter input);
 
     Task<ResponseDto> GetAllAsync();
+
+    Task<ResponseDto> ChangeStatusAsync(Guid id, bool isActive);
+
+    Task<ResponseDto> AssignTagAsync(AssignTagDto input);
+
+    Task<ResponseDto> UnAssignTagAsync(Guid assetId);
 
     Task<(Stream? Stream, string FileName)> ExportToExcelAsync();
 }

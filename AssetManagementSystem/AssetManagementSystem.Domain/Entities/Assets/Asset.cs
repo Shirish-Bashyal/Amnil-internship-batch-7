@@ -19,7 +19,7 @@ public class Asset : DateAuditedEntity<Guid>
 
     public string? Description { get; set; }
 
-    public DateTime? ReceivedDate { get; set; } // date in which the department received the asset
+    public DateTime? ReceivedDate { get; set; } // date in which the asset was received
     public bool IsActive { get; set; }
 
     //navigation properties

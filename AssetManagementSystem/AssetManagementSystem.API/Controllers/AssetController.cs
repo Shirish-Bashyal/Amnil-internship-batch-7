@@ -35,12 +35,12 @@ public class AssetController : ControllerBase
     }
 
     /// <summary>
-    /// updates an existing asset.
+    /// Updates an existing asset.
     /// </summary>
-    /// <param name="id"> The Id of the aset to update</param>
-    /// <param name="asset">The details of the aset to update </param>
-    /// <returns> return success status </returns>
-    [HttpPut("id")]
+    /// <param name="id">The Id of the asset to update</param>
+    /// <param name="asset">The details of the asset to update</param>
+    /// <returns>Return success status</returns>
+    [HttpPut("{id}")]
     public async Task<ActionResult<ResponseDto>> Update(Guid id, [FromBody] UpdateAssetDto asset)
     {
         if (!ModelState.IsValid)
@@ -57,12 +57,15 @@ public class AssetController : ControllerBase
     /// <returns> a list of Assets</returns>
 
     [HttpGet("List")]
-    public async Task<ActionResult<ResponseDto>> GetList([FromQuery] PagedFilterRequestDto filter)
+    public async Task<ActionResult<ResponseDto>> GetList(
+        [FromQuery] PagedFilterRequestDto filter,
+        [FromQuery] AssetFilter input
+    )
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        var result = await _assetService.GetListAsync(filter);
+        var result = await _assetService.GetListAsync(filter, input);
 
         return StatusCode(result.StatusCode, result);
     }
@@ -111,5 +114,37 @@ public class AssetController : ControllerBase
             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
             fileName
         );
+    }
+
+    /// <summary>
+    ///changes the status of asset as per input
+    /// </summary>
+
+
+    [HttpPatch("{id}/{isActive}")]
+    public async Task<ActionResult<ResponseDto>> ChangeStatus(Guid id, bool isActive)
+    {
+        var result = await _assetService.ChangeStatusAsync(id, isActive);
+        return StatusCode(result.StatusCode, result);
+    }
+
+    /// <summary>
+    /// Assigns a tag to an entity
+    /// </summary>
+    [HttpPost("Assign-Tag")]
+    public async Task<ActionResult<ResponseDto>> AssignTag(AssignTagDto input)
+    {
+        var result = await _assetService.AssignTagAsync(input);
+        return StatusCode(result.StatusCode, result);
+    }
+
+    /// <summary>
+    /// removes tag from an entity
+    /// </summary>
+    [HttpPost("UnAssign-Tag/{id}")]
+    public async Task<ActionResult<ResponseDto>> UnAssignTag(Guid id)
+    {
+        var result = await _assetService.UnAssignTagAsync(id);
+        return StatusCode(result.StatusCode, result);
     }
 }

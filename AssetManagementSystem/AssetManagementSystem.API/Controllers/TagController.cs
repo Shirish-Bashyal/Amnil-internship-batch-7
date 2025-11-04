@@ -3,7 +3,7 @@ using AssetManagementSystem.Shared.Dtos;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace TagManagementSystem.API.Controllers;
+namespace AssetManagementSystem.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
@@ -19,7 +19,6 @@ public class TagController : ControllerBase
     /// <summary>
     /// creates new Tag
     /// </summary>
-
     [HttpPost]
     public async Task<ActionResult<ResponseDto>> Create([FromBody] CreateTagDto tag)
     {
@@ -38,7 +37,7 @@ public class TagController : ControllerBase
     /// <param name="id"> The Id of the tag to update</param>
     /// <param name="Tag">The details of the tag to update </param>
     /// <returns> return success status </returns>
-    [HttpPut("id")]
+    [HttpPut("{id}")]
     public async Task<ActionResult<ResponseDto>> Update(Guid id, [FromBody] UpdateTagDto tag)
     {
         if (!ModelState.IsValid)
@@ -53,7 +52,6 @@ public class TagController : ControllerBase
     /// Retrives Tags with pagination
     /// </summary>
     /// <returns> a list of Tags</returns>
-
     [HttpGet("List")]
     public async Task<ActionResult<ResponseDto>> GetList([FromQuery] PagedFilterRequestDto filter)
     {
@@ -107,5 +105,28 @@ public class TagController : ControllerBase
             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
             fileName
         );
+    }
+
+    /// <summary>
+    ///gets all active and unassigned tags
+    /// </summary>
+    /// <returns>a list of active and unassigned tags</returns>
+
+    [HttpGet("Available")]
+    public async Task<ActionResult<List<ResponseDto>>> GetAvailableList()
+    {
+        var result = await _tagService.GetAvailableListAsync();
+        return StatusCode(result.StatusCode, result);
+    }
+
+    /// <summary>
+    ///changes status of tag entity
+    /// </summary>
+
+    [HttpPatch("{id}/{isActive}")]
+    public async Task<ActionResult<ResponseDto>> ChangeStatus(Guid id, bool isActive)
+    {
+        var result = await _tagService.ChangeStatusAsync(id, isActive);
+        return StatusCode(result.StatusCode, result);
     }
 }

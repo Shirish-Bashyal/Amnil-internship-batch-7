@@ -14,6 +14,9 @@ public interface ITagService
 
     Task<ResponseDto> GetAsync(Guid id);
 
+    Task<ResponseDto> GetAvailableListAsync();
+
+    Task<ResponseDto> ChangeStatusAsync(Guid id, bool status);
     Task<ResponseDto> GetListAsync(PagedFilterRequestDto filter);
 
     Task<(Stream? Stream, string FileName)> ExportToExcelAsync();

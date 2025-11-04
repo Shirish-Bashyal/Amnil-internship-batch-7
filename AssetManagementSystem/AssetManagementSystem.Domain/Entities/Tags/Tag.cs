@@ -7,7 +7,7 @@ namespace AssetManagementSystem.Domain.Entities.Tags;
 /// <summary>
 ///
 /// </summary>
-public class Tag : Entity<Guid>
+public class Tag : DateAuditedEntity<Guid>
 {
     public string MacAddress { get; set; } = string.Empty;
 

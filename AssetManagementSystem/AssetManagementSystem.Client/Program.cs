@@ -1,7 +1,19 @@
+using Microsoft.AspNetCore.DataProtection.KeyManagement;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+var apiBaseUrl = builder.Configuration["ApiSettings:BaseUrl"];
+
+builder.Services.AddHttpClient(
+    "AssetManagementApi",
+    client =>
+    {
+        client.BaseAddress = new Uri(apiBaseUrl);
+    }
+);
 
 var app = builder.Build();
 
@@ -20,8 +32,6 @@ app.UseRouting();
 
 app.UseAuthorization();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+app.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
