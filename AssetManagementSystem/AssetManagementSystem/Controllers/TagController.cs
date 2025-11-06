@@ -2,11 +2,13 @@
 using AssetManagementSystem.Shared.Dtos;
 using AssetManagementSystem.Shared.Dtos.Department;
 using AssetManagementSystem.Shared.Dtos.Tag;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AssetManagementSystem.API.Controllers;
 
 [Route("api/[controller]")]
+[Authorize(Roles = "Admin")]
 public class TagController : ControllerBase
 {
     private readonly ITagService _tagService;

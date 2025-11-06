@@ -1,4 +1,5 @@
 ﻿using AssetManagementSystem.Contract.Interfaces;
+using AssetManagementSystem.Entity.Entities;
 using AssetManagementSystem.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -38,6 +39,11 @@ public class GenericEfRepository<T> : IGenericRepository<T> where T : class
     public async Task<T?> GetAsync(Guid id)
     {
         return await _db.FindAsync(id);
+    }
+
+    public async Task<User> GetByUserNameAsync(string name)
+    {
+        return await _context.Users.FirstOrDefaultAsync(u => u.UserName == name);
     }
 
     public  IQueryable<T> GetQueryable()

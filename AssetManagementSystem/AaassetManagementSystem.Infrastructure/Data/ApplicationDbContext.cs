@@ -14,9 +14,46 @@ public class ApplicationDbContext : DbContext
     public DbSet<TagModel> Tags { get; set; }
     public DbSet<DepartmentModel> Departments { get; set; }
 
+    public DbSet<User> Users { get; set; }
+    public DbSet<Role> Roles { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<Role>().HasData(
+            new Role
+            {
+                Id = Guid.NewGuid(),
+                RoleName = "Admin",
+                CreatedAt = DateTime.UtcNow,
+                CreatedBy = "System",
+                IsActive = true
+            },
+            new Role
+            {
+                Id = Guid.NewGuid(),
+                RoleName = "User",
+                CreatedAt = DateTime.UtcNow,
+                CreatedBy = "System",
+                IsActive = true
+            }
+        );
+
+        // Role → User (One-to-Many)
+        modelBuilder.Entity<User>()
+            .HasOne(u => u.Role)
+            .WithMany(r => r.Users)
+            .HasForeignKey(u => u.RoleID)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        // Unique constraints
+        modelBuilder.Entity<Role>()
+            .HasIndex(r => r.RoleName)
+            .IsUnique();
+
+        modelBuilder.Entity<User>()
+            .HasIndex(u => u.Email)
+            .IsUnique();
 
         modelBuilder.Entity<DepartmentModel>().HasData(
         new DepartmentModel
@@ -105,6 +142,8 @@ public class ApplicationDbContext : DbContext
         ConfigureBaseModel<TagModel>();
         ConfigureBaseModel<DepartmentModel>();
 
+
+
         // ----------------------
         // Unique constraints
         // ----------------------
@@ -120,6 +159,8 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<DepartmentModel>()
        .HasIndex(d => d.Name)
        .IsUnique();
+
+
         // ----------------------
         // Relationships
         // ----------------------
@@ -139,9 +180,14 @@ public class ApplicationDbContext : DbContext
             .IsRequired(false)                        // optional tag
             .OnDelete(DeleteBehavior.Cascade);
 
+
+
         modelBuilder.Entity<AssetModel>()
         .Property(a => a.IsActivated)
         .HasDefaultValue(true);
+
+
+
     }
 }
 

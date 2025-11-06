@@ -2,11 +2,13 @@
 using AssetManagementSystem.Contract.Interfaces.Service;
 using AssetManagementSystem.Shared.Dtos;
 using AssetManagementSystem.Shared.Dtos.Department;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AssetManagementSystem.API.Controllers;
 
 [Route("api/[controller]")]
+[Authorize(Roles = "Admin")]
 public class DepartmentController : ControllerBase
 {
 

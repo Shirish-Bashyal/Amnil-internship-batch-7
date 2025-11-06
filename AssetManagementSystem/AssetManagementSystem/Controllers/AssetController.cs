@@ -2,11 +2,13 @@
 using AssetManagementSystem.Shared;
 using AssetManagementSystem.Shared.Dtos;
 using AssetManagementSystem.Shared.Dtos.Asset;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AssetManagementSystem.API.Controllers;
 
 [Route("api/[controller]")]
+[Authorize(Roles ="Admin")]
 public class AssetController : Controller
 {
     private readonly IAssetService _assetService;

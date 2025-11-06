@@ -3,6 +3,7 @@ using System;
 using AssetManagementSystem.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AssetManagementSystem.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251105100541_user")]
+    partial class user
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.1");
@@ -130,8 +133,8 @@ namespace AssetManagementSystem.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("a21c533c-6abf-49ab-bfd9-7dbcd569e0ef"),
-                            CreatedAt = new DateTime(2025, 11, 6, 5, 18, 41, 138, DateTimeKind.Utc).AddTicks(6724),
+                            Id = new Guid("1881f2a5-39e5-4db3-88bb-9abecc88a237"),
+                            CreatedAt = new DateTime(2025, 11, 5, 10, 5, 40, 617, DateTimeKind.Utc).AddTicks(5346),
                             CreatedBy = "System",
                             Description = "Handles software, hardware, and infrastructure-related assets.",
                             IsActive = true,
@@ -139,8 +142,8 @@ namespace AssetManagementSystem.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("0e4ef4ea-a36a-460f-b14d-78467f86e9eb"),
-                            CreatedAt = new DateTime(2025, 11, 6, 5, 18, 41, 138, DateTimeKind.Utc).AddTicks(6729),
+                            Id = new Guid("3ec1410a-d735-4516-a3b5-235b905e8b58"),
+                            CreatedAt = new DateTime(2025, 11, 5, 10, 5, 40, 617, DateTimeKind.Utc).AddTicks(5351),
                             CreatedBy = "System",
                             Description = "Manages employee relations and administrative equipment.",
                             IsActive = true,
@@ -148,8 +151,8 @@ namespace AssetManagementSystem.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("4ee9e790-cfe0-4134-981b-908206fe9fb4"),
-                            CreatedAt = new DateTime(2025, 11, 6, 5, 18, 41, 138, DateTimeKind.Utc).AddTicks(6738),
+                            Id = new Guid("0b9c7db2-93d8-4ddd-9842-89bfa0cf2d76"),
+                            CreatedAt = new DateTime(2025, 11, 5, 10, 5, 40, 617, DateTimeKind.Utc).AddTicks(5354),
                             CreatedBy = "System",
                             Description = "Responsible for accounting systems, finance tools, and related devices.",
                             IsActive = true,
@@ -157,8 +160,8 @@ namespace AssetManagementSystem.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("9f0346ce-97be-4009-8e6c-ffe6d48b5408"),
-                            CreatedAt = new DateTime(2025, 11, 6, 5, 18, 41, 138, DateTimeKind.Utc).AddTicks(6740),
+                            Id = new Guid("8b871c99-f8d3-4326-bff5-15cade7e1a6a"),
+                            CreatedAt = new DateTime(2025, 11, 5, 10, 5, 40, 617, DateTimeKind.Utc).AddTicks(5358),
                             CreatedBy = "System",
                             Description = "Oversees logistics, facilities, and maintenance assets.",
                             IsActive = true,
@@ -166,8 +169,8 @@ namespace AssetManagementSystem.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("c09a5e40-9422-486a-ae83-096e1bccc753"),
-                            CreatedAt = new DateTime(2025, 11, 6, 5, 18, 41, 138, DateTimeKind.Utc).AddTicks(6743),
+                            Id = new Guid("ea12d78f-f555-4d26-b289-5da3bc24ec29"),
+                            CreatedAt = new DateTime(2025, 11, 5, 10, 5, 40, 617, DateTimeKind.Utc).AddTicks(5364),
                             CreatedBy = "System",
                             Description = "Manages branding equipment, digital tools, and promotional materials.",
                             IsActive = true,
@@ -216,16 +219,16 @@ namespace AssetManagementSystem.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("a19a80bc-ee82-475d-ac3b-6360c94ea3c2"),
-                            CreatedAt = new DateTime(2025, 11, 6, 5, 18, 41, 138, DateTimeKind.Utc).AddTicks(4497),
+                            Id = new Guid("2df42591-a865-40ee-817d-c2eaf6891ca2"),
+                            CreatedAt = new DateTime(2025, 11, 5, 10, 5, 40, 617, DateTimeKind.Utc).AddTicks(2965),
                             CreatedBy = "System",
                             IsActive = true,
                             RoleName = "Admin"
                         },
                         new
                         {
-                            Id = new Guid("9bbac780-3662-4367-a1bb-15f4a3ef0db4"),
-                            CreatedAt = new DateTime(2025, 11, 6, 5, 18, 41, 138, DateTimeKind.Utc).AddTicks(4501),
+                            Id = new Guid("0c9e30eb-2775-46b8-8fb3-f14a6e808586"),
+                            CreatedAt = new DateTime(2025, 11, 5, 10, 5, 40, 617, DateTimeKind.Utc).AddTicks(2970),
                             CreatedBy = "System",
                             IsActive = true,
                             RoleName = "User"
@@ -322,9 +325,10 @@ namespace AssetManagementSystem.Infrastructure.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("RefereshToken")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime?>("RefereshTokenExpiry")
+                    b.Property<DateTime>("RefereshTokenExpiry")
                         .HasColumnType("TEXT");
 
                     b.Property<Guid?>("RoleID")

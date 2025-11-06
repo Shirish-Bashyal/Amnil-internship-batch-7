@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AssetManagementSystem.Entity.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,7 @@ public interface IGenericRepository<T> where T : class
 {
     Task<T?> GetAsync(Guid id);
 
+    Task<User> GetByUserNameAsync(string name);
     IQueryable<T> GetQueryable();
 
     Task<IEnumerable<T>> GetAllAsync();
