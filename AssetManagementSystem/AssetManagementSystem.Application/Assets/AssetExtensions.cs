@@ -102,7 +102,7 @@ public static class AssetExtensions
             ReceivedDate = x.ReceivedDate,
             Category = x.Category.Name,
             Department = x.Department.Name,
-            TagMacAddress = x.Tag == null ? null : x.Tag.MacAddress
+            TagMacAddress = x.Tags.Select(x => x.MacAddress).ToList(),
         });
     }
 }

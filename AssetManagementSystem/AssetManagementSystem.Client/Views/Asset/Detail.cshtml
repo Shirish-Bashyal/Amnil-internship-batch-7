@@ -1,17 +1,29 @@
 ﻿@using AssetManagementSystem.Client.Models.Assets
-﻿
 @model AssetViewModel
+
 <h1>Asset Details</h1>
-
-
-
 
 <div>
     <h4>Asset</h4>
     <hr />
 
-    <table class="table table-bordered">
+    <div class="mb-3 text-center">
+        @if (Model.ImageDataUri != null)
+        {
+            <img src="@Model.ImageDataUri"
+                 alt="@Model.Name"
+                 class="img-fluid rounded shadow"
+                 style="max-width: 400px; max-height: 300px; object-fit: contain;" />
+        }
+        else
+        {
+            <div class="text-muted" style="height: 300px; line-height: 300px;">
+                No Image Available
+            </div>
+        }
+    </div>
 
+    <table class="table table-bordered">
         <tr>
             <th>Id</th>
             <td>@Model.Id</td>
@@ -19,13 +31,10 @@
         <tr>
             <th>Name</th>
             <td>@Model.Name</td>
-
-
         </tr>
         <tr>
             <th>Serial Number</th>
             <td>@Model.SerialNumber</td>
-
         </tr>
         <tr>
             <th>Description</th>
@@ -33,8 +42,6 @@
                 @(!string.IsNullOrWhiteSpace(Model.Description) ? Model.Description : "-----")
             </td>
         </tr>
-
-
         <tr>
             <th>Received Date</th>
             <td>
@@ -42,47 +49,42 @@
                                 ? Model.ReceivedDate.Value.ToLocalTime().ToString("dd MMM yyyy")
                                 : "-----")
             </td>
-          
-
         </tr>
-
         <tr>
             <th>Category</th>
             <td>@Model.Category</td>
-
         </tr>
-
         <tr>
             <th>Department</th>
-            <td>@(!string.IsNullOrWhiteSpace(Model.Department) ? Model.Department : "-----") </td>
-
+            <td>@(!string.IsNullOrWhiteSpace(Model.Department) ? Model.Department : "-----")</td>
         </tr>
-
         <tr>
             <th>Is Active</th>
             <td>@Model.IsActive</td>
-
         </tr>
 
-        <tr>
-            <th>Tags MacAddress</th>
-            <td>@(!string.IsNullOrWhiteSpace(Model.TagMacAddress) ? Model.TagMacAddress : "-----") </td>
-
-
-        </tr>
-
+        @if (Model.TagMacAddress != null && Model.TagMacAddress.Any())
+        {
+            @for (int i = 0; i < Model.TagMacAddress.Count; i++)
+            {
+                <tr>
+                    <th>@(i == 0 ? "Tags MacAddress" : "")</th>
+                    <td>@Model.TagMacAddress[i]</td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <th>Tags MacAddress</th>
+                <td>-----</td>
+            </tr>
+        }
     </table>
+
     <div class="col-12 mt-3 d-flex justify-content-between">
         <a asp-action="Index" class="btn btn-secondary px-4">
             <i class="bi bi-arrow-left me-1"></i> Back to List
         </a>
-       
     </div>
-
-   
-
-
-
-
-
 </div>

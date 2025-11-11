@@ -23,5 +23,5 @@ public interface IAssetService
 
     Task<ResponseDto> UnAssignTagAsync(Guid assetId);
 
-    Task<(Stream? Stream, string FileName)> ExportToExcelAsync();
+    Task<(Stream? Stream, string? FileName, string? ContentType)> ExportAsync(string format);
 }

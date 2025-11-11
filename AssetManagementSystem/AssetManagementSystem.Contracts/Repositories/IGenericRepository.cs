@@ -14,6 +14,8 @@ public interface IGenericRepository<T>
 
     Task<bool> UpdateAsync(T entity);
 
+    Task<bool> UpdateRangeAsync(IEnumerable<T> entities);
+
     Task<bool> DeleteAsync(T entity);
 
     IQueryable<T> GetQueryable();

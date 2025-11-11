@@ -378,10 +378,10 @@ public class AssetController : Controller
             return RedirectToAction(nameof(Index));
         }
 
-        if (!string.IsNullOrEmpty(result.Data.TagMacAddress))
-        {
-            return View(result.Data);
-        }
+        //if (result.Data.TagMacAddress.Count < 1)
+        //{
+        //    return View(result.Data);
+        //}
 
         var client = _clientFactory.CreateClient("AssetManagementApi");
 
@@ -480,24 +480,33 @@ public class AssetController : Controller
     /// Exports excelsheet containing all Asset details
     /// </summary>
     [HttpGet]
-    public async Task<IActionResult> ExportToExcel()
+    public async Task<IActionResult> Export(string format)
     {
         var client = _clientFactory.CreateClient("AssetManagementApi");
-        var response = await client.GetAsync("asset/export");
+        var response = await client.GetAsync($"asset/export?format={format}");
+
         if (!response.IsSuccessStatusCode)
         {
-            TempData["Error"] = "Failed to export Excel file.";
+            TempData["Error"] = "Failed to export file.";
             return RedirectToAction("Index");
         }
+
         var fileBytes = await response.Content.ReadAsByteArrayAsync();
 
+        // Get filename from response or fallback based on format
         var fileName =
-            response.Content.Headers.ContentDisposition?.FileName?.Trim('"') ?? "Assets.xlsx";
+            response.Content.Headers.ContentDisposition?.FileName?.Trim('"')
+            ?? (format.ToLower() == "pdf" ? "Assets.pdf" : "Assets.xlsx");
 
-        return File(
-            fileBytes,
-            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            fileName
-        );
+        // Get the content type from backend response or fallback
+        var contentType =
+            response.Content.Headers.ContentType?.ToString()
+            ?? (
+                format.ToLower() == "pdf"
+                    ? "application/pdf"
+                    : "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            );
+
+        return File(fileBytes, contentType, fileName);
     }
 }

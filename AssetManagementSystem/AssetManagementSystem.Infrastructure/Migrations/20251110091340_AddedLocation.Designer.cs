@@ -3,6 +3,7 @@ using System;
 using AssetManagementSystem.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AssetManagementSystem.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251110091340_AddedLocation")]
+    partial class AddedLocation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -76,9 +79,6 @@ namespace AssetManagementSystem.Infrastructure.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid?>("UserId")
-                        .HasColumnType("TEXT");
-
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
@@ -93,8 +93,6 @@ namespace AssetManagementSystem.Infrastructure.Migrations
 
                     b.HasIndex("SerialNumber")
                         .IsUnique();
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Assets");
                 });
@@ -270,42 +268,6 @@ namespace AssetManagementSystem.Infrastructure.Migrations
                     b.ToTable("Location");
                 });
 
-            modelBuilder.Entity("AssetManagementSystem.Domain.Entities.Roles.Role", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Role");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("33330933-3783-3333-3333-333333367333"),
-                            CreatedDate = new DateTime(2025, 10, 14, 13, 30, 5, 816, DateTimeKind.Utc),
-                            Name = "Admin"
-                        },
-                        new
-                        {
-                            Id = new Guid("33030933-3783-3233-3333-330933367333"),
-                            CreatedDate = new DateTime(2025, 10, 14, 13, 30, 5, 816, DateTimeKind.Utc),
-                            Name = "Employee"
-                        });
-                });
-
             modelBuilder.Entity("AssetManagementSystem.Domain.Entities.Tags.Tag", b =>
                 {
                     b.Property<Guid>("Id")
@@ -339,41 +301,6 @@ namespace AssetManagementSystem.Infrastructure.Migrations
                     b.ToTable("Tags");
                 });
 
-            modelBuilder.Entity("AssetManagementSystem.Domain.Entities.Users.User", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("RoleId")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Email")
-                        .IsUnique();
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("User");
-                });
-
             modelBuilder.Entity("AssetManagementSystem.Domain.Entities.Assets.Asset", b =>
                 {
                     b.HasOne("AssetManagementSystem.Domain.Entities.Categories.Category", "Category")
@@ -392,18 +319,11 @@ namespace AssetManagementSystem.Infrastructure.Migrations
                         .HasForeignKey("AssetManagementSystem.Domain.Entities.Assets.Asset", "LocationId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("AssetManagementSystem.Domain.Entities.Users.User", "User")
-                        .WithMany("Assets")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
                     b.Navigation("Category");
 
                     b.Navigation("Department");
 
                     b.Navigation("Location");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("AssetManagementSystem.Domain.Entities.Locations.Location", b =>
@@ -427,17 +347,6 @@ namespace AssetManagementSystem.Infrastructure.Migrations
                     b.Navigation("Asset");
                 });
 
-            modelBuilder.Entity("AssetManagementSystem.Domain.Entities.Users.User", b =>
-                {
-                    b.HasOne("AssetManagementSystem.Domain.Entities.Roles.Role", "Role")
-                        .WithMany("Users")
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Role");
-                });
-
             modelBuilder.Entity("AssetManagementSystem.Domain.Entities.Assets.Asset", b =>
                 {
                     b.Navigation("Tags");
@@ -449,16 +358,6 @@ namespace AssetManagementSystem.Infrastructure.Migrations
                 });
 
             modelBuilder.Entity("AssetManagementSystem.Domain.Entities.Departments.Department", b =>
-                {
-                    b.Navigation("Assets");
-                });
-
-            modelBuilder.Entity("AssetManagementSystem.Domain.Entities.Roles.Role", b =>
-                {
-                    b.Navigation("Users");
-                });
-
-            modelBuilder.Entity("AssetManagementSystem.Domain.Entities.Users.User", b =>
                 {
                     b.Navigation("Assets");
                 });

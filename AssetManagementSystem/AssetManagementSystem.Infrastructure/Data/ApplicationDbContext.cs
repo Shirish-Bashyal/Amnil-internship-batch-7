@@ -1,7 +1,10 @@
 ﻿using AssetManagementSystem.Domain.Entities.Assets;
 using AssetManagementSystem.Domain.Entities.Categories;
 using AssetManagementSystem.Domain.Entities.Departments;
+using AssetManagementSystem.Domain.Entities.Locations;
+using AssetManagementSystem.Domain.Entities.Roles;
 using AssetManagementSystem.Domain.Entities.Tags;
+using AssetManagementSystem.Domain.Entities.Users;
 using AssetManagementSystem.Domain.Interface;
 using AssetManagementSystem.Shared.Constants;
 using Microsoft.EntityFrameworkCore;
@@ -111,9 +114,24 @@ public class ApplicationDbContext : DbContext
                 .HasMaxLength(AssetConsts.Image.FileSize);
 
             entity
-                .HasOne(a => a.Tag)
+                .HasMany(a => a.Tags)
                 .WithOne(t => t.Asset)
-                .HasForeignKey<Tag>(t => t.AssetId)
+                .HasForeignKey(t => t.AssetId)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            entity
+                .HasOne(a => a.Location)
+                .WithOne()
+                .HasForeignKey<Asset>(a => a.LocationId)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            entity
+                .HasOne(x => x.User)
+                .WithMany(x => x.Assets)
+                .HasForeignKey(x => x.UserId)
+                .IsRequired(false)
                 .OnDelete(DeleteBehavior.NoAction);
         });
 
@@ -210,6 +228,80 @@ public class ApplicationDbContext : DbContext
                     Description = "Includes Licensed software or digital tools",
                     CreatedDate = new DateTime(2025, 10, 14, 13, 30, 5, 816, DateTimeKind.Utc),
                     IsActive = true
+                }
+            );
+        });
+
+        modelBuilder.Entity<Building>(entity =>
+        {
+            entity.HasKey(x => x.Id);
+            entity
+                .Property(x => x.Name)
+                .IsRequired(true)
+                .HasMaxLength(BuildingConsts.Name.MaxLength);
+            entity.HasIndex(x => x.Name).IsUnique(true);
+            entity.HasData(
+                new Building
+                {
+                    Id = Guid.Parse("33333333-3783-3333-3333-333333333333"),
+                    Name = "Block-A"
+                },
+                new Building
+                {
+                    Id = Guid.Parse("33333033-3333-3333-3333-233333333333"),
+                    Name = "Block-B"
+                }
+            );
+        });
+
+        modelBuilder.Entity<Location>(entity =>
+        {
+            entity.HasKey(x => x.Id);
+            entity
+                .Property(x => x.Floor)
+                .IsRequired(false)
+                .HasMaxLength(LocationConsts.Floor.MaxLength);
+            entity
+                .Property(x => x.Room)
+                .IsRequired(false)
+                .HasMaxLength(LocationConsts.Room.MaxLength);
+            entity
+                .HasOne(x => x.Building)
+                .WithMany()
+                .HasForeignKey(x => x.BuildingId)
+                .OnDelete(DeleteBehavior.NoAction);
+        });
+
+        modelBuilder.Entity<User>(entity =>
+        {
+            entity.HasKey(x => x.Id);
+            entity.Property(x => x.Name).IsRequired(true).HasMaxLength(UserConsts.Name.MaxLength);
+            entity.Property(x => x.Email).IsRequired(true).HasMaxLength(UserConsts.Email.MaxLength);
+            entity.HasIndex(x => x.Email).IsUnique(true);
+            entity
+                .HasOne(x => x.Role)
+                .WithMany(x => x.Users)
+                .HasForeignKey(x => x.RoleId)
+                .IsRequired(true)
+                .OnDelete(DeleteBehavior.NoAction);
+        });
+
+        modelBuilder.Entity<Role>(entity =>
+        {
+            entity.HasKey(x => x.Id);
+            entity.Property(x => x.Name).IsRequired(true).HasMaxLength(RoleConsts.Name.MaxLength);
+            entity.HasData(
+                new Role
+                {
+                    Id = Guid.Parse("33330933-3783-3333-3333-333333367333"),
+                    Name = "Admin",
+                    CreatedDate = new DateTime(2025, 10, 14, 13, 30, 5, 816, DateTimeKind.Utc),
+                },
+                new Role
+                {
+                    Id = Guid.Parse("33030933-3783-3233-3333-330933367333"),
+                    Name = "Employee",
+                    CreatedDate = new DateTime(2025, 10, 14, 13, 30, 5, 816, DateTimeKind.Utc),
                 }
             );
         });

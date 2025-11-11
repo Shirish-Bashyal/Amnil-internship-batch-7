@@ -19,5 +19,9 @@ public class AssetViewModel
 
     public Guid? DepartmentId { get; set; }
     public string? Department { get; set; }
-    public string? TagMacAddress { get; set; }
+    public List<string> TagMacAddress { get; set; } = [];
+    public byte[]? ImageData { get; set; }
+
+    public string? ImageDataUri =>
+        ImageData == null ? null : $"data:image/png;base64,{Convert.ToBase64String(ImageData)}";
 }

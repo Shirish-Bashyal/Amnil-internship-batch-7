@@ -101,9 +101,9 @@ public class AssetController : ControllerBase
 
 
     [HttpGet("export")]
-    public async Task<IActionResult> Export()
+    public async Task<IActionResult> Export(string format)
     {
-        var (fileStream, fileName) = await _assetService.ExportToExcelAsync();
+        var (fileStream, fileName, contentType) = await _assetService.ExportAsync(format);
 
         if (fileStream == null)
         {
@@ -111,11 +111,7 @@ public class AssetController : ControllerBase
         }
 
         // Set headers for file download
-        return File(
-            fileStream,
-            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            fileName
-        );
+        return File(fileStream, contentType, fileName);
     }
 
     /// <summary>

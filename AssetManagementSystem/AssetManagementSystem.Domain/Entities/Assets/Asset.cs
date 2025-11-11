@@ -2,7 +2,9 @@
 using AssetManagementSystem.Domain.Base;
 using AssetManagementSystem.Domain.Entities.Categories;
 using AssetManagementSystem.Domain.Entities.Departments;
+using AssetManagementSystem.Domain.Entities.Locations;
 using AssetManagementSystem.Domain.Entities.Tags;
+using AssetManagementSystem.Domain.Entities.Users;
 
 namespace AssetManagementSystem.Domain.Entities.Assets;
 
@@ -25,6 +27,10 @@ public class Asset : DateAuditedEntity<Guid>
     public bool IsActive { get; set; }
 
     //navigation properties
+
+    public Guid? UserId { get; set; }
+    public virtual User User { get; set; } = null!;
+
     public Guid CategoryId { get; set; }
 
     [ForeignKey("CategoryId")]
@@ -35,5 +41,10 @@ public class Asset : DateAuditedEntity<Guid>
     [ForeignKey("DepartmentId")]
     public virtual Department Department { get; set; } = null!;
 
-    public virtual Tag? Tag { get; set; } //Nullable if the asset does not have a tag.
+    public virtual ICollection<Tag> Tags { get; set; } = new List<Tag>();
+
+    public Guid? LocationId { get; set; }
+
+    [ForeignKey("LocationId")]
+    public virtual Location Location { get; set; } = null!;
 }

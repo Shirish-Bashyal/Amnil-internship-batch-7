@@ -48,7 +48,7 @@
            
             <div class="d-flex align-items-center gap-2">
                 <a asp-action="Create" class="btn btn-primary btn-sm">
-                    <i class="bi bi-plus-circle me-1"></i> Create New
+                    <i class="bi bi-plus-circle me-1"></i> Create
                 </a>
             </div>
 
@@ -100,9 +100,17 @@
                     </div>
                 </form>
 
-                <a asp-action="ExportToExcel" class="btn btn-success btn-sm">
-                    <i class="bi bi-file-earmark-excel me-1"></i> Export
-                </a>
+                <form method="get" asp-action="Export" class="m-0">
+                    <select name="format"
+                            class="form-select d-inline w-auto bg-success text-white fw-semibold border-0 shadow-sm"
+                            onchange="this.form.submit();">
+                        <option value="">Export</option>
+                        <option value="excel">Excel</option>
+                        <option value="pdf">PDF</option>
+                    </select>
+                </form>
+
+                
             </div>
 
         </div>
@@ -298,7 +306,7 @@
 
 
                         <td class="text-center">
-                            @if (!string.IsNullOrEmpty(asset.TagMacAddress))
+                            @if (asset.TagMacAddress.Count>0)
                             {
                                 <span class="badge bg-success"><i class="bi bi-check-circle"></i> Yes</span>
                             }
@@ -311,9 +319,10 @@
                         <td class="text-center text-nowrap">
 
                             <a asp-action="ManageTag" class="btn btn-sm btn-secondary" asp-route-id="@asset.Id">
-                                @(string.IsNullOrEmpty(asset.TagMacAddress) ? "Assign Tag" : "Remove Tag")
+                              Manage Tag
                             </a>
 
+                                
                             <a asp-action="Update" class="btn btn-sm btn-primary" asp-route-id="@asset.Id" title="Edit">
                                Edit
                             </a>

@@ -53,4 +53,12 @@ public class GenericEfRepository<T> : IGenericRepository<T>
         _db.Update(entity);
         return await _context.SaveChangesAsync() > 0;
     }
+
+    public async Task<bool> UpdateRangeAsync(IEnumerable<T> entities)
+    {
+        if (entities == null || !entities.Any())
+            return false;
+        _db.UpdateRange(entities);
+        return await _context.SaveChangesAsync() > 0;
+    }
 }

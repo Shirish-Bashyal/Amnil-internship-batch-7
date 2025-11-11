@@ -16,5 +16,5 @@ public class Tag : DateAuditedEntity<Guid>
     public Guid? AssetId { get; set; }
 
     [ForeignKey("AssetId")]
-    public virtual Asset Asset { get; set; } = null!;
+    public virtual Asset? Asset { get; set; }
 }

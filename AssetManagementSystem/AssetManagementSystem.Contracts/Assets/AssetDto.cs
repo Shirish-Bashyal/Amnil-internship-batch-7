@@ -20,7 +20,7 @@ public record AssetDto
     public Guid? DepartmentId { get; set; }
     public string? Department { get; set; }
 
-    public string? TagMacAddress { get; set; }
+    public List<string> TagMacAddress { get; set; } = [];
 
-    public string? Image { get; set; } //image as base64
+    public byte[]? ImageData { get; set; }
 }

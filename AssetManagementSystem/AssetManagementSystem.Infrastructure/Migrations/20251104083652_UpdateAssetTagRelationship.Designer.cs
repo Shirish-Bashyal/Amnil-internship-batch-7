@@ -3,6 +3,7 @@ using System;
 using AssetManagementSystem.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AssetManagementSystem.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251104083652_UpdateAssetTagRelationship")]
+    partial class UpdateAssetTagRelationship
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -47,9 +50,6 @@ namespace AssetManagementSystem.Infrastructure.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("INTEGER");
 
-                    b.Property<Guid?>("LocationId")
-                        .HasColumnType("TEXT");
-
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("TEXT");
 
@@ -76,25 +76,17 @@ namespace AssetManagementSystem.Infrastructure.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid?>("UserId")
-                        .HasColumnType("TEXT");
-
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
 
                     b.HasIndex("DepartmentId");
 
-                    b.HasIndex("LocationId")
-                        .IsUnique();
-
                     b.HasIndex("Name")
                         .IsUnique();
 
                     b.HasIndex("SerialNumber")
                         .IsUnique();
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Assets");
                 });
@@ -215,97 +207,6 @@ namespace AssetManagementSystem.Infrastructure.Migrations
                         });
                 });
 
-            modelBuilder.Entity("AssetManagementSystem.Domain.Entities.Locations.Building", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Name")
-                        .IsUnique();
-
-                    b.ToTable("Building");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("33333333-3783-3333-3333-333333333333"),
-                            Name = "Block-A"
-                        },
-                        new
-                        {
-                            Id = new Guid("33333033-3333-3333-3333-233333333333"),
-                            Name = "Block-B"
-                        });
-                });
-
-            modelBuilder.Entity("AssetManagementSystem.Domain.Entities.Locations.Location", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("BuildingId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Floor")
-                        .HasMaxLength(20)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Room")
-                        .HasMaxLength(20)
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BuildingId");
-
-                    b.ToTable("Location");
-                });
-
-            modelBuilder.Entity("AssetManagementSystem.Domain.Entities.Roles.Role", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Role");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("33330933-3783-3333-3333-333333367333"),
-                            CreatedDate = new DateTime(2025, 10, 14, 13, 30, 5, 816, DateTimeKind.Utc),
-                            Name = "Admin"
-                        },
-                        new
-                        {
-                            Id = new Guid("33030933-3783-3233-3333-330933367333"),
-                            CreatedDate = new DateTime(2025, 10, 14, 13, 30, 5, 816, DateTimeKind.Utc),
-                            Name = "Employee"
-                        });
-                });
-
             modelBuilder.Entity("AssetManagementSystem.Domain.Entities.Tags.Tag", b =>
                 {
                     b.Property<Guid>("Id")
@@ -339,41 +240,6 @@ namespace AssetManagementSystem.Infrastructure.Migrations
                     b.ToTable("Tags");
                 });
 
-            modelBuilder.Entity("AssetManagementSystem.Domain.Entities.Users.User", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("RoleId")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Email")
-                        .IsUnique();
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("User");
-                });
-
             modelBuilder.Entity("AssetManagementSystem.Domain.Entities.Assets.Asset", b =>
                 {
                     b.HasOne("AssetManagementSystem.Domain.Entities.Categories.Category", "Category")
@@ -387,34 +253,9 @@ namespace AssetManagementSystem.Infrastructure.Migrations
                         .HasForeignKey("DepartmentId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("AssetManagementSystem.Domain.Entities.Locations.Location", "Location")
-                        .WithOne()
-                        .HasForeignKey("AssetManagementSystem.Domain.Entities.Assets.Asset", "LocationId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.HasOne("AssetManagementSystem.Domain.Entities.Users.User", "User")
-                        .WithMany("Assets")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
                     b.Navigation("Category");
 
                     b.Navigation("Department");
-
-                    b.Navigation("Location");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("AssetManagementSystem.Domain.Entities.Locations.Location", b =>
-                {
-                    b.HasOne("AssetManagementSystem.Domain.Entities.Locations.Building", "Building")
-                        .WithMany()
-                        .HasForeignKey("BuildingId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Building");
                 });
 
             modelBuilder.Entity("AssetManagementSystem.Domain.Entities.Tags.Tag", b =>
@@ -425,17 +266,6 @@ namespace AssetManagementSystem.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.NoAction);
 
                     b.Navigation("Asset");
-                });
-
-            modelBuilder.Entity("AssetManagementSystem.Domain.Entities.Users.User", b =>
-                {
-                    b.HasOne("AssetManagementSystem.Domain.Entities.Roles.Role", "Role")
-                        .WithMany("Users")
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Role");
                 });
 
             modelBuilder.Entity("AssetManagementSystem.Domain.Entities.Assets.Asset", b =>
@@ -449,16 +279,6 @@ namespace AssetManagementSystem.Infrastructure.Migrations
                 });
 
             modelBuilder.Entity("AssetManagementSystem.Domain.Entities.Departments.Department", b =>
-                {
-                    b.Navigation("Assets");
-                });
-
-            modelBuilder.Entity("AssetManagementSystem.Domain.Entities.Roles.Role", b =>
-                {
-                    b.Navigation("Users");
-                });
-
-            modelBuilder.Entity("AssetManagementSystem.Domain.Entities.Users.User", b =>
                 {
                     b.Navigation("Assets");
                 });
