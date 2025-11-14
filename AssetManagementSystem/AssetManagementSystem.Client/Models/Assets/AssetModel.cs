@@ -28,6 +28,7 @@ public class AssetModel
         ErrorMessage = "Description cannot exceed {1} characters."
     )]
     public string? Description { get; set; }
+    public IFormFile? Image { get; set; }
 
     public DateTime? ReceivedDate { get; set; }
 

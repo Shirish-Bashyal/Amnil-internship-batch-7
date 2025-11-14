@@ -164,7 +164,7 @@
                         </a>
                     </th>
 
-                    <th>
+                    @* <th>
                         <a class="text-dark d-flex align-items-center"
                            asp-action="Index"
                            asp-route-pageNumber="@Model.PageIndex"
@@ -181,7 +181,7 @@
                                 <i class="bi bi-caret-up-fill ms-1"></i>
                             }
                         </a>
-                    </th>
+                    </th> *@
 
                     <th>
                         <a class="text-dark d-flex align-items-center"
@@ -205,6 +205,7 @@
                             }
                         </a>
                     </th>
+                    @* <th>Location</th> *@
 
                     <th>
                         <a class="text-dark d-flex align-items-center"
@@ -243,6 +244,8 @@
                             }
                         </a>
                     </th>
+                    <th>User</th>
+
 
                     <th class="text-center">Active</th>
                     <th class="text-center">Tag Assigned</th>
@@ -259,7 +262,7 @@
                         <td style="display:none">@asset.Id</td>
                         <td><span class="fw-semibold">@asset.Name</span></td>
                         <td>@asset.SerialNumber</td>
-                        <td>
+                       @*  <td>
                             @(
                                       !string.IsNullOrWhiteSpace(asset.Description)
                                       ? (asset.Description.Length > 15
@@ -267,15 +270,21 @@
                                       : asset.Description)
                                       : "-----"
                                       )
-                        </td>
+                        </td> *@
 
                         <td>
                             @(asset.ReceivedDate.HasValue
                                 ? asset.ReceivedDate.Value.ToLocalTime().ToString("dd MMM yyyy")
                                 : "-----")
                         </td>
+
+
+                        @* <td>@(!string.IsNullOrWhiteSpace(asset.Location) ? asset.Location : "-----")</td> *@
+
                         <td>@asset.Category</td>
                         <td>@(!string.IsNullOrWhiteSpace(asset.Department) ? asset.Department : "-----")</td>
+                        <td>@(!string.IsNullOrWhiteSpace(asset.User) ? asset.User : "-----")</td>
+
 
                         <td class="text-center">
                             <form asp-action="ToggleActive" method="post" class="d-inline">
@@ -317,9 +326,21 @@
                         </td>
 
                         <td class="text-center text-nowrap">
+                            @if (string.IsNullOrWhiteSpace(asset.User))
+                            {
+                                <a asp-action="ManageUser" style="width: 100px;" class="btn btn-sm btn-success w-45" asp-route-assetId="@asset.Id">
+                                     Assign User
+                                </a>
+                            }
+                            else
+                            {
+                                <a asp-action="ManageUser" style="width: 100px;" class="btn btn-sm btn-warning" asp-route-assetId="@asset.Id">
+                                     Unassign User
+                                </a>
+                            }
 
                             <a asp-action="ManageTag" class="btn btn-sm btn-secondary" asp-route-id="@asset.Id">
-                              Manage Tag
+                              Manage Tags
                             </a>
 
                                 

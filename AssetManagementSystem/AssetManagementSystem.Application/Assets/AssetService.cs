@@ -1,13 +1,13 @@
-﻿using System.IO;
-using AssetManagementSystem.Contracts.Assets;
+﻿using AssetManagementSystem.Contracts.Assets;
 using AssetManagementSystem.Contracts.Repositories;
 using AssetManagementSystem.Domain.Entities.Assets;
 using AssetManagementSystem.Domain.Entities.Categories;
 using AssetManagementSystem.Domain.Entities.Departments;
+using AssetManagementSystem.Domain.Entities.Locations;
 using AssetManagementSystem.Domain.Entities.Tags;
+using AssetManagementSystem.Domain.Entities.Users;
 using AssetManagementSystem.Shared.Constants;
 using AssetManagementSystem.Shared.Dtos;
-using ClosedXML.Excel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -22,6 +22,9 @@ public class AssetService : IAssetService
     private readonly IGenericRepository<Category> _categoryRepo;
     private readonly IGenericRepository<Department> _departmentRepo;
     private readonly IGenericRepository<Tag> _tagRepo;
+    private readonly IGenericRepository<User> _userRepo;
+    private readonly IGenericRepository<Building> _buildingRepo;
+    private readonly IGenericRepository<Location> _locationRepo;
 
     private readonly ILogger<AssetService> _logger;
 
@@ -30,7 +33,10 @@ public class AssetService : IAssetService
         ILogger<AssetService> logger,
         IGenericRepository<Category> categoryRepo,
         IGenericRepository<Department> departmentRepo,
-        IGenericRepository<Tag> tagRepo
+        IGenericRepository<Tag> tagRepo,
+        IGenericRepository<User> userRepo,
+        IGenericRepository<Building> buildingRepo,
+        IGenericRepository<Location> locationRepo
     )
     {
         _assetRepo = assetRepo;
@@ -38,6 +44,9 @@ public class AssetService : IAssetService
         _categoryRepo = categoryRepo;
         _departmentRepo = departmentRepo;
         _tagRepo = tagRepo;
+        _userRepo = userRepo;
+        _buildingRepo = buildingRepo;
+        _locationRepo = locationRepo;
     }
 
     /// <summary>
@@ -422,6 +431,10 @@ public class AssetService : IAssetService
                     ReceivedDate = x.ReceivedDate,
                     Category = x.Category.Name,
                     Department = x.Department.Name,
+                    User = x.User != null ? x.User.Name : null,
+                    Building = x.Location != null ? x.Location.Building.Name : null,
+                    Floor = x.Location != null ? x.Location.Floor : null,
+                    Room = x.Location != null ? x.Location.Room : null,
                     TagMacAddress = x.Tags.Select(x => x.MacAddress).ToList(),
                     ImageData = x.Image
                 })
@@ -530,9 +543,9 @@ public class AssetService : IAssetService
                 return (null, string.Empty, string.Empty);
             }
 
-            var exporter = AssetExporterFactory.GetExporter(format);
+            var exporter = AssetExporterFactory.GetExporterAsync(format);
 
-            var fileBytes = exporter.Export(assets);
+            var fileBytes = exporter.ExportAsync(assets);
             var stream = new MemoryStream(fileBytes);
 
             _logger.LogInformation(
@@ -703,6 +716,169 @@ public class AssetService : IAssetService
             _logger.LogError(ex, "Unexpected Error occured");
 
             return ResponseDto.InternalServerError("An unexpected error occured");
+        }
+    }
+
+    public async Task<ResponseDto> AssignUserAsync(AssignUserDto input)
+    {
+        _logger.LogInformation(" ::AssetService:: - AssignUserAsync - ::Started:: ");
+
+        input = input with { Floor = input.Floor?.Trim(), Room = input.Room?.Trim(), };
+        try
+        {
+            var hasUser = await _userRepo.GetQueryable().AnyAsync(x => x.Id == input.UserId);
+
+            if (!hasUser)
+            {
+                _logger.LogInformation("::AssetService:: - AssignUserAsync - ::User  not found");
+
+                return ResponseDto.NotFound("User not found");
+            }
+
+            var asset = await _assetRepo.GetAsync(input.AssetId);
+            if (asset == null)
+            {
+                _logger.LogInformation("::AssetService:: - AssignUserAsync - ::Asset  not found");
+
+                return ResponseDto.NotFound("Asset not found");
+            }
+
+            if (asset.UserId.HasValue)
+            {
+                _logger.LogInformation(
+                    "::AssetService:: - AssignUserAsync - ::Asset already assigned"
+                );
+
+                return ResponseDto.BadRequest("Asset already assigned.");
+            }
+            ///check building  if exists
+            var hasBuilding = await _buildingRepo
+                .GetQueryable()
+                .AnyAsync(x => x.Id == input.BuildingId);
+            if (!hasBuilding)
+            {
+                _logger.LogInformation(
+                    "::AssetService:: - AssignUserAsync - :: Invalid BuildingId"
+                );
+                return ResponseDto.BadRequest("Location not found");
+            }
+
+            var location = new Location
+            {
+                BuildingId = input.BuildingId,
+                Floor = input.Floor,
+                Room = input.Room,
+            };
+
+            await _locationRepo.InsertAsync(location);
+
+            asset.UserId = input.UserId;
+            asset.LocationId = location.Id;
+
+            await _assetRepo.UpdateAsync(asset);
+
+            _logger.LogInformation(
+                "::AssetService:: - AssignUserAsync - ::Asset assigned successfully"
+            );
+            return ResponseDto.Success("Asset Assigned successfully");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, " ::AssetService:: - AssignUserAsync - ::Exception:: ");
+
+            return ResponseDto.InternalServerError("An unexpected error occured");
+        }
+        finally
+        {
+            _logger.LogInformation(" ::AssetService:: - AssignUserAsync - ::Ended:: ");
+        }
+    }
+
+    public async Task<ResponseDto> UnAssignUserAsync(Guid assetId)
+    {
+        _logger.LogInformation(" ::AssetService:: - UnAssignUserAsync - ::Started:: ");
+        try
+        {
+            var asset = await _assetRepo.GetAsync(assetId);
+            if (asset == null)
+            {
+                _logger.LogInformation("::AssetService:: - UnAssignUserAsync - ::Asset  not found");
+
+                return ResponseDto.NotFound("Asset not found");
+            }
+
+            asset.UserId = null;
+            asset.LocationId = null;
+            await _assetRepo.UpdateAsync(asset);
+
+            _logger.LogInformation(
+                "::AssetService:: - UnAssignUserAsync - ::Asset Unassigned successfully"
+            );
+            return ResponseDto.Success("Asset UnAssigned successfully");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogInformation(ex, " ::AssetService:: - UnAssignUserAsync - ::Exception:: ");
+
+            return ResponseDto.InternalServerError("An unexpected error occured");
+        }
+        finally
+        {
+            _logger.LogInformation(" ::AssetService:: - UnAssignUserAsync - ::Ended:: ");
+        }
+    }
+
+    public async Task<ResponseDto> GetBuildingAsync()
+    {
+        _logger.LogInformation(" ::AssetService:: - GetBuildingAsync - ::Started:: ");
+
+        try
+        {
+            var buildings = await _buildingRepo.GetAllAsync();
+            _logger.LogInformation(
+                " ::AssetService:: - GetBuildingAsync - ::Buildings fetched successfully:: "
+            );
+
+            return ResponseDto<IEnumerable<Building>>.Success(buildings);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogInformation(ex, " ::AssetService:: - GetBuildingAsync - ::Exception:: ");
+
+            return ResponseDto.InternalServerError("An unexpected error occured");
+        }
+        finally
+        {
+            _logger.LogInformation(" ::AssetService:: - GetBuildingAsync - ::Ended:: ");
+        }
+    }
+
+    public async Task<ResponseDto> GetUserAsync()
+    {
+        _logger.LogInformation(" ::AssetService:: - GetUserAsync - ::Started:: ");
+
+        try
+        {
+            var users = await _userRepo
+                .GetQueryable()
+                .Where(x => x.Role.Name == RoleConsts.Employee)
+                .Select(x => new UserDto { Name = x.Name, Id = x.Id })
+                .ToListAsync();
+
+            _logger.LogInformation(
+                " ::AssetService:: - GetUserAsync - ::Users fetched successfully:: "
+            );
+            return ResponseDto<IEnumerable<UserDto>>.Success(users);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogInformation(ex, " ::AssetService:: - GetUserAsync - ::Exception:: ");
+
+            return ResponseDto.InternalServerError("An unexpected error occured");
+        }
+        finally
+        {
+            _logger.LogInformation(" ::AssetService:: - GetUserAsync - ::Ended:: ");
         }
     }
 }

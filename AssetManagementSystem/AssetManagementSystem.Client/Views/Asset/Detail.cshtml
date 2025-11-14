@@ -80,6 +80,30 @@
                 <td>-----</td>
             </tr>
         }
+
+        <tr>
+            <th>Assigned User</th>
+            <td>@(!string.IsNullOrWhiteSpace(Model.User) ? Model.User : "-----")</td>
+        </tr>
+        <tr>
+            <th>Location</th>
+            <td>
+                @{
+                    var parts = new List<string>();
+
+                    if (!string.IsNullOrWhiteSpace(Model.Building))
+                        parts.Add($"Building: {Model.Building}");
+                    if (!string.IsNullOrWhiteSpace(Model.Floor))
+                        parts.Add($"Floor: {Model.Floor}");
+                    if (!string.IsNullOrWhiteSpace(Model.Room))
+                        parts.Add($"Room: {Model.Room}");
+
+                    var location = parts.Count > 0 ? string.Join(", ", parts) : "-----";
+                }
+
+                @location
+            </td>
+        </tr>
     </table>
 
     <div class="col-12 mt-3 d-flex justify-content-between">

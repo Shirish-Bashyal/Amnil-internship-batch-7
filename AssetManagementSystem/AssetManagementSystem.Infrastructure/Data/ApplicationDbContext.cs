@@ -27,6 +27,14 @@ public class ApplicationDbContext : DbContext
 
     public DbSet<Department> Departments { get; set; }
 
+    public DbSet<User> Users { get; set; }
+
+    public DbSet<Role> Roles { get; set; }
+
+    public DbSet<Location> Locations { get; set; }
+
+    public DbSet<Building> Buildings { get; set; }
+
     public override int SaveChanges()
     {
         UpdateTimestamps();

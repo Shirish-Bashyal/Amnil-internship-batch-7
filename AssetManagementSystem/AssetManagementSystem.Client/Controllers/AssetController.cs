@@ -1,6 +1,8 @@
 ﻿using AssetManagementSystem.Client.Models;
 using AssetManagementSystem.Client.Models.Assets;
+using AssetManagementSystem.Client.Models.Location;
 using AssetManagementSystem.Client.Models.Tag;
+using AssetManagementSystem.Client.Models.User;
 using AssetManagementSystem.Shared.Dtos;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -38,22 +40,46 @@ public class AssetController : Controller
         if (!ModelState.IsValid)
         {
             ViewBag.Error = "Please provide valid data";
-
-            return View();
-        }
-
-        var client = _clientFactory.CreateClient("AssetManagementApi");
-        var jsonContent = System.Text.Json.JsonSerializer.Serialize(asset);
-        var content = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
-        var response = await client.PostAsync("asset", content);
-
-        if (!response.IsSuccessStatusCode)
-        {
-            ViewBag.Error = "Asset Creation Failed";
-
             PopulateDropdowns();
             return View(asset);
         }
+
+        var client = _clientFactory.CreateClient("AssetManagementApi");
+
+        var formData = new MultipartFormDataContent();
+
+        formData.Add(new StringContent(asset.Name ?? ""), nameof(asset.Name));
+        formData.Add(new StringContent(asset.SerialNumber ?? ""), nameof(asset.SerialNumber));
+        formData.Add(new StringContent(asset.Description ?? ""), nameof(asset.Description));
+        formData.Add(new StringContent(asset.CategoryId.ToString()), nameof(asset.CategoryId));
+        formData.Add(
+            new StringContent(asset.DepartmentId?.ToString() ?? ""),
+            nameof(asset.DepartmentId)
+        );
+
+        if (asset.ReceivedDate.HasValue)
+            formData.Add(
+                new StringContent(asset.ReceivedDate.Value.ToString("o")),
+                nameof(asset.ReceivedDate)
+            );
+
+        if (asset.Image != null && asset.Image.Length > 0)
+        {
+            var fileStreamContent = new StreamContent(asset.Image.OpenReadStream());
+            fileStreamContent.Headers.ContentType =
+                new System.Net.Http.Headers.MediaTypeHeaderValue(asset.Image.ContentType);
+            formData.Add(fileStreamContent, nameof(asset.Image), asset.Image.FileName);
+        }
+
+        var response = await client.PostAsync("asset", formData);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            ViewBag.Error = "Asset creation failed";
+            PopulateDropdowns();
+            return View(asset);
+        }
+
         TempData["Success"] = "Asset created successfully";
         return RedirectToAction(nameof(Index));
     }
@@ -508,5 +534,143 @@ public class AssetController : Controller
             );
 
         return File(fileBytes, contentType, fileName);
+    }
+
+    public async Task<IActionResult> ManageUser(string assetId)
+    {
+        Console.WriteLine(assetId);
+        var result = await GetDetails(assetId);
+        if (!result.IsSuccess || result.Data == null)
+        {
+            TempData["Error"] = result.Message;
+            return RedirectToAction(nameof(Index));
+        }
+
+        var client = _clientFactory.CreateClient("AssetManagementApi");
+
+        var response = await client.GetAsync("asset/users");
+        if (!response.IsSuccessStatusCode)
+        {
+            TempData["Error"] = "Error Fetching Users";
+            return RedirectToAction("Index");
+        }
+
+        var userResult = await response.Content.ReadFromJsonAsync<
+            ResponseDto<List<UserViewModel>>
+        >();
+
+        if (userResult == null || !userResult.IsSuccess)
+        {
+            TempData["Error"] = "Error Fetching  users";
+            return RedirectToAction("Index");
+        }
+
+        if (userResult?.Data?.Count < 1)
+        {
+            TempData["Error"] = "No Users to assign";
+            return RedirectToAction("Index");
+        }
+        var buildingResponse = await client.GetAsync("asset/buildings");
+        if (!buildingResponse.IsSuccessStatusCode)
+        {
+            TempData["Error"] = "Error Fetching Location";
+            return RedirectToAction("Index");
+        }
+
+        var buildingResult = await buildingResponse.Content.ReadFromJsonAsync<
+            ResponseDto<List<BuildingViewModel>>
+        >();
+
+        if (buildingResult == null || !buildingResult.IsSuccess)
+        {
+            TempData["Error"] = "Error Fetching location";
+            return RedirectToAction("Index");
+        }
+
+        if (buildingResult?.Data?.Count < 1)
+        {
+            TempData["Error"] = "No location set";
+            return RedirectToAction("Index");
+        }
+
+        ViewBag.Users = new SelectList(userResult?.Data, "Id", "Name");
+        ViewBag.Buildings = new SelectList(buildingResult?.Data, "Id", "Name");
+
+        return View(result.Data);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> AssignUser(
+        string assetId,
+        string userId,
+        string buildingId,
+        string floor,
+        string room
+    )
+    {
+        Console.WriteLine(assetId);
+        if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(buildingId))
+        {
+            TempData["Error"] = "Please select both user and building before submitting.";
+            Console.WriteLine(assetId);
+
+            return RedirectToAction(nameof(ManageUser), new { assetId });
+        }
+
+        var client = _clientFactory.CreateClient("AssetManagementApi");
+
+        var assignData = new AssignUserModel
+        {
+            AssetId = assetId,
+            UserId = userId,
+            BuildingId = buildingId,
+            Floor = floor,
+            Room = room
+        };
+
+        var jsonContent = System.Text.Json.JsonSerializer.Serialize(assignData);
+        var content = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
+
+        var response = await client.PostAsync("Asset/Assign-User", content);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            TempData["Error"] = "Failed to assign user. Please try again.";
+            return RedirectToAction(nameof(ManageUser), new { assetId });
+        }
+
+        var result = await response.Content.ReadFromJsonAsync<ResponseDto>();
+        if (result == null || !result.IsSuccess)
+        {
+            TempData["Error"] = result?.Message ?? "Error occurred while assigning user.";
+            return RedirectToAction(nameof(ManageUser), new { assetId });
+        }
+
+        TempData["Success"] = "User assigned successfully.";
+        return RedirectToAction("Index");
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> UnAssignUser(string assetid)
+    {
+        var client = _clientFactory.CreateClient("AssetManagementApi");
+
+        var response = await client.PostAsync($"Asset/UnAssign-User/{assetid}", null);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            TempData["Error"] = "Failed to unassign user. Please try again.";
+            return RedirectToAction(nameof(ManageUser), new { assetid });
+        }
+
+        var result = await response.Content.ReadFromJsonAsync<ResponseDto>();
+        if (result == null || !result.IsSuccess)
+        {
+            TempData["Error"] = result?.Message ?? "Error occurred while unassigning user.";
+            return RedirectToAction(nameof(ManageUser), new { assetid });
+        }
+
+        TempData["Success"] = "User unassigned successfully.";
+        return RedirectToAction(nameof(Index));
     }
 }

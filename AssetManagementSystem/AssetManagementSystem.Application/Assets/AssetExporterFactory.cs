@@ -7,7 +7,7 @@ namespace AssetManagementSystem.Application.Assets;
 /// </summary>
 public class AssetExporterFactory
 {
-    public static IAssetExporter GetExporter(string format)
+    public static IAssetExporter GetExporterAsync(string format)
     {
         return format?.ToLower() switch
         {

@@ -12,20 +12,20 @@ public class ExcelAssetExporter : IAssetExporter
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
     public string FileName => "Assets.xlsx";
 
-    public byte[] Export(List<AssetDto> assets)
+    public byte[] ExportAsync(List<AssetDto> assets)
     {
         using var workbook = new XLWorkbook();
         var worksheet = workbook.Worksheets.Add("Assets");
 
-        worksheet.Cell(1, 2).Value = "Asset Name";
-        worksheet.Cell(1, 3).Value = "Serial Number";
-        worksheet.Cell(1, 4).Value = "Description";
-        worksheet.Cell(1, 5).Value = "Is Active";
-        worksheet.Cell(1, 6).Value = "Received Date";
+        worksheet.Cell(1, 1).Value = "Asset Name";
+        worksheet.Cell(1, 2).Value = "Serial Number";
+        worksheet.Cell(1, 3).Value = "Description";
+        worksheet.Cell(1, 4).Value = "Is Active";
+        worksheet.Cell(1, 5).Value = "Received Date";
 
-        worksheet.Cell(1, 8).Value = "Category Name";
+        worksheet.Cell(1, 6).Value = "Category Name";
 
-        worksheet.Cell(1, 10).Value = "Department Name";
+        worksheet.Cell(1, 7).Value = "Department Name";
 
         var dataToInsert = assets.Select(a =>
             new object[]

@@ -5,7 +5,7 @@
 /// </summary>
 public interface IAssetExporter
 {
-    byte[] Export(List<AssetDto> assets);
+    byte[] ExportAsync(List<AssetDto> assets);
     string ContentType { get; }
     string FileName { get; }
 }

@@ -1,0 +1,107 @@
+﻿@using AssetManagementSystem.Client.Models.Assets
+@model AssetViewModel
+
+<div class="container mt-4">
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-primary text-white d-flex align-items-center justify-content-between">
+            <h5 class="mb-0">
+                <i class="bi bi-person-badge me-2"></i>
+                @(string.IsNullOrEmpty(Model.User) ? "Assign User" : "Unassign User")
+            </h5>
+        </div>
+
+        <div class="card-body">
+            @if (ViewBag.Error != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="bi bi-x-octagon-fill me-2"></i><strong>Error:</strong> @ViewBag.Error
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="bi bi-x-octagon me-2"></i>@TempData["Error"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold">Asset Name</label>
+                    <input asp-for="Name" class="form-control" readonly />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold">Serial Number</label>
+                    <input asp-for="SerialNumber" class="form-control" readonly />
+                </div>
+            </div>
+
+            <hr />
+
+            @if (string.IsNullOrEmpty(Model.User))
+            {
+                <!-- Assign User Form -->
+                <form asp-action="AssignUser" method="post">
+                    <input type="hidden" value="@Model.Id" name="assetId" />
+
+                    <div class="col-md-6 mt-3">
+                        <label class="form-label fw-semibold">Select User</label>
+                        <select name="UserId" class="form-select" asp-items="ViewBag.Users">
+                            <option value="">-- Select User --</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-6 mt-3">
+                        <label class="form-label fw-semibold">Select Building</label>
+                        <select name="BuildingId" class="form-select" asp-items="ViewBag.Buildings">
+                            <option value="">-- Select Building --</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-6 mt-3">
+                        <label class="form-label fw-semibold">Floor</label>
+                        <input type="text" name="Floor" class="form-control" />
+                    </div>
+
+                    <div class="col-md-6 mt-3">
+                        <label class="form-label fw-semibold">Room</label>
+                        <input type="text" name="Room" class="form-control" />
+                    </div>
+
+                    <div class="col-12 mt-3 d-flex justify-content-between">
+                        <a asp-action="Index" class="btn btn-secondary px-4">
+                            <i class="bi bi-arrow-left me-1"></i> Back to List
+                        </a>
+                        <button type="submit" class="btn btn-success px-4">
+                            <i class="bi bi-person-plus me-1"></i> Assign User
+                        </button>
+                    </div>
+                </form>
+            }
+            else
+            {
+                <!-- Unassign User Form -->
+                <form asp-action="UnAssignUser" method="post">
+                    <input type="hidden" name="assetId" value="@Model.Id" />
+
+                    <div class="alert alert-info mt-4">
+                        <i class="bi bi-info-circle me-2"></i>
+                        This asset is currently assigned to <strong>@Model.User</strong>
+                        in <strong>@Model.Building</strong>, Floor: @Model.Floor, Room: @Model.Room.
+                        You can unassign it below.
+                    </div>
+
+                    <div class="col-12 mt-3 d-flex justify-content-between">
+                        <a asp-action="Index" class="btn btn-secondary px-4">
+                            <i class="bi bi-arrow-left me-1"></i> Back to List
+                        </a>
+                        <button type="submit" class="btn btn-warning px-4">
+                            <i class="bi bi-person-x me-1"></i> Unassign User
+                        </button>
+                    </div>
+                </form>
+            }
+        </div>
+    </div>
+</div>

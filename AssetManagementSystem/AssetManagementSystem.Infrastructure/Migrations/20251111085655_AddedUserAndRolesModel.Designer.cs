@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AssetManagementSystem.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251110100111_AddedUserAndRolesModel")]
+    [Migration("20251111085655_AddedUserAndRolesModel")]
     partial class AddedUserAndRolesModel
     {
         /// <inheritdoc />
@@ -234,7 +234,7 @@ namespace AssetManagementSystem.Infrastructure.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("Building");
+                    b.ToTable("Buildings");
 
                     b.HasData(
                         new
@@ -270,7 +270,7 @@ namespace AssetManagementSystem.Infrastructure.Migrations
 
                     b.HasIndex("BuildingId");
 
-                    b.ToTable("Location");
+                    b.ToTable("Locations");
                 });
 
             modelBuilder.Entity("AssetManagementSystem.Domain.Entities.Roles.Role", b =>
@@ -292,7 +292,7 @@ namespace AssetManagementSystem.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Role");
+                    b.ToTable("Roles");
 
                     b.HasData(
                         new
@@ -374,7 +374,7 @@ namespace AssetManagementSystem.Infrastructure.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("User");
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("AssetManagementSystem.Domain.Entities.Assets.Asset", b =>

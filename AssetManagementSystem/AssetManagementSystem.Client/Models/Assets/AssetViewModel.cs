@@ -14,6 +14,20 @@ public class AssetViewModel
     public DateTime? ReceivedDate { get; set; }
     public bool IsActive { get; set; }
 
+    public string? User { get; set; }
+
+    public string? Building { get; set; }
+    public string? Floor { get; set; }
+    public string? Room { get; set; }
+
+    public string? Location =>
+        Building == null
+            ? null
+            : string.Join(
+                ",",
+                new[] { Building, Floor, Room }.Where(p => !string.IsNullOrWhiteSpace(p))
+            );
+
     public Guid CategoryId { get; set; }
     public string? Category { get; set; } = string.Empty;
 

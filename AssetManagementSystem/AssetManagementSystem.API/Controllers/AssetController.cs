@@ -145,4 +145,38 @@ public class AssetController : ControllerBase
         var result = await _assetService.UnAssignTagAsync(id);
         return StatusCode(result.StatusCode, result);
     }
+
+    /// <summary>
+    /// Assigns a Asset to an User
+    /// </summary>
+    [HttpPost("Assign-User")]
+    public async Task<ActionResult<ResponseDto>> AssignUser(AssignUserDto input)
+    {
+        var result = await _assetService.AssignUserAsync(input);
+        return StatusCode(result.StatusCode, result);
+    }
+
+    /// <summary>
+    /// removes Asset from an User
+    /// </summary>
+    [HttpPost("UnAssign-User/{id}")]
+    public async Task<ActionResult<ResponseDto>> UnAssignUser(Guid id)
+    {
+        var result = await _assetService.UnAssignUserAsync(id);
+        return StatusCode(result.StatusCode, result);
+    }
+
+    [HttpGet("users")]
+    public async Task<ActionResult<ResponseDto>> GetUsers()
+    {
+        var result = await _assetService.GetUserAsync();
+        return StatusCode(result.StatusCode, result);
+    }
+
+    [HttpGet("buildings")]
+    public async Task<ActionResult<ResponseDto>> GetBuildings()
+    {
+        var result = await _assetService.GetBuildingAsync();
+        return StatusCode(result.StatusCode, result);
+    }
 }

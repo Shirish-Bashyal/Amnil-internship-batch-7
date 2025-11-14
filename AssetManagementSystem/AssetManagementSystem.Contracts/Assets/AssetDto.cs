@@ -1,4 +1,6 @@
-﻿namespace AssetManagementSystem.Contracts.Assets;
+﻿using AssetManagementSystem.Domain.Entities.Locations;
+
+namespace AssetManagementSystem.Contracts.Assets;
 
 /// <summary>
 ///Dto to return asset details
@@ -13,6 +15,12 @@ public record AssetDto
 
     public DateTime? ReceivedDate { get; set; }
     public bool IsActive { get; set; }
+
+    public string? User { get; set; }
+
+    public string? Building { get; set; }
+    public string? Floor { get; set; }
+    public string? Room { get; set; }
 
     public Guid? CategoryId { get; set; }
     public string? Category { get; set; } = string.Empty;

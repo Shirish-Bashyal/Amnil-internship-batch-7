@@ -101,6 +101,10 @@ public static class AssetExtensions
             IsActive = x.IsActive,
             ReceivedDate = x.ReceivedDate,
             Category = x.Category.Name,
+            User = x.User != null ? x.User.Name : null,
+            Building = x.Location != null ? x.Location.Building.Name : null,
+            Floor = x.Location != null ? x.Location.Floor : null,
+            Room = x.Location != null ? x.Location.Room : null,
             Department = x.Department.Name,
             TagMacAddress = x.Tags.Select(x => x.MacAddress).ToList(),
         });

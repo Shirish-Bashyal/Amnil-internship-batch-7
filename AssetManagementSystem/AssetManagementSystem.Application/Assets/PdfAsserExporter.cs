@@ -12,7 +12,7 @@ public class PdfAssetExporter : IAssetExporter
     public string ContentType => "application/pdf";
     public string FileName => "Assets.pdf";
 
-    public byte[] Export(List<AssetDto> assets)
+    public byte[] ExportAsync(List<AssetDto> assets)
     {
         var stream = new MemoryStream();
 
