@@ -1,0 +1,56 @@
+﻿@using AssetManagementSystem.Client.Models.Tag
+@model TagModel
+
+@{
+    ViewData["Title"] = "Create Tag";
+}
+
+<div class="container mt-4">
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-primary text-white d-flex align-items-center justify-content-between">
+            <h5 class="mb-0">
+                <i class="bi bi-plus-circle me-2"></i> Create Tag
+            </h5>
+        </div>
+
+        <div class="card-body">
+            @if (ViewBag.Error != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="bi bi-x-octagon-fill me-2"></i><strong>Error:</strong> @ViewBag.Error
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+            <form asp-action="Create" class="needs-validation" novalidate>
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label asp-for="MacAddress" class="form-label fw-semibold">
+                            MAC Address <span class="text-danger">*</span>
+                        </label>
+                        <input asp-for="MacAddress" class="form-control" placeholder="Enter MAC address (e.g. AA:BB:CC:DD:EE:FF)" autofocus />
+                        <span asp-validation-for="MacAddress" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-12 mt-4 d-flex justify-content-between">
+                        <a asp-action="Index" class="btn btn-secondary px-4">
+                            <i class="bi bi-arrow-left me-1"></i> Back to List
+                        </a>
+
+                        <button type="submit" class="btn btn-success px-4">
+                            <i class="bi bi-save me-1"></i> Save
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

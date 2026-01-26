@@ -1,0 +1,40 @@
+﻿@using AssetManagementSystem.Client.Models.Tag
+@model TagViewModel
+
+@{
+    ViewData["Title"] = "Delete Tag";
+}
+
+<h1>Delete</h1>
+
+<h3>Are you sure you want to delete this?</h3>
+
+<div>
+    <h4>Tag</h4>
+    <hr />
+
+    <table class="table table-bordered">
+        <tr>
+            <th>MAC Address</th>
+            <td>@Model.MacAddress</td>
+        </tr>
+
+        <tr>
+            <th>Is Active</th>
+            <td>@(Model.IsActive ? "Active" : "Inactive")</td>
+        </tr>
+    </table>
+
+    <form asp-action="Delete" method="post">
+        <input type="hidden" asp-for="Id" />
+
+        <div class="col-12 mt-3 d-flex justify-content-between">
+            <a asp-action="Index" class="btn btn-secondary px-4">
+                <i class="bi bi-arrow-left me-1"></i> Back to List
+            </a>
+            <button type="submit" class="btn btn-danger px-4">
+                <i class="bi bi-trash me-1"></i> Delete
+            </button>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,428 @@
+﻿@using AssetManagementSystem.Client.Models.Assets
+@model PagedViewModel<AssetViewModel>
+
+
+<h3 class="mb-4 text-primary fw-bold">All Assets</h3>
+
+
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+        <i class="bi bi-x-octagon-fill me-2"></i><strong>Error:</strong> @TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+        <i class="bi bi-x-octagon-fill me-2"></i><strong>Error:</strong> @ViewBag.Error
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@if (ViewBag.Success != null)
+{
+    <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i><strong>Success!</strong> @ViewBag.Success
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i><strong>Success!</strong> @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+@{
+    var currentSort = TempData["CurrentSort"] as string;
+}
+
+
+<div class="card shadow-sm mb-2">
+    <div class="card-body p-3">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+
+           
+            <div class="d-flex align-items-center gap-2">
+                <a asp-action="Create" class="btn btn-primary btn-sm">
+                    <i class="bi bi-plus-circle me-1"></i> Create
+                </a>
+            </div>
+
+           
+            <div class="d-flex align-items-center gap-2">
+                <form method="get" asp-action="Index" class="m-0">
+                    <input type="hidden" name="searchString" value="@ViewData["CurrentFilter"]" />
+                    <input type="hidden" name="sortOrder" value="@TempData["CurrentSort"]" />
+
+                    <select name="category" class="form-select form-select-sm"
+                            asp-items="ViewBag.Categories"
+                            style="width: 140px;"
+                            onchange="this.form.submit();">
+                        <option value="">All Categories</option>
+                    </select>
+                </form>
+            </div>
+
+
+            <div class="d-flex align-items-center gap-2">
+                <form method="get" asp-action="Index" class="m-0">
+                    <input type="hidden" name="searchString" value="@ViewData["CurrentFilter"]" />
+                    <input type="hidden" name="sortOrder" value="@TempData["CurrentSort"]" />
+                    <select name="status" class="form-select form-select-sm"
+                            style="width: 120px;"
+                            onchange="this.form.submit();">
+                        <option value="">Status</option>
+                        <option value="true">Active</option>
+                        <option value="false">Inactive</option>
+                    </select>
+                </form>
+            </div>
+
+            <a asp-action="Index" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-x-circle me-1"></i> Clear
+            </a>
+
+
+           
+            <div class="d-flex align-items-center gap-2 flex-grow-1 justify-content-end">
+                <form method="get" class="d-flex" role="search" asp-action="Index">
+                    <div class="input-group" style="max-width: 300px;">
+                        <span class="input-group-text bg-white border-end-0">
+                            <i class="bi bi-search text-muted"></i>
+                        </span>
+                        <input type="search" class="form-control border-start-0" name="searchString"
+                               value="@ViewData["CurrentFilter"]"
+                               placeholder="Search assets..." aria-label="Search">
+                    </div>
+                </form>
+
+                <form method="get" asp-action="Export" class="m-0">
+                    <select name="format"
+                            class="form-select d-inline w-auto bg-success text-white fw-semibold border-0 shadow-sm"
+                            onchange="this.form.submit();">
+                        <option value="">Export</option>
+                        <option value="excel">Excel</option>
+                        <option value="pdf">PDF</option>
+                    </select>
+                </form>
+
+                
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+@if (Model.Items.Any())
+{
+    <div class="table-responsive">
+        <table class="table table-striped table-hover align-middle border shadow-sm">
+
+            <thead class="table-secondary">
+                <tr>
+                    <th>
+                        <a class="text-dark d-flex align-items-center"
+                           asp-action="Index"
+                           asp-route-pageNumber="@Model.PageIndex"
+                           asp-route-pageSize="@Model.PageSize"
+                           asp-route-sortOrder=@TempData["NameSortParam"]
+                           asp-route-currentFilter="@TempData["CurrentFilter"]">
+                            Name
+                            @if (currentSort == "name_desc")
+                            {
+                                <i class="bi bi-caret-down-fill ms-1"></i>
+                            }
+                            else if (currentSort == "name_asc")
+                            {
+                                <i class="bi bi-caret-up-fill ms-1"></i>
+                            }
+                        </a>
+                    </th>
+
+                    <th>
+                        <a class="text-dark d-flex align-items-center"
+                           asp-action="Index"
+                           asp-route-pageNumber="@Model.PageIndex"
+                           asp-route-pageSize="@Model.PageSize"
+                           asp-route-sortOrder=@TempData["SerialNumberSortParam"]
+                           asp-route-currentFilter="@TempData["CurrentFilter"]">
+                            Serial Number
+                            @if (currentSort == "serialNumber_desc")
+                            {
+                                <i class="bi bi-caret-down-fill ms-1"></i>
+                            }
+                            else if (currentSort == "serialNumber_asc")
+                            {
+                                <i class="bi bi-caret-up-fill ms-1"></i>
+                            }
+                        </a>
+                    </th>
+
+                    @* <th>
+                        <a class="text-dark d-flex align-items-center"
+                           asp-action="Index"
+                           asp-route-pageNumber="@Model.PageIndex"
+                           asp-route-pageSize="@Model.PageSize"
+                           asp-route-sortOrder=@TempData["DescriptionSortParam"]
+                           asp-route-currentFilter="@TempData["CurrentFilter"]">
+                            Description
+                            @if (currentSort == "description_desc")
+                            {
+                                <i class="bi bi-caret-down-fill ms-1"></i>
+                            }
+                            else if (currentSort == "description_asc")
+                            {
+                                <i class="bi bi-caret-up-fill ms-1"></i>
+                            }
+                        </a>
+                    </th> *@
+
+                    <th>
+                        <a class="text-dark d-flex align-items-center"
+                           asp-action="Index"
+                           asp-route-pageNumber="@Model.PageIndex"
+                           asp-route-pageSize="@Model.PageSize"
+                           asp-route-sortOrder=@TempData["CreatedAtSortParam"]
+                           asp-route-currentFilter="@TempData["CurrentFilter"]">
+                            Received At
+                            @if (currentSort == "date_desc")
+                            {
+                                <i class="bi bi-caret-down-fill ms-1"></i>
+                            }
+                            else if (currentSort == "date_asc")
+                            {
+                                <i class="bi bi-caret-up-fill ms-1"></i>
+                            }
+                            else if (string.IsNullOrEmpty(currentSort))
+                            {
+                                <i class="bi bi-caret-down-fill ms-1"></i>
+                            }
+                        </a>
+                    </th>
+                    @* <th>Location</th> *@
+
+                    <th>
+                        <a class="text-dark d-flex align-items-center"
+                           asp-action="Index"
+                           asp-route-pageNumber="@Model.PageIndex"
+                           asp-route-pageSize="@Model.PageSize"
+                           asp-route-sortOrder=@TempData["CategorySortParam"]
+                           asp-route-currentFilter="@TempData["CurrentFilter"]">
+                            Category
+                            @if (currentSort == "category_desc")
+                            {
+                                <i class="bi bi-caret-down-fill ms-1"></i>
+                            }
+                            else if (currentSort == "category_asc")
+                            {
+                                <i class="bi bi-caret-up-fill ms-1"></i>
+                            }
+                        </a>
+                    </th>
+
+                    <th>
+                        <a class="text-dark d-flex align-items-center"
+                           asp-action="Index"
+                           asp-route-pageNumber="@Model.PageIndex"
+                           asp-route-pageSize="@Model.PageSize"
+                           asp-route-sortOrder=@TempData["DepartmentSortParam"]
+                           asp-route-currentFilter="@TempData["CurrentFilter"]">
+                            Department
+                            @if (currentSort == "department_desc")
+                            {
+                                <i class="bi bi-caret-down-fill ms-1"></i>
+                            }
+                            else if (currentSort == "department_asc")
+                            {
+                                <i class="bi bi-caret-up-fill ms-1"></i>
+                            }
+                        </a>
+                    </th>
+                    <th>User</th>
+
+
+                    <th class="text-center">Active</th>
+                    <th class="text-center">Tag Assigned</th>
+
+                    <th class="text-center">Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var asset in Model.Items)
+                {
+                    <tr onclick="window.location='@Url.Action("Detail", "Asset", new { id = asset.Id })'"
+                        style="cursor:pointer;">
+                        <td style="display:none">@asset.Id</td>
+                        <td><span class="fw-semibold">@asset.Name</span></td>
+                        <td>@asset.SerialNumber</td>
+                       @*  <td>
+                            @(
+                                      !string.IsNullOrWhiteSpace(asset.Description)
+                                      ? (asset.Description.Length > 15
+                                      ? asset.Description.Substring(0, 15) + "..."
+                                      : asset.Description)
+                                      : "-----"
+                                      )
+                        </td> *@
+
+                        <td>
+                            @(asset.ReceivedDate.HasValue
+                                ? asset.ReceivedDate.Value.ToLocalTime().ToString("dd MMM yyyy")
+                                : "-----")
+                        </td>
+
+
+                        @* <td>@(!string.IsNullOrWhiteSpace(asset.Location) ? asset.Location : "-----")</td> *@
+
+                        <td>@asset.Category</td>
+                        <td>@(!string.IsNullOrWhiteSpace(asset.Department) ? asset.Department : "-----")</td>
+                        <td>@(!string.IsNullOrWhiteSpace(asset.User) ? asset.User : "-----")</td>
+
+
+                        <td class="text-center">
+                            <form asp-action="ToggleActive" method="post" class="d-inline">
+                                @{
+                                    var currentStatus = @asset.IsActive;
+                                }
+                                <input type="hidden" name="id" value="@asset.Id" />
+                                <input type="hidden" name="newStatus" value="@(asset.IsActive ? "InActive" : "Active")" />
+                                <input type="hidden" name="searchString" value="@ViewData["CurrentFilter"]" />
+                                <input type="hidden" name="pageNumber" value="@Model.PageIndex" />
+                                <input type="hidden" name="pageSize" value="@Model.PageSize" />
+                                <input type="hidden" name="sortOrder" value="@TempData["CurrentSort"]" />
+
+                                <div class="form-check form-switch m-0">
+                                    <input class="form-check-input text-primary"
+                                           type="checkbox"
+                                          
+                                           @(currentStatus ? "checked" : "")
+                                           onchange="event.stopPropagation(); this.form.submit();" />
+                                </div>
+                            </form>
+                        </td>
+
+
+
+
+
+
+
+                        <td class="text-center">
+                            @if (asset.TagMacAddress.Count>0)
+                            {
+                                <span class="badge bg-success"><i class="bi bi-check-circle"></i> Yes</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger"><i class="bi bi-x-circle"></i> No</span>
+                            }
+                        </td>
+
+                        <td class="text-center text-nowrap">
+                            @if (string.IsNullOrWhiteSpace(asset.User))
+                            {
+                                <a asp-action="ManageUser" style="width: 100px;" class="btn btn-sm btn-success w-45" asp-route-assetId="@asset.Id">
+                                     Assign User
+                                </a>
+                            }
+                            else
+                            {
+                                <a asp-action="ManageUser" style="width: 100px;" class="btn btn-sm btn-warning" asp-route-assetId="@asset.Id">
+                                     Unassign User
+                                </a>
+                            }
+
+                            <a asp-action="ManageTag" class="btn btn-sm btn-secondary" asp-route-id="@asset.Id">
+                              Manage Tags
+                            </a>
+
+                                
+                            <a asp-action="Update" class="btn btn-sm btn-primary" asp-route-id="@asset.Id" title="Edit">
+                               Edit
+                            </a>
+
+                            <a asp-action="Delete" class="btn btn-sm btn-danger ms-1" asp-route-id="@asset.Id" title="Delete">
+                               Delete
+                            </a>
+                        </td>
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+    </div>
+
+
+    <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top flex-wrap gap-2">
+
+       
+        <div class="dropdown">
+            <button class="btn btn-outline-secondary dropdown-toggle btn-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Page Size: <span class="fw-bold">@Model.PageSize</span>
+            </button>
+            <ul class="dropdown-menu">
+                @{
+                    var sizes = new int[] { 5, 10, 15, 20 };
+                }
+                @foreach (var size in sizes)
+                {
+                    <li>
+                        <a class="dropdown-item @(Model.PageSize == size ? "active" : "")"
+                           asp-action="Index"
+                           asp-route-pageNumber="1"
+                           asp-route-pageSize="@size"
+                           asp-route-sortOrder="@TempData["CurrentSort"]"
+                           asp-route-searchString="@TempData["CurrentFilter"]">
+                            @size
+                        </a>
+                    </li>
+                }
+            </ul>
+        </div>
+
+        
+        <div class="text-muted">
+            @{
+                int startItem = (Model.PageIndex - 1) * Model.PageSize + 1;
+                int endItem = Math.Min(Model.PageIndex * Model.PageSize, Model.TotalItems);
+            }
+            Showing @startItem to @endItem of @Model.TotalItems items
+        </div>
+
+       
+        <nav>
+            <ul class="pagination pagination-sm mb-0">
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class="page-item @(Model.PageIndex == i ? "active" : "")">
+                        <a class="page-link"
+                           asp-action="Index"
+                           asp-route-pageNumber="@i"
+                           asp-route-pageSize="@Model.PageSize"
+                           asp-route-sortOrder="@TempData["CurrentSort"]"
+                           asp-route-searchString="@TempData["CurrentFilter"]">@i</a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    </div>
+
+
+
+
+}
+else
+{
+    <div class="alert alert-info text-center mt-4 shadow-sm" role="alert">
+        <i class="bi bi-info-circle fs-4 me-2"></i>
+        <p class="mb-0 mt-2">No assets found </p>
+        
+    </div>
+}

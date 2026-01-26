@@ -1,0 +1,195 @@
+﻿@using AttendanceManagementSystem.Shared.Dtos.User
+@model UserViewModel
+
+
+<h2>All Users</h2>
+<hr />
+
+@if (TempData["Error"] != null)
+{   
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong>Error:</strong> @TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong>Error:</strong> @ViewBag.Error
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@if (ViewBag.Success != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <strong>Success!</strong> @ViewBag.Success
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <strong>Success!</strong> @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+@{
+    var currentSort = TempData["CurrentSort"] as string;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+    
+    <div class="d-flex align-items-center gap-2">
+        <a asp-action="Create" class="btn btn-primary">Create New</a>
+
+       
+        <button type="button" class="btn btn-outline-secondary">
+            <i class="bi bi-funnel"></i> Filter
+        </button>
+    </div>
+
+   
+    <div class="d-flex align-items-center gap-2">
+       
+        <form method="get" class="d-flex align-items-center" role="search" asp-action="Index">
+            <div class="input-group">
+                <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                <input type="search" class="form-control" name="searchString" value="@ViewData["CurrentFilter"]" 
+                       placeholder="Search users..." aria-label="Search">
+            </div>
+        </form>
+
+       
+        <a asp-action="ExportToExcel" class="btn btn-success">
+            <i class="bi bi-file-earmark-excel"></i> Export
+        </a>
+    </div>
+</div>
+
+
+
+@if (Model.User.Any())
+{
+    <table class="table table-bordered table-hover mb-0 align-content-center ">
+
+        <thead class="table-light">
+                <tr>
+                
+            <tr>
+                <th>
+                    <a class="text-dark" asp-action="Index" asp-route-sortOrder=@TempData["NameSortParam"] asp-route-currentFilter="@ViewData["CurrentFilter"]">
+                        Name  @if (currentSort == "name_desc")
+                            {
+                            <i class="bi bi-caret-down-fill"></i>
+                                
+                            }
+                            else if (currentSort == "name_asc")
+                            {
+                            <i class="bi bi-caret-up-fill"></i>
+                            }
+                    </a>
+                </th>
+                <th>
+                   
+                        Phone Number   
+                </th>
+                <th>
+                    <a class="text-dark" asp-action="Index" asp-route-sortOrder=@TempData["CreatedAtSortParam"] asp-route-currentFilter="@ViewData["CurrentFilter"]">
+                        Created At   @if (currentSort == "date_desc")
+                            {
+                            <i class="bi bi-caret-down-fill"></i>
+                                
+                            }
+                            else if(currentSort=="date_asc")
+                            {
+                                <i class="bi bi-caret-up-fill"></i>
+                               
+                            }
+                            else if(string.IsNullOrEmpty(currentSort))
+                            {
+                            <i class="bi bi-caret-down-fill"></i>
+
+                            }
+                    </a>
+                </th>
+            
+                <th>Actions</th>
+
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var user in Model.User)
+            {
+                    <tr>
+                    <td style="display:none">@user.Id</td>
+                    <td>  <span class="fw-bold ">@user.Name</span></td>
+                        <td>@user.PhoneNumber</td>
+                    <td>
+                       
+                        @if (user.CreationAt.HasValue)
+                        {
+                            @user.CreationAt.Value.ToLocalTime().ToString("g")
+                        }
+                    </td>
+
+                    <td >
+                        <a asp-action="Update" class="btn btn-primary m-lg-2 " asp-route-id="@user.Id">Edit</a>
+
+                        <a asp-action="Delete" class="btn btn-danger m-lg-2 " asp-route-id="@user.Id">Delete</a>
+                    </td>
+                    </tr>
+            }
+            </tbody>
+        </table>
+
+    <div class="d-flex justify-content-end align-items-center mt-4 gap-3">
+       
+        <div class="dropdown">
+            <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Page Size: @Model.PageSize
+            </button>
+            <ul class="dropdown-menu">
+                @{
+                    var sizes = new int[] { 5, 10, 15, 20 };
+                }
+                @foreach (var size in sizes)
+                {
+                    <li>
+                        <a class="dropdown-item @(Model.PageSize == size ? "active" : "")"
+                           asp-action="Index"
+                           asp-route-pageNumber="@Model.PageIndex"
+                           asp-route-pageSize="@size"
+                           asp-route-searchString="@ViewData["CurrentFilter"]">
+                            @size
+                        </a>
+                    </li>
+                }
+            </ul>
+        </div>
+
+        <!-- Pagination -->
+        <nav>
+            <ul class="pagination pagination-lg mb-0">
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class="page-item @(Model.PageIndex == i ? "active" : "")">
+                        <a class="page-link"
+                           asp-route-pageNumber="@i"
+                           asp-route-pageSize="@Model.PageSize"
+                           asp-route-searchString="@ViewData["CurrentFilter"]"
+                        >@i</a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    </div>
+
+   
+
+}
+else
+{
+        <p>No users found or unable to load users.</p>
+}

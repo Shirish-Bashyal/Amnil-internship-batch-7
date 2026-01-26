@@ -1,0 +1,76 @@
+﻿@using AttendanceManagementSystem.Shared.Dtos.Attendance
+@model ReportViewModel
+
+<div class="container mt-4">
+    
+    @if (Model != null && !string.IsNullOrEmpty(Model.Name))
+    {
+        <div class="card mb-4 shadow-sm">
+            <div class="card-body">
+                <h4 class="card-title mb-3">Attendance Report</h4>
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Name:</strong> @Model.Name</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Phone Number:</strong> @Model.PhoneNumber</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+   
+    @if (Model != null && Model.Attendance.Any())
+    {
+        <table class="table table-bordered table-hover shadow-sm">
+            <thead class="table-light">
+                <tr>
+                    <th>Date</th>
+                    <th>Check In Time</th>
+                    <th>Check Out Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var record in Model.Attendance)
+                {
+                    <tr>
+                        <td>@record.Date.ToShortDateString()</td>
+
+                        <td>
+                            @if (record.CheckInTime.HasValue)
+                            {
+                                var checkInUtc = record.Date.ToDateTime(record.CheckInTime.Value);
+                                var checkInLocal = checkInUtc.ToLocalTime();
+                                @checkInLocal.ToString("hh:mm tt")
+                            }
+                            else
+                            {
+                                <span class="text-muted">-</span>
+                            }
+                        </td>
+
+                        <td>
+                            @if (record.CheckOutTime.HasValue)
+                            {
+                                var checkOutUtc = record.Date.ToDateTime(record.CheckOutTime.Value);
+                                var checkOutLocal = checkOutUtc.ToLocalTime();
+                                @checkOutLocal.ToString("hh:mm tt")
+                            }
+                            else
+                            {
+                                <span class="text-muted">-</span>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <div class="alert alert-info text-center mt-3">
+            No attendance records found.
+        </div>
+    }
+</div>
