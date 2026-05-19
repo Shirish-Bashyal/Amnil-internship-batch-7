@@ -1,0 +1,28 @@
+name: Deploy AssetManagementSystem to IIS
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'AssetManagementSystem/**'  
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Publish API
+      run: dotnet publish ./AssetManagementSystem/AssetManagementSystem.API/AssetManagementSystem.API.csproj -c Release -o D:\asset\api
+
+    - name: Publish MVC
+      run: dotnet publish ./AssetManagementSystem/AssetManagementSystem.Client/AssetManagementSystem.Client.csproj -c Release -o D:\asset\mvc
+
+    - name: Restart IIS
+      run: iisreset
